@@ -10,6 +10,7 @@ import { LoginTabPage } from '../pages/login-tab/login-tab';
 })
 export class MyApp {
   rootPage:any = LoginTabPage;
+  
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
     platform.ready().then(() => {
