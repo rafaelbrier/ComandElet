@@ -15,6 +15,10 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { firebaseConfig } from '../config';
 import { AuthService } from '../providers/auth/auth-service';
 import { ResetpasswordPage } from '../pages/resetpassword/resetpassword';
+import { MyServicesProvider } from '../providers/my-services/my-services';
+
+import { GooglePlus } from '@ionic-native/google-plus';
+import { Facebook } from '@ionic-native/facebook';
 
 
 @NgModule({
@@ -28,8 +32,12 @@ import { ResetpasswordPage } from '../pages/resetpassword/resetpassword';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp),
-    AngularFireModule.initializeApp(firebaseConfig.fire),
+    IonicModule.forRoot(MyApp, {
+      scrollPadding: true,
+      scrollAssist: true, 
+      autoFocusAssist: false
+    }),
+    AngularFireModule.initializeApp(firebaseConfig.fire)    
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -45,7 +53,10 @@ import { ResetpasswordPage } from '../pages/resetpassword/resetpassword';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AngularFireAuth,
-    AuthService       
+    AuthService,
+    MyServicesProvider,
+    GooglePlus, 
+    Facebook      
   ]
 })
 export class AppModule {}

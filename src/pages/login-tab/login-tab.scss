@@ -1,27 +1,40 @@
 .tabs-ios .tabbar {    
-    background: #eebd19e3;
-    justify-content: stretch;
+    background: #eebd19; //eebd19e3
+}
+
+.tabs-md .tabbar {    
+    background: #eebd19;   
 }
 
 .tabs-ios .tab-button-icon {   
-    margin: 5px;
-    color: white !important;
-    margin-left: 70px;
+   color: white !important;   
 }
 
-.tabs-ios .tab-button[aria-selected=true] .tab-button-icon {
-       
-    color: #000000 !important;
-    
+.tabs-md .tab-button-icon {   
+   color: white !important;   
+}
+
+.tabs-ios .tab-button[aria-selected=true] .tab-button-icon {       
+    color: #000000 !important;    
+}
+
+.tabs-md .tab-button[aria-selected=true] .tab-button-icon {    
+ color: #000000 !important; 
 }
 
 .tabs-ios .tab-button[aria-selected=true] .tab-button-text {
     color: #000000 !important;
-
 }
 
-.tabs-ios .tab-button {
-    font-size: 20px;
+.tabs-md .tab-button[aria-selected=true] .tab-button-text {
+    color: #000000 !important;
+}
+
+.tabs-ios .tab-button {   
     color: white !important;
-    display: contents;    
 }
+
+.tabs-md .tab-button {  
+    color: white !important;
+}
+

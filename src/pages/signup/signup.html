@@ -1,79 +1,76 @@
 <ion-header>
   <ion-navbar>
-    <ion-title class="centralizado" >
+    <ion-title class="centralizado">
       Registrar
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding class="background-imagem"> 
+<ion-content padding class="background-imagem">
 
   <ion-grid style="margin-top: 10%">
-    
+
     <ion-row>
-      <ion-col  col-8 offset-4>      
+      <ion-col col-8 offset-4>
 
-        <form #form="ngForm" novalidate>
+        <form id="signupForm" #form="ngForm" novalidate>
 
-        <ion-list >
-          
+          <ion-list sliding="false">
+
             <ion-item class="background-input">
               <ion-label floating style="font-size: 22px">Nome</ion-label>
               <ion-input name="nome" [(ngModel)]="user.name" type="text" #name="ngModel" required></ion-input>
             </ion-item>
             <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)">
-                O campo é obrigatório.
-              </ion-item>
-            
-          
+              O campo é obrigatório.
+            </ion-item>
+
+
             <ion-item class="background-input">
               <ion-label floating style="font-size: 22px">Email</ion-label>
-              <ion-input name="email" [(ngModel)]="user.email" type="text" #email="ngModel" required
-                [pattern]="patternEmail"></ion-input>
+              <ion-input name="email" [(ngModel)]="user.email" type="text" #email="ngModel" required [pattern]="patternEmail"></ion-input>
             </ion-item>
-            <ion-item *ngIf="email.errors?.required && (email.dirty || email.touched)" >
-                O campo é obrigatório.
-              </ion-item>
-              <ion-item *ngIf="email.errors?.pattern && (email.dirty || email.touched)" >
-                  Email inválido.
-                </ion-item>
+            <ion-item *ngIf="email.errors?.required && (email.dirty || email.touched)">
+              O campo é obrigatório.
+            </ion-item>
+            <ion-item *ngIf="email.errors?.pattern && (email.dirty || email.touched)">
+              Email inválido.
+            </ion-item>
 
             <ion-item class="background-input">
               <ion-label floating style="font-size: 22px">Senha</ion-label>
               <ion-input name="password" [(ngModel)]="user.password" type="password" #password="ngModel" required minlength="6"></ion-input>
             </ion-item>
-            
+
             <ion-item *ngIf="password.errors?.required && (password.dirty || password.touched)">
-                O campo é obrigatório.
+              O campo é obrigatório.
             </ion-item>
             <ion-item *ngIf="password.errors?.minlength && (password.dirty || password.touched)">
-                  Mínimo de 6 caracteres.
+              Mínimo de 6 caracteres.
             </ion-item>
 
             <ion-item class="background-input">
               <ion-label floating style="font-size: 22px">Confirme Senha</ion-label>
-              <ion-input name = "confirmpassword" [(ngModel)]="confirmSenha" type="password"></ion-input>
-            </ion-item>               
-          
+              <ion-input name="confirmpassword" [(ngModel)]="confirmSenha" type="password"></ion-input>
+            </ion-item>
+
           </ion-list>
-          
+        </form>
+
           <button (click)="createAccount()" ion-button full icon-left style="background:#dfad0ae3; ">
-              <ion-icon name="arrow-dropup"></ion-icon>
-              <div>
-                Registrar
-              </div>     
-            </button>  
-          </form>              
+            <ion-icon name="arrow-dropup"></ion-icon>
+            <div>
+              Registrar
+            </div>
+          </button>
+       
       </ion-col>
     </ion-row>
-  </ion-grid>  
+  </ion-grid>
 </ion-content>
 
 <ion-footer>
-    <ion-toolbar>
-      <ion-title>Editar Depois </ion-title>
-    </ion-toolbar>
-  </ion-footer>
-
-
-
+  <ion-toolbar>
+    <ion-title style="text-align: center">UFJF 2018</ion-title>
+  </ion-toolbar>
+</ion-footer>

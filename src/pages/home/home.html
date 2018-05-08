@@ -1,13 +1,28 @@
 
 <ion-header>
-
   <ion-navbar>
-    <ion-title>home</ion-title>
+    <ion-title>Home</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content padding>
-oi
+  <ion-card>
+    <img src="{{ imgUrl}}" alt="{{ displayName}}"/>
+    <ion-card-content>
+      <ion-card-title>
+        Bem vindo {{ displayName }}
+      </ion-card-title>
+      <p>
+        Logado com o Firebase.
+      </p>
+    </ion-card-content> 
+  </ion-card>
+
+  <button (click)="signOut()" ion-button full icon-left style="background:#dfad0ae3; ">
+    <ion-icon name="log-out"></ion-icon>
+    <div>
+      Sair
+    </div>
+  </button>
 </ion-content>

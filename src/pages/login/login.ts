@@ -1,35 +1,120 @@
-import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, ToastController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 import { ResetpasswordPage } from '../resetpassword/resetpassword';
+import { AuthService } from '../../providers/auth/auth-service';
+import { NgForm } from '@angular/forms';
+import { User } from '../../providers/auth/users';
+import { App } from 'ionic-angular/components/app/app';
+import { MyServicesProvider } from '../../providers/my-services/my-services';
 
 @Component({
   selector: 'login-page',
-  templateUrl: 'login.html'  
+  templateUrl: 'login.html'
 })
 export class LoginPage {
 
-  constructor(public navCtrl: NavController, public loadingCtrl: LoadingController) {
-    
+  user: User = new User();
+  valueforngif = true;
+
+  @ViewChild('form') form: NgForm;
+
+  constructor(public navCtrl: NavController,
+    public loadingCtrl: LoadingController,
+    private toastCtrl: ToastController,
+    private authService: AuthService,
+    public app: App,
+    public myServices: MyServicesProvider) { }
+
+  criarToast(mensagem: string) {
+    let toast = this.toastCtrl.create({ duration: 3000, position: 'bottom' });
+    toast.setMessage(mensagem);
+    return toast;
   }
 
-  resetPasswordPage()
-  {
+  notAllFilledForm() {
+    var email = this.form.value["email"];
+    var password = this.form.value["password"];
+
+    if (email == null || email == "" || password == null || password == "") {
+      let toast = this.criarToast('Preencha todos os campos vazios.');
+      toast.present();
+      return false;
+    }
+    return true;
+  }
+
+  resetPasswordPage() {
     this.navCtrl.push(ResetpasswordPage);
   }
 
   loginViaEmail() {
-    console.log('OI');
+    let toast = this.toastCtrl.create({ duration: 3000, position: 'bottom' });
 
-    let loading = this.loadingCtrl.create({
-      content: 'Aguarde...'
+    if (this.form.untouched) { //formulário intocado
+      toast.setMessage('Os campos estão vazios.');
+      toast.present();
+      return;
+    }
+    if (!this.notAllFilledForm()) { return; } //formulário não foi completamente preenchido
+
+    this.myServices.showLoading();
+
+    if (this.form.form.valid) {
+      this.authService.login(this.user)
+        .then(() => {
+          this.myServices.dismissLoading();
+          this.app.getRootNav().setRoot(HomePage);
+
+        })
+        .catch((error) => {
+          let toast = this.toastCtrl.create({ duration: 3000, position: 'bottom' });
+          if (error.code == 'auth/invalid-email') {
+            toast.setMessage('O e-mail digitado não é válido.');
+          } else if (error.code == 'auth/user-disabled') {
+            toast.setMessage('O usuário está desativado.');
+          } else if (error.code == 'auth/user-not-found') {
+            toast.setMessage('O usuário não foi encontrado.');
+          } else if (error.code == 'auth/wrong-password') {
+            toast.setMessage('A senha digitada não é válida.');
+          }
+          this.myServices.dismissLoading();
+          toast.present();
+        });
+    }
+  }
+res;
+  loginWithGoogle() {
+
+    this.myServices.showLoading();
+
+    this.authService.loginWithGoogle()
+      .then(() => {
+        this.app.getRootNav().setRoot(HomePage);
+        this.myServices.dismissLoading();
+      })
+    .catch((error) => {
+      this.toastCtrl.create({ duration: 3000, position: 'bottom', message: 'Erro ao efetuar o login.' })
+        .present();
+      this.myServices.dismissLoading();
     });
-    loading.present();
+  }
 
-    setTimeout(() => { loading.dismiss() }, 5000);
-    
-    this.navCtrl.push(HomePage);
+  loginWithFacebook() {
+
+    this.myServices.showLoading();
+
+    this.authService.loginWithFacebook()
+      .then(() => {
+        this.app.getRootNav().setRoot(HomePage);
+        this.myServices.dismissLoading();
+      })
+    .catch((error) => {
+      this.toastCtrl.create({ duration: 3000, position: 'bottom', message: 'Erro ao efetuar o login.' })
+        .present();
+      this.myServices.dismissLoading();
+    });
   }
 
 }

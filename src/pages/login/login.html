@@ -1,70 +1,71 @@
-<ion-header>
-  <ion-navbar>
+<ion-header >
+  <ion-navbar >
     <ion-title class="centralizado" >
       Entrar
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding class="background-imagem"> 
-  
+<ion-content padding class="background-imagem">
+
   <ion-grid style="margin-top: 10%">
-     
+    
+
     <ion-row>
-      <ion-col  col-8 offset-4>      
-        <ion-list >
-          
+      <ion-col col-8 offset-4>
+
+        <form id="loginForm" #form="ngForm" novalidate>
+
+          <ion-list>
+
             <ion-item class="background-input">
               <ion-label floating style="font-size: 22px">Email</ion-label>
-              <ion-input type="text"></ion-input>
+              <ion-input name="email" [(ngModel)] = "user.email" type="text"></ion-input>
             </ion-item>
-          
+
             <ion-item class="background-input">
               <ion-label floating style="font-size: 22px">Senha</ion-label>
-              <ion-input type="password"></ion-input>
+              <ion-input name="password" [(ngModel)] = "user.password" type="password"></ion-input>
             </ion-item>
-          
-          </ion-list>
-          
-          <button (click)="loginViaEmail()" ion-button full icon-left style="background:#dfad0ae3; ">
-              <ion-icon name="md-mail"></ion-icon>
-              <div>
-                Entrar com Email
-              </div>
-            </button>
 
-          <button ion-button full icon-left style="background:#ef4c3ae3">
-              <ion-icon name="logo-google"></ion-icon>
-              <div>
-                Entrar com Google
-              </div>
-            </button>
-            
-            <button ion-button full icon-left style="background:#3a73efe3">
-                <ion-icon name="logo-facebook"></ion-icon>
-                <div>
-                  Entrar com Facebook
-                </div>
-              </button>  
-            
-              <button (click)="resetPasswordPage()" ion-button icon-left outline color="light">
-                  <ion-icon name="key-outline"></ion-icon>
-                  <div>
-                    Esqueci a senha!
-                  </div>
-                </button>  
-              
+          </ion-list>
+        </form>
+
+          <button (click)="loginViaEmail()" ion-button full icon-left style="background-color:#dfaa0a">
+            <ion-icon name="md-mail"></ion-icon>
+            <div>
+              Entrar com Email
+            </div>
+          </button>
+
+          <button (click)="loginWithGoogle()" ion-button full icon-left style="background:#ef4c3a">
+            <ion-icon name="logo-google"></ion-icon>
+            <div>
+              Entrar com Google
+            </div>
+          </button>
+
+          <button (click)="loginWithFacebook()" ion-button block icon-left style="background:#4267b2">
+            <ion-icon name="logo-facebook"></ion-icon>
+            <div>
+              Entrar com Facebook
+            </div>
+          </button>
+
+          <button (click)="resetPasswordPage()" ion-button icon-left outline color="light">
+            <ion-icon name="key-outline"></ion-icon>
+            <div>
+              Esqueci a senha!
+            </div>
+          </button>
       </ion-col>
     </ion-row>
-  </ion-grid>  
+  </ion-grid>
 
 </ion-content>
 
 <ion-footer>
-    <ion-toolbar>
-      <ion-title>Editar Depois </ion-title>
-    </ion-toolbar>
-  </ion-footer>
-
-
-
+  <ion-toolbar>
+    <ion-title style="text-align: center">UFJF 2018</ion-title>
+  </ion-toolbar>
+</ion-footer>

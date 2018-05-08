@@ -22,9 +22,4 @@ export class LoginTabPage {
 
   constructor(public navCtrl: NavController) {
   }
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LoginTabPage');
-  }
-
 }
