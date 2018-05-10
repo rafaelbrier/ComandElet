@@ -29,18 +29,12 @@ export class LoginPage {
     public myServices: MyServicesProvider,
     private firebaseSave: DatabaseAuthSaveProvider) { }
 
-  criarToast(mensagem: string) {
-    let toast = this.toastCtrl.create({ duration: 3000, position: 'bottom' });
-    toast.setMessage(mensagem);
-    return toast;
-  }
-
   notAllFilledForm() {
     var email = this.form.value["email"];
     var password = this.form.value["password"];
 
     if (email == null || email == "" || password == null || password == "") {
-      let toast = this.criarToast('Preencha todos os campos vazios.');
+      let toast = this.myServices.criarToast('Preencha todos os campos vazios.');
       toast.present();
       return false;
     } 

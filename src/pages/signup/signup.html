@@ -18,8 +18,8 @@
           <ion-list sliding="false">
 
             <ion-item class="background-input">
-              <ion-label floating style="font-size: 22px">Nome</ion-label>
-              <ion-input name="nome" [(ngModel)]="user.name" type="text" #name="ngModel" required></ion-input>
+              <ion-label floating>Nome</ion-label>
+              <ion-input class="input-style" name="nome" [(ngModel)]="user.name" type="text" #name="ngModel" required></ion-input>
             </ion-item>
             <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)">
               O campo é obrigatório.
@@ -27,7 +27,7 @@
 
 
             <ion-item class="background-input">
-              <ion-label floating style="font-size: 22px">Email</ion-label>
+              <ion-label floating>Email</ion-label>
               <ion-input name="email" [(ngModel)]="user.email" type="text" #email="ngModel" required [pattern]="patternEmail"></ion-input>
             </ion-item>
             <ion-item *ngIf="email.errors?.required && (email.dirty || email.touched)">
@@ -38,7 +38,7 @@
             </ion-item>
 
             <ion-item class="background-input">
-              <ion-label floating style="font-size: 22px">Senha</ion-label>
+              <ion-label floating>Senha</ion-label>
               <ion-input name="password" [(ngModel)]="user.password" type="password" #password="ngModel" required minlength="6"></ion-input>
             </ion-item>
 
@@ -50,7 +50,7 @@
             </ion-item>
 
             <ion-item class="background-input">
-              <ion-label floating style="font-size: 22px">Confirme Senha</ion-label>
+              <ion-label floating>Confirme Senha</ion-label>
               <ion-input name="confirmpassword" [(ngModel)]="confirmSenha" type="password"></ion-input>
             </ion-item>
 

@@ -19,6 +19,7 @@
     text-align: center;
 }
 
+
 .toolbar-background {
     background-color: #eebd19 !important;    
 }
@@ -38,3 +39,18 @@
     color: white !important;
 }
 
+.item-input .label-md, .item-input .label-ios {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.item-input-has-focus .label-md[floating], .item-input-has-focus .label-ios[floating] {
+    color: #1118e6; 
+}
+
+.input-style {
+    color: #1118e6;
+    font-weight: bold;
+    font-size: 20px;
+}

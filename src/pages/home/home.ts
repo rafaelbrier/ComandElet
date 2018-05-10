@@ -21,9 +21,10 @@ export class HomePage {
     private authService: AuthService,
     private myServices: MyServicesProvider,
     private afAuth: AngularFireAuth,
-    private fireDatabase: AngularFireDatabase) {
+    private fireDatabase: AngularFireDatabase ) {}
 
-    const authObserver = this.afAuth.authState.subscribe(user => {
+    ionViewWillEnter() {  
+      const authObserver = this.afAuth.authState.subscribe(user => {
       this.displayName = '';
       this.imgUrl = '';     
 
@@ -39,10 +40,24 @@ export class HomePage {
             this.imgUrl = '';
 
             authObserver.unsubscribe();
-          }, error => {           
+          }, error => {   
+            let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
+            toast.present();          
           });
       }
     })
+  }
+  
+  readDatabase(userUid: any)
+  {    
+    this.fireDatabase.object('users/' + 'Q1inYKNzICg6QVlivmdkX9JZNLz2').valueChanges()
+    .subscribe((resUser:any) => {
+      console.log(resUser)     
+    }, error => {
+      let toast = this.myServices.criarToast('Você não tem permissão.');
+      toast.present();      
+    });
+  
   }
 
   signOut() {

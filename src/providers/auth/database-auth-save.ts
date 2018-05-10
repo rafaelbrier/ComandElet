@@ -14,10 +14,10 @@ export class DatabaseAuthSaveProvider {
   regNewAuth(user: User, res: any) {
     var userInfo = {
       name: user ? user.name : res.displayName,
-      email: user ? user.email : res.email      
+      email: user ? user.email : res.email       
     };
 
-    this.fireDatabase.object('users/' + res.uid).update(userInfo);   
+    this.fireDatabase.object('users/' + res.uid).update(userInfo);     
   }
 
 }

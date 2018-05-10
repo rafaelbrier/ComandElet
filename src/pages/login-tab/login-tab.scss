@@ -11,27 +11,39 @@
 }
 
 .tabs-md .tab-button-icon {   
-   color: white !important;   
+   color: white !important;  
 }
 
+.tabs-ios .tab-button-text {   
+    color: white !important;  
+    font-size: 15px;  
+ }
+ 
+ .tabs-md .tab-button-text {   
+    color: white !important; 
+    font-size: 15px; 
+ }
+
 .tabs-ios .tab-button[aria-selected=true] .tab-button-icon {       
-    color: #000000 !important;    
+    color: #1118e6 !important;    
 }
 
 .tabs-md .tab-button[aria-selected=true] .tab-button-icon {    
- color: #000000 !important; 
+ color: #1118e6 !important; 
 }
 
 .tabs-ios .tab-button[aria-selected=true] .tab-button-text {
-    color: #000000 !important;
+    color: #1118e6 !important;
+    font-weight: bold;
 }
 
 .tabs-md .tab-button[aria-selected=true] .tab-button-text {
-    color: #000000 !important;
+    color: #1118e6 !important;
+    font-weight: bold;
 }
 
 .tabs-ios .tab-button {   
-    color: white !important;
+    color: white !important; 
 }
 
 .tabs-md .tab-button {  
