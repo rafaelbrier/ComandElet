@@ -21,12 +21,11 @@ export class HomePage {
     private authService: AuthService,
     private myServices: MyServicesProvider,
     private afAuth: AngularFireAuth,
-    private fireDatabase: AngularFireDatabase ) {}
+    private fireDatabase: AngularFireDatabase) {
 
-    ionViewWillEnter() {  
-      const authObserver = this.afAuth.authState.subscribe(user => {
+    const authObserver = this.afAuth.authState.subscribe(user => {
       this.displayName = '';
-      this.imgUrl = '';     
+      this.imgUrl = '';
 
       if (user != null && user.displayName != null) {
         this.displayName = user.displayName;
@@ -34,30 +33,32 @@ export class HomePage {
 
         authObserver.unsubscribe();
       } else {
-        this.fireDatabase.object('users/' + user.uid).valueChanges()
+        const userDataObserver = this.fireDatabase.object('users/' + user.uid).valueChanges()
           .subscribe((resUser: any) => {
             this.displayName = resUser.name;
             this.imgUrl = '';
 
             authObserver.unsubscribe();
-          }, error => {   
+            userDataObserver.unsubscribe();
+          }, error => {
             let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
-            toast.present();          
+            toast.present();
           });
       }
     })
   }
-  
-  readDatabase(userUid: any)
-  {    
-    this.fireDatabase.object('users/' + 'Q1inYKNzICg6QVlivmdkX9JZNLz2').valueChanges()
-    .subscribe((resUser:any) => {
-      console.log(resUser)     
-    }, error => {
-      let toast = this.myServices.criarToast('Você não tem permissão.');
-      toast.present();      
-    });
-  
+
+  readDatabase(userUid: any) {
+    const userDataReadObserver = this.fireDatabase.object('users/' + 'Q1inYKNzICg6QVlivmdkX9JZNLz2').valueChanges()
+      .subscribe((resUser: any) => {
+        console.log(resUser)
+        userDataReadObserver.unsubscribe();
+        return resUser;
+      }, error => {
+        let toast = this.myServices.criarToast('Você não tem permissão.');
+        toast.present();
+      });
+
   }
 
   signOut() {
