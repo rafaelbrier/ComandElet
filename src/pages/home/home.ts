@@ -4,6 +4,7 @@ import { AuthService } from '../../providers/auth/auth-service';
 import { LoginTabPage } from '../login-tab/login-tab';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 
 
@@ -16,20 +17,30 @@ export class HomePage {
   displayName: string;
   imgUrl: string;
 
-  constructor(public navCtrl: NavController, 
+  constructor(public navCtrl: NavController,
     private authService: AuthService,
     private myServices: MyServicesProvider,
-    private afAuth: AngularFireAuth) {
+    private afAuth: AngularFireAuth,
+    private fireDatabase: AngularFireDatabase) {
 
-    const authObserver = afAuth.authState.subscribe(user => {
-      this.displayName ='';
-      this.imgUrl='';
+    const authObserver = this.afAuth.authState.subscribe(user => {
+      this.displayName = '';
+      this.imgUrl = '';     
 
-      if (user){
+      if (user != null && user.displayName != null) {
         this.displayName = user.displayName;
         this.imgUrl = user.photoURL;
 
         authObserver.unsubscribe();
+      } else {
+        this.fireDatabase.object('users/' + user.uid).valueChanges()
+          .subscribe((resUser: any) => {
+            this.displayName = resUser.name;
+            this.imgUrl = '';
+
+            authObserver.unsubscribe();
+          }, error => {           
+          });
       }
     })
   }

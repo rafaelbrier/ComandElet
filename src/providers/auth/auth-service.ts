@@ -7,12 +7,13 @@ import { GooglePlus } from '@ionic-native/google-plus';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 
 
+
 @Injectable()
 export class AuthService {
   user: Observable<firebase.User>;
 
   constructor(private angularFireAuth: AngularFireAuth,
-    private googlePlus: GooglePlus,
+    private googlePlus: GooglePlus,    
     private facebook: Facebook) {
 
     this.user = angularFireAuth.authState;
@@ -28,29 +29,55 @@ export class AuthService {
 
 
   loginWithGoogle() {
-    return this.googlePlus.login({
-      'webClientId:': '682769687823-rsfht79lpfefnta01j2q00e9c8ru4ueu.apps.googleusercontent.com',
-      'offline': true
-    })
-      .then(res => {
-        let credentials = firebase.auth.GoogleAuthProvider.credential(null, res.accessToken);
-        return this.angularFireAuth.auth.signInWithCredential(credentials)
-          .then((user: firebase.User) => {
-            return user.updateProfile({ displayName: res.displayName, photoURL: res.imageUrl });
-          });
-      });
+
+    // if (this.isRunningOnBrowser()) {
+    //   return this.angularFireAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    //     .then((user: any) => {
+    //       return user.user;
+    //     });
+
+    // } else {
+      
+      return this.googlePlus.login({
+        'webClientId:': '682769687823-rsfht79lpfefnta01j2q00e9c8ru4ueu.apps.googleusercontent.com',
+        'offline': true
+      })
+        .then(res => {
+          let credentials = firebase.auth.GoogleAuthProvider.credential(null, res.accessToken);
+          return this.angularFireAuth.auth.signInWithCredential(credentials)
+            .then((user: firebase.User) => {
+              user.updateProfile({ displayName: res.displayName, photoURL: res.imageUrl })
+                .then((u) => {return u});
+                return user;
+            });
+        });    
   }
 
   loginWithFacebook() {
-    return this.facebook.login(['public_profile', 'email'])
-      .then((res: FacebookLoginResponse) => {
-        let credentials = firebase.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
-        this.angularFireAuth.auth.signInWithCredential(credentials);
-      })
+
+    // if (this.isRunningOnBrowser()) {
+    //   return this.angularFireAuth.auth.signInWithPopup(new firebase.auth.FacebookAuthProvider())
+    //     .then((user: any) => {         
+    //       return user.user;
+    //     });
+    // } else {
+      
+      return this.facebook.login(['public_profile', 'email'])
+        .then((res: FacebookLoginResponse) => {
+          let credentials = firebase.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
+          return this.angularFireAuth.auth.signInWithCredential(credentials)
+            .then((user) => {
+              return user;
+            });
+        })    
   }
 
+  // private isRunningOnBrowser() {
+  //   return !this.platform.is('cordova');
+  // }
+
   signOut() {
-    if (this.angularFireAuth.auth.currentUser.providerData.length) {
+    if (this.angularFireAuth.auth.currentUser.providerData.length /* && !this.isRunningOnBrowser() */) {
       for (var i = 0; i < this.angularFireAuth.auth.currentUser.providerData.length; i++) {
         var provider = this.angularFireAuth.auth.currentUser.providerData[i];
 

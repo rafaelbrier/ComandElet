@@ -12,6 +12,7 @@ import { HomePage } from '../pages/home/home';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFireDatabaseModule } from 'angularfire2/database'
 import { firebaseConfig } from '../config';
 import { AuthService } from '../providers/auth/auth-service';
 import { ResetpasswordPage } from '../pages/resetpassword/resetpassword';
@@ -19,6 +20,7 @@ import { MyServicesProvider } from '../providers/my-services/my-services';
 
 import { GooglePlus } from '@ionic-native/google-plus';
 import { Facebook } from '@ionic-native/facebook';
+import { DatabaseAuthSaveProvider } from '../providers/auth/database-auth-save';
 
 
 @NgModule({
@@ -37,7 +39,8 @@ import { Facebook } from '@ionic-native/facebook';
       scrollAssist: true, 
       autoFocusAssist: false
     }),
-    AngularFireModule.initializeApp(firebaseConfig.fire)    
+    AngularFireModule.initializeApp(firebaseConfig.fire),
+    AngularFireDatabaseModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -56,7 +59,8 @@ import { Facebook } from '@ionic-native/facebook';
     AuthService,
     MyServicesProvider,
     GooglePlus, 
-    Facebook      
+    Facebook,
+    DatabaseAuthSaveProvider      
   ]
 })
 export class AppModule {}

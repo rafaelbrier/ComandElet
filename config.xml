@@ -20,6 +20,7 @@
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
     <preference name="Fullscreen" value="true" />
+    <preference name="loadUrlTimeoutValue" value="700000" />
     <platform name="android">
         <config-file parent="/resources" target="./res/values/strings.xml">
             <string name="fb_app_id">445867509196695</string>
@@ -95,6 +96,6 @@
         <variable name="APP_NAME" value="ComandEletro" />
         <variable name="ANDROID_SDK_VERSION" value="4.+" />
     </plugin>
-    <engine name="android" spec="7.0.0" />
     <plugin name="cordova-plugin-app-update" spec="^1.6.0" />
+    <engine name="android" spec="7.0.0" />
 </widget>

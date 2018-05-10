@@ -8,6 +8,7 @@ import { NgForm } from '@angular/forms';
 import { User } from '../../providers/auth/users';
 import { App } from 'ionic-angular/components/app/app';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
+import { DatabaseAuthSaveProvider } from '../../providers/auth/database-auth-save';
 
 @Component({
   selector: 'login-page',
@@ -25,7 +26,8 @@ export class LoginPage {
     private toastCtrl: ToastController,
     private authService: AuthService,
     public app: App,
-    public myServices: MyServicesProvider) { }
+    public myServices: MyServicesProvider,
+    private firebaseSave: DatabaseAuthSaveProvider) { }
 
   criarToast(mensagem: string) {
     let toast = this.toastCtrl.create({ duration: 3000, position: 'bottom' });
@@ -41,7 +43,7 @@ export class LoginPage {
       let toast = this.criarToast('Preencha todos os campos vazios.');
       toast.present();
       return false;
-    }
+    } 
     return true;
   }
 
@@ -65,8 +67,7 @@ export class LoginPage {
       this.authService.login(this.user)
         .then(() => {
           this.myServices.dismissLoading();
-          this.app.getRootNav().setRoot(HomePage);
-
+          this.app.getRootNav().setRoot(HomePage);          
         })
         .catch((error) => {
           let toast = this.toastCtrl.create({ duration: 3000, position: 'bottom' });
@@ -87,10 +88,11 @@ export class LoginPage {
 res;
   loginWithGoogle() {
 
-    this.myServices.showLoading();
+    this.myServices.showLoading();  
 
     this.authService.loginWithGoogle()
-      .then(() => {
+      .then((res: any) => {         
+        this.firebaseSave.regNewAuth(null, res);
         this.app.getRootNav().setRoot(HomePage);
         this.myServices.dismissLoading();
       })
@@ -106,7 +108,8 @@ res;
     this.myServices.showLoading();
 
     this.authService.loginWithFacebook()
-      .then(() => {
+      .then((res) => {
+        this.firebaseSave.regNewAuth(null, res);
         this.app.getRootNav().setRoot(HomePage);
         this.myServices.dismissLoading();
       })

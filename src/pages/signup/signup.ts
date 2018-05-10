@@ -5,6 +5,7 @@ import { User } from '../../providers/auth/users';
 import { AuthService } from '../../providers/auth/auth-service';
 import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
+import { DatabaseAuthSaveProvider } from '../../providers/auth/database-auth-save';
 
 
 @Component({
@@ -26,8 +27,8 @@ export class SignupPage {
     private authService: AuthService,
     public app: App,
     public loadingCtrl: LoadingController,
-    public myServices: MyServicesProvider) {
-
+    public myServices: MyServicesProvider,    
+    private firebaseSave: DatabaseAuthSaveProvider) {
       
   }
 
@@ -82,9 +83,11 @@ export class SignupPage {
 
     if (this.form.form.valid) {
       this.authService.createUser(this.user)
-        .then((user: any) => {
+        .then((res: any) => {
+         
+          this.firebaseSave.regNewAuth(this.user, res);         
 
-          user.sendEmailVerification();
+          res.sendEmailVerification();
 
           this.myServices.dismissLoading();
           toast.setMessage('Usuário criado com sucesso.');
