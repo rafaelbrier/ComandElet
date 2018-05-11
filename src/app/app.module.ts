@@ -9,18 +9,21 @@ import { LoginPage } from '../pages/login/login';
 import { SignupPage } from '../pages/signup/signup';
 import { LoginTabPage } from '../pages/login-tab/login-tab';
 import { HomePage } from '../pages/home/home';
+import { ResetpasswordPage } from '../pages/resetpassword/resetpassword';
+import { HomeAdminPage } from '../pages/home-admin/home-admin';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabaseModule } from 'angularfire2/database'
 import { firebaseConfig } from '../config';
+
 import { AuthService } from '../providers/auth/auth-service';
-import { ResetpasswordPage } from '../pages/resetpassword/resetpassword';
 import { MyServicesProvider } from '../providers/my-services/my-services';
+import { DatabaseServiceProvider } from '../providers/auth/database-service';
 
 import { GooglePlus } from '@ionic-native/google-plus';
 import { Facebook } from '@ionic-native/facebook';
-import { DatabaseServiceProvider } from '../providers/auth/database-service';
+
 
 
 @NgModule({
@@ -30,7 +33,8 @@ import { DatabaseServiceProvider } from '../providers/auth/database-service';
     SignupPage,
     LoginTabPage,
     HomePage,
-    ResetpasswordPage
+    ResetpasswordPage,
+    HomeAdminPage
   ],
   imports: [
     BrowserModule,
@@ -49,7 +53,8 @@ import { DatabaseServiceProvider } from '../providers/auth/database-service';
     SignupPage,
     LoginTabPage,
     HomePage,
-    ResetpasswordPage
+    ResetpasswordPage,
+    HomeAdminPage
   ],
   providers: [
     StatusBar,

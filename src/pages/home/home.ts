@@ -6,6 +6,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { DatabaseServiceProvider } from '../../providers/auth/database-service';
+import { HomeAdminPage } from '../home-admin/home-admin';
 
 
 
@@ -24,9 +25,9 @@ export class HomePage {
     private afAuth: AngularFireAuth,
     private dataService: DatabaseServiceProvider,
     private fireDatabase: AngularFireDatabase,
-    public menuCtrl: MenuController) {
+    public menuCtrl: MenuController ) {
 
-    const authObserver = this.afAuth.authState.subscribe(user => {
+    const authObserver = this.authService.loggedUserInfo().subscribe(user => {
       this.displayName = '';
       this.imgUrl = '';
 
@@ -64,15 +65,35 @@ export class HomePage {
       });
   }
 
-  openMenu() {
-    this.menuCtrl.open();
-  }
+  adminPage() {       
+    const authObserver = this.authService.loggedUserInfo()
+    .subscribe((res) => {
+     const userDataObserver = this.dataService.readDatabase(res.uid)
+      .subscribe((userInfo: any) => {  
+        authObserver.unsubscribe();
+        userDataObserver.unsubscribe();  
 
-  closeMenu() {
-    this.menuCtrl.close();
+         if (userInfo.isAdmin == true)
+         {
+          let toast = this.myServices.criarToast('Acesso liberado.');
+          toast.present();
+          this.navCtrl.push(HomeAdminPage, {
+            name: userInfo.name,
+            imgUrl: ''
+          });
+         }
+         else {
+          let toast = this.myServices.criarToast('Você não tem permissão.');
+          toast.present();
+         }          
+      }, error => {
+        let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
+        toast.present();        
+      });
+    }, error => {
+      let toast = this.myServices.criarToast('Erro inesperado.');
+        toast.present();
+    });
   }
- 
-  toggleMenu() {
-    this.menuCtrl.toggle();
-  }
+  
 }

@@ -1,8 +1,19 @@
-
 <ion-header>
-  <ion-navbar>
-    <ion-title class = "centralizado">Home</ion-title>
-  </ion-navbar>
+<ion-navbar>
+    <ion-buttons left>
+        <button ion-button icon-only (click)="openMenu()">
+          <ion-icon name="menu"></ion-icon>
+        </button>
+      </ion-buttons>
+  
+      <ion-title class = "centralizado">Home</ion-title>
+  
+      <ion-buttons right>
+        <button ion-button icon-only  (click)="adminPage()">
+          <ion-icon name="lock"></ion-icon>
+        </button>
+      </ion-buttons>
+    </ion-navbar>   
 </ion-header>
 
 <ion-content padding>

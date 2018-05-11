@@ -114,5 +114,9 @@ export class AuthService {
   resetPassword(email: string) {
     return this.angularFireAuth.auth.sendPasswordResetEmail(email);
   }
+
+  loggedUserInfo(){
+    return this.angularFireAuth.authState;    
+  }
 }
 
