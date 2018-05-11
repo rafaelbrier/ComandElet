@@ -13,45 +13,45 @@
     <ion-row>
       <ion-col col-8 offset-4>
 
-        <form id="signupForm" #form="ngForm" novalidate>
-
-          <ion-list sliding="false">
+        <form id="signupForm" #form="ngForm" class="form-style" novalidate>
+          
+          <ion-list no-lines >
 
             <ion-item class="background-input">
               <ion-label floating>Nome</ion-label>
-              <ion-input class="input-style" name="nome" [(ngModel)]="user.name" type="text" #name="ngModel" required></ion-input>
+              <ion-input name="nome" [(ngModel)]="user.name" type="text" #name="ngModel" required class="input-style"></ion-input>
             </ion-item>
-            <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)">
+            <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)" class="error-text-style">
               O campo é obrigatório.
             </ion-item>
 
 
             <ion-item class="background-input">
               <ion-label floating>Email</ion-label>
-              <ion-input name="email" [(ngModel)]="user.email" type="text" #email="ngModel" required [pattern]="patternEmail"></ion-input>
+              <ion-input name="email" [(ngModel)]="user.email" type="text" #email="ngModel" required [pattern]="patternEmail" class="input-style"></ion-input>
             </ion-item>
-            <ion-item *ngIf="email.errors?.required && (email.dirty || email.touched)">
+            <ion-item *ngIf="email.errors?.required && (email.dirty || email.touched)" class="error-text-style">
               O campo é obrigatório.
             </ion-item>
-            <ion-item *ngIf="email.errors?.pattern && (email.dirty || email.touched)">
+            <ion-item *ngIf="email.errors?.pattern && (email.dirty || email.touched)" class="error-text-style">
               Email inválido.
             </ion-item>
 
             <ion-item class="background-input">
               <ion-label floating>Senha</ion-label>
-              <ion-input name="password" [(ngModel)]="user.password" type="password" #password="ngModel" required minlength="6"></ion-input>
+              <ion-input name="password" [(ngModel)]="user.password" type="password" #password="ngModel" required minlength="6" class="input-style"></ion-input>
             </ion-item>
 
-            <ion-item *ngIf="password.errors?.required && (password.dirty || password.touched)">
+            <ion-item *ngIf="password.errors?.required && (password.dirty || password.touched)" class="error-text-style">
               O campo é obrigatório.
             </ion-item>
-            <ion-item *ngIf="password.errors?.minlength && (password.dirty || password.touched)">
+            <ion-item *ngIf="password.errors?.minlength && (password.dirty || password.touched)" class="error-text-style">
               Mínimo de 6 caracteres.
             </ion-item>
 
             <ion-item class="background-input">
               <ion-label floating>Confirme Senha</ion-label>
-              <ion-input name="confirmpassword" [(ngModel)]="confirmSenha" type="password"></ion-input>
+              <ion-input name="confirmpassword" [(ngModel)]="confirmSenha" type="password" class="input-style"></ion-input>
             </ion-item>
 
           </ion-list>

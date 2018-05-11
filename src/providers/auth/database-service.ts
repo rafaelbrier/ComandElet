@@ -5,7 +5,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 
 
 @Injectable()
-export class DatabaseAuthSaveProvider {
+export class DatabaseServiceProvider {
 
   constructor(private fireDatabase: AngularFireDatabase) {
 
@@ -20,4 +20,7 @@ export class DatabaseAuthSaveProvider {
     this.fireDatabase.object('users/' + res.uid).update(userInfo);     
   }
 
+  readDatabase(userUid: string) {
+    return this.fireDatabase.object('users/' + userUid).valueChanges();
+  }
 }

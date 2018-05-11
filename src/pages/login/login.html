@@ -14,18 +14,18 @@
     <ion-row>
       <ion-col col-8 offset-4>
 
-        <form  id="loginForm" #form="ngForm" novalidate>
+        <form  id="loginForm" #form="ngForm" novalidate class="form-style">
 
           <ion-list>
 
             <ion-item class="background-input">
               <ion-label floating>Email</ion-label>
-              <ion-input name="email" [(ngModel)] = "user.email" type="text"></ion-input>
+              <ion-input name="email" [(ngModel)] = "user.email" type="text" class="input-style"></ion-input>
             </ion-item>
 
             <ion-item class="background-input">
               <ion-label floating>Senha</ion-label>
-              <ion-input name="password" [(ngModel)] = "user.password" type="password"></ion-input>
+              <ion-input name="password" [(ngModel)] = "user.password" type="password" class="input-style"></ion-input>
             </ion-item>
 
           </ion-list>
@@ -52,7 +52,7 @@
             </div>
           </button>
 
-          <button (click)="resetPasswordPage()" ion-button icon-left outline color="light">
+          <button (click)="resetPasswordPage()" ion-button icon-left outline color="light" style="border-width: 3px">
             <ion-icon name="key"></ion-icon>
             <div>
               Esqueci a senha!

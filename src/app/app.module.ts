@@ -20,7 +20,7 @@ import { MyServicesProvider } from '../providers/my-services/my-services';
 
 import { GooglePlus } from '@ionic-native/google-plus';
 import { Facebook } from '@ionic-native/facebook';
-import { DatabaseAuthSaveProvider } from '../providers/auth/database-auth-save';
+import { DatabaseServiceProvider } from '../providers/auth/database-service';
 
 
 @NgModule({
@@ -40,7 +40,7 @@ import { DatabaseAuthSaveProvider } from '../providers/auth/database-auth-save';
       autoFocusAssist: false
     }),
     AngularFireModule.initializeApp(firebaseConfig.fire),
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule    
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -60,7 +60,7 @@ import { DatabaseAuthSaveProvider } from '../providers/auth/database-auth-save';
     MyServicesProvider,
     GooglePlus, 
     Facebook,
-    DatabaseAuthSaveProvider      
+    DatabaseServiceProvider      
   ]
 })
 export class AppModule {}

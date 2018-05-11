@@ -5,7 +5,8 @@ import { User } from '../../providers/auth/users';
 import { AuthService } from '../../providers/auth/auth-service';
 import { LoadingController } from 'ionic-angular/components/loading/loading-controller';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
-import { DatabaseAuthSaveProvider } from '../../providers/auth/database-auth-save';
+import { DatabaseServiceProvider } from '../../providers/auth/database-service';
+
 
 
 @Component({
@@ -28,7 +29,7 @@ export class SignupPage {
     public app: App,
     public loadingCtrl: LoadingController,
     public myServices: MyServicesProvider,    
-    private firebaseSave: DatabaseAuthSaveProvider) {
+    private firebaseSave: DatabaseServiceProvider) {
       
   }
 

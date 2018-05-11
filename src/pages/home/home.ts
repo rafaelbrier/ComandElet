@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, MenuController } from 'ionic-angular';
 import { AuthService } from '../../providers/auth/auth-service';
 import { LoginTabPage } from '../login-tab/login-tab';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { DatabaseServiceProvider } from '../../providers/auth/database-service';
 
 
 
@@ -21,7 +22,9 @@ export class HomePage {
     private authService: AuthService,
     private myServices: MyServicesProvider,
     private afAuth: AngularFireAuth,
-    private fireDatabase: AngularFireDatabase) {
+    private dataService: DatabaseServiceProvider,
+    private fireDatabase: AngularFireDatabase,
+    public menuCtrl: MenuController) {
 
     const authObserver = this.afAuth.authState.subscribe(user => {
       this.displayName = '';
@@ -48,19 +51,6 @@ export class HomePage {
     })
   }
 
-  readDatabase(userUid: any) {
-    const userDataReadObserver = this.fireDatabase.object('users/' + 'Q1inYKNzICg6QVlivmdkX9JZNLz2').valueChanges()
-      .subscribe((resUser: any) => {
-        console.log(resUser)
-        userDataReadObserver.unsubscribe();
-        return resUser;
-      }, error => {
-        let toast = this.myServices.criarToast('Você não tem permissão.');
-        toast.present();
-      });
-
-  }
-
   signOut() {
     this.myServices.showLoading();
     this.authService.signOut()
@@ -72,5 +62,17 @@ export class HomePage {
         console.error(error);
         this.myServices.dismissLoading()
       });
+  }
+
+  openMenu() {
+    this.menuCtrl.open();
+  }
+
+  closeMenu() {
+    this.menuCtrl.close();
+  }
+ 
+  toggleMenu() {
+    this.menuCtrl.toggle();
   }
 }

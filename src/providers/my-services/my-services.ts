@@ -32,6 +32,5 @@ criarToast(mensagem: string) {
     toast.setMessage(mensagem);
     return toast;
   }
-
 }
 

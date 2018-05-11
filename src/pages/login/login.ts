@@ -8,7 +8,8 @@ import { NgForm } from '@angular/forms';
 import { User } from '../../providers/auth/users';
 import { App } from 'ionic-angular/components/app/app';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
-import { DatabaseAuthSaveProvider } from '../../providers/auth/database-auth-save';
+import { DatabaseServiceProvider } from '../../providers/auth/database-service';
+
 
 @Component({
   selector: 'login-page',
@@ -27,7 +28,7 @@ export class LoginPage {
     private authService: AuthService,
     public app: App,
     public myServices: MyServicesProvider,
-    private firebaseSave: DatabaseAuthSaveProvider) { }
+    private firebaseSave: DatabaseServiceProvider) { }
 
   notAllFilledForm() {
     var email = this.form.value["email"];
