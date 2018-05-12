@@ -93,7 +93,9 @@ export class SignupPage {
           toast.setMessage('Usuário criado com sucesso.');
           toast.present();
 
-          this.app.getRootNav().getActiveChildNav().select(0); //volta pagina de login
+          this.authService.signOut();
+
+          this.app.getRootNav().getActiveChildNav().select(0); 
         })
         .catch((error: any) => {
           if (error.code == 'auth/email-already-in-use') {

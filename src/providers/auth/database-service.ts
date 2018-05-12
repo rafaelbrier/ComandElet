@@ -16,7 +16,7 @@ export class DatabaseServiceProvider {
       name: user ? user.name : res.displayName,
       email: user ? user.email : res.email,
       imgUrl: user ? "https://realtimesubcount.com/assets/images/default-avatar.png"
-      : res.imageUrl       
+      : res.photoURL      
     };
 
     this.fireDatabase.object('users/' + res.uid).update(userInfo);     

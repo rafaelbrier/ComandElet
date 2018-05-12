@@ -3,7 +3,7 @@
     <name>ComandElet</name>
     <description>An awesome Ionic/Cordova app.</description>
     <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.25.198:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -97,5 +97,6 @@
         <variable name="ANDROID_SDK_VERSION" value="4.+" />
     </plugin>
     <plugin name="cordova-plugin-app-update" spec="^1.6.0" />
+    <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <engine name="android" spec="7.0.0" />
 </widget>
