@@ -22,7 +22,6 @@ export class SignupPage {
 
   confirmSenha: string;
 
-
   constructor(public navCtrl: NavController,
     private toastCtrl: ToastController,
     private authService: AuthService,

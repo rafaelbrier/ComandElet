@@ -14,7 +14,9 @@ export class DatabaseServiceProvider {
   regNewAuth(user: User, res: any) {
     var userInfo = {
       name: user ? user.name : res.displayName,
-      email: user ? user.email : res.email       
+      email: user ? user.email : res.email,
+      imgUrl: user ? "https://realtimesubcount.com/assets/images/default-avatar.png"
+      : res.imageUrl       
     };
 
     this.fireDatabase.object('users/' + res.uid).update(userInfo);     

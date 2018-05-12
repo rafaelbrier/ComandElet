@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NavController, MenuController } from 'ionic-angular';
 import { AuthService } from '../../providers/auth/auth-service';
 import { LoginTabPage } from '../login-tab/login-tab';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { DatabaseServiceProvider } from '../../providers/auth/database-service';
@@ -21,8 +20,7 @@ export class HomePage {
 
   constructor(public navCtrl: NavController,
     private authService: AuthService,
-    private myServices: MyServicesProvider,
-    private afAuth: AngularFireAuth,
+    private myServices: MyServicesProvider,    
     private dataService: DatabaseServiceProvider,
     private fireDatabase: AngularFireDatabase,
     public menuCtrl: MenuController ) {
@@ -40,7 +38,7 @@ export class HomePage {
         const userDataObserver = this.fireDatabase.object('users/' + user.uid).valueChanges()
           .subscribe((resUser: any) => {
             this.displayName = resUser.name;
-            this.imgUrl = '';
+            this.imgUrl = resUser.imgUrl;
 
             authObserver.unsubscribe();
             userDataObserver.unsubscribe();

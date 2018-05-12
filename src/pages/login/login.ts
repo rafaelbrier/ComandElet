@@ -73,7 +73,7 @@ export class LoginPage {
           } else if (error.code == 'auth/user-not-found') {
             toast.setMessage('O usuário não foi encontrado.');
           } else if (error.code == 'auth/wrong-password') {
-            toast.setMessage('A senha digitada não é válida.');
+            toast.setMessage('A senha digitada está incorreta.');
           }
           this.myServices.dismissLoading();
           toast.present();
