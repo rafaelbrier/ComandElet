@@ -8,7 +8,6 @@ import { DatabaseServiceProvider } from '../../providers/auth/database-service';
 import { HomeAdminPage } from '../home-admin/home-admin';
 
 
-
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
@@ -23,7 +22,9 @@ export class HomePage {
     private myServices: MyServicesProvider,    
     private dataService: DatabaseServiceProvider,
     private fireDatabase: AngularFireDatabase,
-    public menuCtrl: MenuController ) {
+    public menuCtrl: MenuController) {
+
+     
 
     const authObserver = this.authService.loggedUserInfo().subscribe(user => {
       this.displayName = '';
@@ -31,7 +32,7 @@ export class HomePage {
 
       if (user != null && user.displayName != null) {
         this.displayName = user.displayName;
-        this.imgUrl = user.photoURL;
+        this.imgUrl = user.photoURL + '?width=1024&height=1024';     
 
         authObserver.unsubscribe();
       } else {
