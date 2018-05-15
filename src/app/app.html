@@ -1,2 +1,15 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu type="overlay" [content]="mycontent">
+    <ion-content>
+        <ion-list>
+            <ion-item (click)="changeProfileImg()" justify-content-center>
+                <img src="{{imgUrl}}">                           
+            </ion-item>
+            <ion-item class="sidemenu-styles">{{displayName}}</ion-item>
+            <ion-item>                
+               
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-menu>
 
+<ion-nav #mycontent [root]="rootPage"></ion-nav>
