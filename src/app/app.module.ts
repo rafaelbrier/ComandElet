@@ -20,7 +20,6 @@ import { firebaseConfig } from '../config';
 import { AuthService } from '../providers/auth/auth-service';
 import { MyServicesProvider } from '../providers/my-services/my-services';
 import { DatabaseServiceProvider } from '../providers/auth/database-service';
-import { UserServiceProvider } from '../providers/auth/user-service';
 
 import { GooglePlus } from '@ionic-native/google-plus';
 import { Facebook } from '@ionic-native/facebook';
@@ -66,8 +65,7 @@ import { Facebook } from '@ionic-native/facebook';
     MyServicesProvider,
     GooglePlus, 
     Facebook,
-    DatabaseServiceProvider,
-    UserServiceProvider 
+    DatabaseServiceProvider     
   ]
 })
 export class AppModule {}

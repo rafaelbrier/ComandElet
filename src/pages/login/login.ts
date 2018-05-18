@@ -67,13 +67,13 @@ export class LoginPage {
         .catch((error) => {
           let toast = this.toastCtrl.create({ duration: 3000, position: 'bottom' });
           if (error.code == 'auth/invalid-email') {
-            toast.setMessage('O e-mail digitado não é válido.');
+            toast.setMessage('O e-mail ou senha são inválidos.');
           } else if (error.code == 'auth/user-disabled') {
             toast.setMessage('O usuário está desativado.');
           } else if (error.code == 'auth/user-not-found') {
-            toast.setMessage('O usuário não foi encontrado.');
+            toast.setMessage('O e-mail ou senha são inválidos.');
           } else if (error.code == 'auth/wrong-password') {
-            toast.setMessage('A senha digitada está incorreta.');
+            toast.setMessage('O e-mail ou senha são inválidos.');
           }
           this.myServices.dismissLoading();
           toast.present();
@@ -98,20 +98,16 @@ export class LoginPage {
     });
   }
 
-  loginWithFacebook() {
-
-    this.myServices.showLoading();
-
+  loginWithFacebook() {   
     this.authService.loginWithFacebook()
       .then((res) => {
         this.firebaseSave.regNewAuth(null, res);
         this.app.getRootNav().setRoot(HomePage);
-        this.myServices.dismissLoading();
+        
       })
     .catch((error) => {
       this.toastCtrl.create({ duration: 3000, position: 'bottom', message: 'Erro ao efetuar o login.' })
-        .present();
-      this.myServices.dismissLoading();
+        .present();     
     });
   }
 }

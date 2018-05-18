@@ -11,29 +11,14 @@ import { LoginTabPage } from '../login-tab/login-tab';
 })
 export class HomeAdminPage {
 
-  displayName: string;
-  imgUrl: string;  
+  userUid: string;
 
   constructor(public navCtrl: NavController,
       public navParams: NavParams,
       public myServices: MyServicesProvider,
       public authService: AuthService) {
-      
-    this.displayName = navParams.get("name");
-    this.imgUrl = navParams.get("imgUrl");
+
+    this.userUid = navParams.get("userUid");
+    
   }
-
-
-signOut() {
-  this.myServices.showLoading();
-  this.authService.signOut()
-    .then(() => {
-      this.navCtrl.setRoot(LoginTabPage);
-      this.myServices.dismissLoading()
-    })
-    .catch((error) => {
-      console.error(error);
-      this.myServices.dismissLoading()
-    });
-}
 }

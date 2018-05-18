@@ -6,7 +6,7 @@
 
       <ion-title class = "centralizado">Home</ion-title>
   
-      <ion-buttons right>
+      <ion-buttons right *ngIf="isAdmin">
         <button ion-button icon-only  (click)="adminPage()">
           <ion-icon name="lock"></ion-icon>
         </button>
@@ -15,31 +15,7 @@
 </ion-header>
 
 <ion-content padding>
-  <ion-card>
-    <img src="{{ imgUrl}}"/>
-    <ion-card-content>
-      <ion-card-title>
-        Bem vindo {{ displayName }}
-      </ion-card-title>
-      <p>
-        Logado com o Firebase.
-      </p>
-    </ion-card-content> 
-  </ion-card>
-
-  <button (click)="signOut()" ion-button full icon-left style="background:#dfad0a;">
-    <ion-icon name="log-out"></ion-icon>
-    <div>
-      Sair
-    </div>
-  </button>
-
-  <button (click)="readDatabase()" ion-button full icon-left style="background:#dfad0a; ">
-    <ion-icon name="log-out"></ion-icon>
-    <div>
-      ReadDatabase
-    </div>
-  </button>
+ HomePage
 </ion-content>
 
 
