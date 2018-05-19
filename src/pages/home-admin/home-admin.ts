@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { AuthService } from '../../providers/auth/auth-service';
-import { LoginTabPage } from '../login-tab/login-tab';
 
 
 @Component({

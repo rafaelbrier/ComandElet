@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, MenuController, Events } from 'ionic-angular';
 import { AuthService } from '../../providers/auth/auth-service';
-import { LoginTabPage } from '../login-tab/login-tab';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { DatabaseServiceProvider } from '../../providers/auth/database-service';

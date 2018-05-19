@@ -97,5 +97,6 @@
     </plugin>
     <plugin name="cordova-plugin-app-update" spec="^1.6.0" />
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
+    <plugin name="cordova-plugin-camera" spec="^4.0.3" />
     <engine name="android" spec="7.0.0" />
 </widget>

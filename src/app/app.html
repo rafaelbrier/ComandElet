@@ -1,23 +1,40 @@
 <ion-menu type="overlay" [content]="mycontent" (ionOpen)="menuOpened()">
     <ion-content>
+        <ion-item class="background-imagem-menu">
+            <ion-avatar item-start>
+                <img src="{{imgUrl}}" (click)="changeProfileImg()">
+            </ion-avatar>
+            <h2 style="font-size: 19px; text-align: justify;">{{displayName}}</h2>
+            <button ion-button icon-only item-end (click)="changeName()">
+                <ion-icon name="crop"></ion-icon>
+            </button>
+        </ion-item>        
         <ion-list>
             <ion-item>
-                <ion-thumbnail item-start>
-                    <img src="{{imgUrl}}" (click)="changeProfileImg()">
-                </ion-thumbnail>
-                <h2>{{displayName}}</h2>
-                <button ion-button icon-only item-end (click)="changeName()">
-                    <ion-icon name="crop"></ion-icon>
+                <button ion-button full outline icon-left large="true">
+                    <ion-icon name="trash"></ion-icon>
+                    <div>
+                        Remover Conta
+                    </div>
                 </button>
-            </ion-item>
-            <ion-item>
-                <button (click)="signOut()" ion-button full outline icon-left large="true">
+                <button (click)="signOut()" ion-button full outline icon-left large="true" class="sair-button">
                     <ion-icon name="log-out"></ion-icon>
                     <div>
                         Sair
                     </div>
                 </button>
             </ion-item>
+            <ion-item class="progress-bar" *ngIf="progressIsLoading">
+                    <div>Enviando imagem:</div>
+                    <div>
+                        <progress max="100" [value]="(progress | async)" value="{{ progress | async }}"></progress>
+                    </div>
+                    <button (click)="task.cancel()" ion-button>
+                        <div>
+                            Cancelar envio
+                        </div>
+                    </button>
+                </ion-item>
         </ion-list>
     </ion-content>
 </ion-menu>

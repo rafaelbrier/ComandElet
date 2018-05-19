@@ -1,13 +1,14 @@
 import { LoadingController } from "ionic-angular/components/loading/loading-controller";
 import { Injectable } from "@angular/core";
-import { ToastController } from "ionic-angular";
+import { ToastController, AlertController } from "ionic-angular";
 
 
 @Injectable() 
-export class MyServicesProvider {
+export class MyServicesProvider {  
 
   constructor(public loadingCtrl: LoadingController,
-    public toastCtrl: ToastController) {   
+    public toastCtrl: ToastController, 
+    public alertCtrl: AlertController) {   
    }
    loading;
 
@@ -31,6 +32,9 @@ criarToast(mensagem: string) {
     let toast = this.toastCtrl.create({ duration: 3000, position: 'bottom' });
     toast.setMessage(mensagem);
     return toast;
-  }
 }
+}
+
+
+
 
