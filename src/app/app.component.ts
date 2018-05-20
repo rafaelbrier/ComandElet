@@ -29,9 +29,10 @@ export class MyApp {
   imgUrl: string;
   displayName: string;
   userUid: string;
+  userEmail: string;
   currentImg: any;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, 
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,
     public afAuth: AngularFireAuth, keyboard: Keyboard,
     private databaseService: DatabaseServiceProvider,
     private myServices: MyServicesProvider,
@@ -46,7 +47,7 @@ export class MyApp {
     this.events.subscribe('user:logged', (Uid) => {
       this.userUid = Uid;
       this.displayName = '';
-      this.imgUrl = '';
+      this.imgUrl = '';         
     });
 
     const authObserver = afAuth.authState.subscribe(user => {
@@ -213,7 +214,7 @@ export class MyApp {
       .subscribe(() => {
 
       }, error => {
-        if(error.code == 'storage/canceled'){
+        if (error.code == 'storage/canceled') {
           let toast = this.myServices.criarToast('Envio de imagem cancelado.');
           toast.present();
           this.progressIsLoading = false;
@@ -222,7 +223,7 @@ export class MyApp {
           toast.present();
           this.progressIsLoading = false;
         }
-     
+
       });
   }
 
@@ -249,12 +250,20 @@ export class MyApp {
       });
   }
 
-  changePassword(){
+  removeFilesUid(file: string) {
+    //Deve deletar todos arquivos um por um
+    const filePath = '/' + this.userUid + file;
+
+    return this.fireStorage.ref(filePath).delete();
+  }
+
+
+  changePassword() {
     let alert = this.alertCtrl.create({
       title: 'Deseja mesmo trocar sua senha?',
       message: 'Escolha uma senha forte, de preferência com números e letras.',
       inputs: [
-        { 
+        {
           name: 'passwordOld',
           placeholder: 'Senha Antiga',
           type: 'password'
@@ -269,7 +278,7 @@ export class MyApp {
           placeholder: 'Confirmar Nova Senha',
           type: 'password'
         }
-      ],        
+      ],
       buttons: [
         {
           text: 'Cancelar',
@@ -277,51 +286,52 @@ export class MyApp {
         },
         {
           text: 'Confirmar',
-          handler: (data) => { 
-          this.myServices.showLoading();  
-          var user = this.afAuth.auth.currentUser;          
-          this.afAuth.auth.signInWithEmailAndPassword(user.email, data.passwordOld)
-          .then(()=>{            
-          let isPasswordValid = this.myServices.validatePassword(data.password, data.passwordConfirm);
-          if(isPasswordValid){
-            user.updatePassword(data.password)
-            .then(()=>{  
-            this.myServices.dismissLoading();            
-            let toast = this.myServices.criarToast('Senha trocada com sucesso.');
-            toast.present();            
-            })
-            .catch((error)=>{
-              if(error.code == 'auth/requires-recent-login'){
-                this.myServices.dismissLoading();
-                let toast = this.myServices.criarToast('Esta operação requer que o usuário relogue.');
-                toast.present();   
-              } else {
-                this.myServices.dismissLoading();
-                let toast = this.myServices.criarToast('Erro ao trocar senha.');
-                toast.present();   
-              }           
-            });   
-          } else if (isPasswordValid == false){
-            this.myServices.dismissLoading();
-            let toast = this.myServices.criarToast('A senha deve ter mais que 6 caracteres.');
-            toast.present(); 
-          } else {
-            this.myServices.dismissLoading();
-            let toast = this.myServices.criarToast('Senhas digitadas diferentes.');
-            toast.present();            
-          }            
-          })
-          .catch((error)=>{
-            if(error.code = "auth/wrong-password"){
-            this.myServices.dismissLoading();
-            let toast = this.myServices.criarToast('Senha antiga inválida.');
-            toast.present();    
-            } else {
-              this.myServices.dismissLoading();
-              let toast = this.myServices.criarToast('Usuários logados com Facebook ou Google não podem trocar a senha por aqui.');
-              toast.present(); 
-            }       
-          })                         
+          handler: (data) => {
+            this.myServices.showLoading();
+            var user = this.afAuth.auth.currentUser;
+            console.log(user)
+            this.afAuth.auth.signInWithEmailAndPassword(user.email, data.passwordOld)
+              .then(() => {
+                let isPasswordValid = this.myServices.validatePassword(data.password, data.passwordConfirm);
+                if (isPasswordValid) {
+                  user.updatePassword(data.password)
+                    .then(() => {
+                      this.myServices.dismissLoading();
+                      let toast = this.myServices.criarToast('Senha trocada com sucesso.');
+                      toast.present();
+                    })
+                    .catch((error) => {
+                      if (error.code == 'auth/requires-recent-login') {
+                        this.myServices.dismissLoading();
+                        let toast = this.myServices.criarToast('Esta operação requer que o usuário relogue.');
+                        toast.present();
+                      } else {
+                        this.myServices.dismissLoading();
+                        let toast = this.myServices.criarToast('Erro ao trocar senha.');
+                        toast.present();
+                      }
+                    });
+                } else if (isPasswordValid == false) {
+                  this.myServices.dismissLoading();
+                  let toast = this.myServices.criarToast('A senha deve ter mais que 6 caracteres.');
+                  toast.present();
+                } else {
+                  this.myServices.dismissLoading();
+                  let toast = this.myServices.criarToast('Senhas digitadas diferentes.');
+                  toast.present();
+                }
+              })
+              .catch((error) => {
+                if (error.code = "auth/wrong-password") {
+                  this.myServices.dismissLoading();
+                  let toast = this.myServices.criarToast('Senha antiga inválida.');
+                  toast.present();
+                } else {
+                  this.myServices.dismissLoading();
+                  let toast = this.myServices.criarToast('Usuários logados com Facebook ou Google não podem trocar a senha por aqui.');
+                  toast.present();
+                }
+              })
           }
         }
       ]
@@ -329,7 +339,7 @@ export class MyApp {
     alert.present();
   }
 
-  removeAccount(){
+  removeAccount() {
     let alert = this.alertCtrl.create({
       title: 'Deseja mesmo excluir sua conta?',
       message: 'Todos os dados e arquivos serão perdidos. Se está de acordo, digite sua senha e aperte Confirmar.',
@@ -339,7 +349,7 @@ export class MyApp {
           placeholder: 'Password',
           type: 'password'
         }
-      ],        
+      ],
       buttons: [
         {
           text: 'Cancelar',
@@ -347,31 +357,80 @@ export class MyApp {
         },
         {
           text: 'Confirmar',
-          handler: (data) => {   
-          var user = this.afAuth.auth.currentUser;
-          this.afAuth.auth.signInWithEmailAndPassword(user.email, data.passwor)
-          .then(()=>{
-            //codigo aqui
-          let toast = this.myServices.criarToast('Em construção.');
-          toast.present();   
+          handler: (data) => {
+            this.myServices.showLoading();
+            var user = this.afAuth.auth.currentUser;           
+            this.afAuth.auth.signInWithEmailAndPassword(user.email, data.password)
+              .then(() => {
+                //Deletar dados no Storage, deve-se deletar um por um
+                this.removeFilesUid(`/profileImg.jpg`)
+                  .subscribe(() => {
+                    this.myServices.dismissLoading();
+                    let toast = this.myServices.criarToast('Arquivos do usuário removidos com sucesso.');
+                    toast.present();
+                  }, error => {                    
+                    if(error.code == 'storage/object-not-found'){
+                    this.myServices.dismissLoading();
+                    let toast = this.myServices.criarToast('Arquivos do usuário removidos com sucesso.');
+                    toast.present();
+                    } else {
+                    this.myServices.dismissLoading();
+                    let toast = this.myServices.criarToast('Erro ao remover arquivos do usuário.');
+                    toast.present();
+                    }
+                  });
+                //-----------
 
-          })
-          .catch((error)=>{
-            if(error.code = "auth/wrong-password"){
-              this.myServices.dismissLoading();
-              let toast = this.myServices.criarToast('Senha incorreta.');
-              toast.present();    
-              } else {
-                this.myServices.dismissLoading();
-                let toast = this.myServices.criarToast('Usuários logados com Facebook ou Google não podem trocar a senha por aqui.');
-                toast.present(); 
-              }       
-          })           
+                //Excluir dados no Database
+                this.databaseService.removeDatabase(this.userUid)
+                  .then(() => {
+                    this.myServices.dismissLoading();
+                    let toast = this.myServices.criarToast('Dados do usuário removidos com sucesso.');
+                    toast.present();
+                  })
+                  .catch((error) => {
+                    if (error.code == 'auth/requires-recent-login') {
+                      this.myServices.dismissLoading();
+                      let toast = this.myServices.criarToast('Esta operação requer que o usuário relogue.');
+                      toast.present();
+                    } else {
+                      this.myServices.dismissLoading();
+                      let toast = this.myServices.criarToast('Erro ao remover dados do usuário.');
+                      toast.present();
+                    }
+                  });
+                //-----------------------
+
+                //Excluir Usuário
+                user.delete()
+                  .then(() => {
+                    this.myServices.dismissLoading();
+                    this.navCtrl.setRoot(LoginTabPage);
+                    let toast = this.myServices.criarToast('Usuário excluido com sucesso.');
+                    toast.present();
+                  })
+                  .catch((error) => {
+                    this.myServices.dismissLoading();
+                    let toast = this.myServices.criarToast('Erro ao excluir usuário.');
+                    toast.present();
+                  });
+              })
+              .catch((error) => {
+                if (error.code = "auth/wrong-password") {
+                  this.myServices.dismissLoading();
+                  let toast = this.myServices.criarToast('Senha incorreta.');
+                  toast.present();
+                } else {
+                  this.myServices.dismissLoading();
+                  let toast = this.myServices.criarToast('Usuários logados com Facebook ou Google não podem trocar a senha por aqui.');
+                  toast.present();
+                }
+              })
           }
         }
       ]
     });
-    alert.present();  
+    alert.present();
   }
 
   signOut() {
