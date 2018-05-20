@@ -20,8 +20,8 @@ export class ResetpasswordPage {
     private authService: AuthService,
     public app: App,
     public loadingCtrl: LoadingController,
-    public myServices: MyServicesProvider) {      
-  }
+    public myServices: MyServicesProvider) {}
+   
 
 
 resetPassword()

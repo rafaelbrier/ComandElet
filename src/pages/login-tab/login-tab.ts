@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, MenuController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
 import { SignupPage } from '../signup/signup';
 
@@ -20,6 +20,8 @@ export class LoginTabPage {
   logintab = LoginPage;
   signuptab = SignupPage;
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController,
+    public menuCtrl: MenuController) {
+    this.menuCtrl.enable(false, 'myMenu');
   }
 }

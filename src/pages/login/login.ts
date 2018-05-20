@@ -28,7 +28,8 @@ export class LoginPage {
     private authService: AuthService,
     public app: App,
     public myServices: MyServicesProvider,
-    private firebaseSave: DatabaseServiceProvider) {   }
+    private firebaseSave: DatabaseServiceProvider ) {    
+      }
 
   notAllFilledForm() {
     var email = this.form.value["email"];

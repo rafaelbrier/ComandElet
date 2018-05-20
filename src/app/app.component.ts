@@ -11,7 +11,7 @@ import { AuthService } from '../providers/auth/auth-service';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
 import { Observable } from 'rxjs/Observable';
-import { finalize, catchError, map } from 'rxjs/operators';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'app.html'
@@ -20,7 +20,7 @@ export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
 
   //para alterar imgPerfil
-  task: AngularFireUploadTask;
+  taskUpload: AngularFireUploadTask;
   progress: Observable<number>;
   image: string;
   downloadURL: Observable<string>;
@@ -31,7 +31,8 @@ export class MyApp {
   userUid: string;
   currentImg: any;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, afAuth: AngularFireAuth, keyboard: Keyboard,
+  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, 
+    public afAuth: AngularFireAuth, keyboard: Keyboard,
     private databaseService: DatabaseServiceProvider,
     private myServices: MyServicesProvider,
     public menuCtrl: MenuController,
@@ -115,10 +116,9 @@ export class MyApp {
                     this.myServices.showLoading();
                     this.databaseService.writeDatabase(this.userUid,
                       { imgUrl: 'https://firebasestorage.googleapis.com/v0/b/comanda-eletroni-1525119433359.appspot.com/o/ProfileImages%2FdefaultImg%2Fdefault-avatar.png?alt=media&token=3a02ff5a-0a07-4a16-99e8-be90c8542cf5' });
+                    this.removeImg();
                     this.myServices.dismissLoading();
                     this.menuCtrl.close();
-                    let toast = this.myServices.criarToast('Imagem de perfil removida.');
-                    toast.present();
                   }
                 }
               ]
@@ -193,44 +193,37 @@ export class MyApp {
 
     const fileRef = this.fireStorage.ref(filePath);
 
-    this.task = fileRef.putString(this.image, 'data_url');
+    this.taskUpload = fileRef.putString(this.image, 'data_url');
     this.progressIsLoading = true;
-    this.progress = this.task.percentageChanges();
-    this.task.catch(() => {
-      let toast = this.myServices.criarToast('Erro ao enviar imagem.');
-      toast.present();
-      this.progressIsLoading = false;
-    }
-    );
+    this.progress = this.taskUpload.percentageChanges();
 
-    this.task.snapshotChanges().pipe(
+    this.taskUpload.snapshotChanges().pipe(
       finalize(() => {
         this.downloadURL = fileRef.getDownloadURL();
-
         this.downloadURL.subscribe((URL) => {
           this.databaseService.writeDatabase(this.userUid, { imgUrl: URL });
           this.progressIsLoading = false;
           this.menuCtrl.close();
+          let toast = this.myServices.criarToast('Imagem de perfil atualizada com sucesso.');
+          toast.present();
         }, error => {
+        })
+      })
+    )
+      .subscribe(() => {
+
+      }, error => {
+        if(error.code == 'storage/canceled'){
+          let toast = this.myServices.criarToast('Envio de imagem cancelado.');
+          toast.present();
+          this.progressIsLoading = false;
+        } else {
           let toast = this.myServices.criarToast('Erro ao enviar imagem.');
           toast.present();
           this.progressIsLoading = false;
-        })
-      }),
-      catchError((err, caught) => {
-        let toast = this.myServices.criarToast('Erro ao enviar imagem.');
-        toast.present();
-        this.progressIsLoading = false;
-        return null
-      })
-    )
-    .subscribe(() => {
-
-    }, error => {
-      let toast = this.myServices.criarToast('Erro ao enviar imagem.');
-      toast.present();
-      this.progressIsLoading = false;
-    });
+        }
+     
+      });
   }
 
   uploadHandler(type: string) {
@@ -238,10 +231,147 @@ export class MyApp {
       .then(base64 => {
         this.createUploadTask(base64);
       })
-      .catch(erro => {
-        let toast = this.myServices.criarToast('Erro ao enviar imagem.');
-        toast.present();
+      .catch(() => {
       })
+  }
+
+  removeImg() {
+    const filePath = '/' + this.userUid + `/profileImg.jpg`;
+
+    const fileRef = this.fireStorage.ref(filePath);
+    fileRef.delete()
+      .subscribe(() => {
+        let toast = this.myServices.criarToast('Imagem de perfil removida com sucesso.');
+        toast.present();
+      }, error => {
+        let toast = this.myServices.criarToast('Erro ao remover imagem de perfil.');
+        toast.present();
+      });
+  }
+
+  changePassword(){
+    let alert = this.alertCtrl.create({
+      title: 'Deseja mesmo trocar sua senha?',
+      message: 'Escolha uma senha forte, de preferência com números e letras.',
+      inputs: [
+        { 
+          name: 'passwordOld',
+          placeholder: 'Senha Antiga',
+          type: 'password'
+        },
+        {
+          name: 'password',
+          placeholder: 'Nova Senha',
+          type: 'password'
+        },
+        {
+          name: 'passwordConfirm',
+          placeholder: 'Confirmar Nova Senha',
+          type: 'password'
+        }
+      ],        
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Confirmar',
+          handler: (data) => { 
+          this.myServices.showLoading();  
+          var user = this.afAuth.auth.currentUser;          
+          this.afAuth.auth.signInWithEmailAndPassword(user.email, data.passwordOld)
+          .then(()=>{            
+          let isPasswordValid = this.myServices.validatePassword(data.password, data.passwordConfirm);
+          if(isPasswordValid){
+            user.updatePassword(data.password)
+            .then(()=>{  
+            this.myServices.dismissLoading();            
+            let toast = this.myServices.criarToast('Senha trocada com sucesso.');
+            toast.present();            
+            })
+            .catch((error)=>{
+              if(error.code == 'auth/requires-recent-login'){
+                this.myServices.dismissLoading();
+                let toast = this.myServices.criarToast('Esta operação requer que o usuário relogue.');
+                toast.present();   
+              } else {
+                this.myServices.dismissLoading();
+                let toast = this.myServices.criarToast('Erro ao trocar senha.');
+                toast.present();   
+              }           
+            });   
+          } else if (isPasswordValid == false){
+            this.myServices.dismissLoading();
+            let toast = this.myServices.criarToast('A senha deve ter mais que 6 caracteres.');
+            toast.present(); 
+          } else {
+            this.myServices.dismissLoading();
+            let toast = this.myServices.criarToast('Senhas digitadas diferentes.');
+            toast.present();            
+          }            
+          })
+          .catch((error)=>{
+            if(error.code = "auth/wrong-password"){
+            this.myServices.dismissLoading();
+            let toast = this.myServices.criarToast('Senha antiga inválida.');
+            toast.present();    
+            } else {
+              this.myServices.dismissLoading();
+              let toast = this.myServices.criarToast('Usuários logados com Facebook ou Google não podem trocar a senha por aqui.');
+              toast.present(); 
+            }       
+          })                         
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  removeAccount(){
+    let alert = this.alertCtrl.create({
+      title: 'Deseja mesmo excluir sua conta?',
+      message: 'Todos os dados e arquivos serão perdidos. Se está de acordo, digite sua senha e aperte Confirmar.',
+      inputs: [
+        {
+          name: 'password',
+          placeholder: 'Password',
+          type: 'password'
+        }
+      ],        
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Confirmar',
+          handler: (data) => {   
+          var user = this.afAuth.auth.currentUser;
+          this.afAuth.auth.signInWithEmailAndPassword(user.email, data.passwor)
+          .then(()=>{
+            //codigo aqui
+          let toast = this.myServices.criarToast('Em construção.');
+          toast.present();   
+
+          })
+          .catch((error)=>{
+            if(error.code = "auth/wrong-password"){
+              this.myServices.dismissLoading();
+              let toast = this.myServices.criarToast('Senha incorreta.');
+              toast.present();    
+              } else {
+                this.myServices.dismissLoading();
+                let toast = this.myServices.criarToast('Usuários logados com Facebook ou Google não podem trocar a senha por aqui.');
+                toast.present(); 
+              }       
+          })           
+          }
+        }
+      ]
+    });
+    alert.present();  
   }
 
   signOut() {

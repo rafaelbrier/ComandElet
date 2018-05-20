@@ -23,6 +23,8 @@ export class HomePage {
     public menuCtrl: MenuController,
     public events: Events) {
 
+    this.menuCtrl.enable(true, 'myMenu');
+    
     const authObserver = this.authService.loggedUserInfo().subscribe(user => {
        this.isAdmin = false;
 

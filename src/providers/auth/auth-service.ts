@@ -118,5 +118,9 @@ export class AuthService {
   loggedUserInfo(){
     return this.angularFireAuth.authState;    
   }
+
+  removeUser(){
+    return this.angularFireAuth.auth.currentUser.delete();
+  }
 }
 
