@@ -13,7 +13,7 @@ export class AuthService {
   user: Observable<firebase.User>;
 
   constructor(private angularFireAuth: AngularFireAuth,
-    private googlePlus: GooglePlus,    
+    private googlePlus: GooglePlus,
     private facebook: Facebook) {
 
     this.user = angularFireAuth.authState;
@@ -30,28 +30,29 @@ export class AuthService {
 
   loginWithGoogle() {
 
-    // if (this.isRunningOnBrowser()) {
+    // if (true) {
     //   return this.angularFireAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
     //     .then((user: any) => {
     //       return user.user;
     //     });
 
     // } else {
-      
-      return this.googlePlus.login({
-        'webClientId:': '682769687823-rsfht79lpfefnta01j2q00e9c8ru4ueu.apps.googleusercontent.com',
-        'offline': true
-      })
-        .then(res => {
-          let credentials = firebase.auth.GoogleAuthProvider.credential(null, res.accessToken);
-          return this.angularFireAuth.auth.signInWithCredential(credentials)
-            .then((user: firebase.User) => {
-              user.updateProfile({ displayName: res.displayName, photoURL: res.imageUrl })
-                .then((u) => {return u});
-                return user;
-            });
-        });    
+
+    return this.googlePlus.login({
+      'webClientId:': '682769687823-rsfht79lpfefnta01j2q00e9c8ru4ueu.apps.googleusercontent.com',
+      'offline': true
+    })
+      .then(res => {
+        let credentials = firebase.auth.GoogleAuthProvider.credential(null, res.accessToken);
+        return this.angularFireAuth.auth.signInWithCredential(credentials)
+          .then((user: firebase.User) => {
+            user.updateProfile({ displayName: res.displayName, photoURL: res.imageUrl })
+              .then((u) => { return u });
+            return user;
+          });
+      });
   }
+
 
   loginWithFacebook() {
 
@@ -61,15 +62,15 @@ export class AuthService {
     //       return user.user;
     //     });
     // } else {
-      
-      return this.facebook.login(['public_profile', 'email'])
-        .then((res: FacebookLoginResponse) => {
-          let credentials = firebase.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
-          return this.angularFireAuth.auth.signInWithCredential(credentials)
-            .then((user) => {
-              return user;
-            });
-        })    
+
+    return this.facebook.login(['public_profile', 'email'])
+      .then((res: FacebookLoginResponse) => {
+        let credentials = firebase.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
+        return this.angularFireAuth.auth.signInWithCredential(credentials)
+          .then((user) => {
+            return user;
+          });
+      })
   }
 
   // private isRunningOnBrowser() {
@@ -115,11 +116,11 @@ export class AuthService {
     return this.angularFireAuth.auth.sendPasswordResetEmail(email);
   }
 
-  loggedUserInfo(){
-    return this.angularFireAuth.authState;    
+  loggedUserInfo() {
+    return this.angularFireAuth.authState;
   }
 
-  removeUser(){
+  removeUser() {
     return this.angularFireAuth.auth.currentUser.delete();
   }
 }

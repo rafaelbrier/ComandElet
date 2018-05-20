@@ -47,7 +47,7 @@ export class MyApp {
     this.events.subscribe('user:logged', (Uid) => {
       this.userUid = Uid;
       this.displayName = '';
-      this.imgUrl = '';         
+      this.imgUrl = '';
     });
 
     const authObserver = afAuth.authState.subscribe(user => {
@@ -261,7 +261,8 @@ export class MyApp {
   changePassword() {
     let alert = this.alertCtrl.create({
       title: 'Deseja mesmo trocar sua senha?',
-      message: 'Escolha uma senha forte, de preferência com números e letras.',
+      subTitle: 'Escolha uma senha forte, de preferência com números e letras.',
+      message: 'Observação: usuários logados com Facebook ou Google não podem trocar a senha.',
       inputs: [
         {
           name: 'passwordOld',
@@ -322,13 +323,13 @@ export class MyApp {
                 }
               })
               .catch((error) => {
-                if (error.code = "auth/wrong-password") {
+                if (error.code == "auth/wrong-password") {
                   this.myServices.dismissLoading();
-                  let toast = this.myServices.criarToast('Senha antiga inválida.');
+                  let toast = this.myServices.criarToast('Senha antiga inválida ou usuário logado com Google ou Facebook.');
                   toast.present();
                 } else {
                   this.myServices.dismissLoading();
-                  let toast = this.myServices.criarToast('Usuários logados com Facebook ou Google não podem trocar a senha por aqui.');
+                  let toast = this.myServices.criarToast('Erro. Não foi possível trocar a senha.');
                   toast.present();
                 }
               })
@@ -342,7 +343,8 @@ export class MyApp {
   removeAccount() {
     let alert = this.alertCtrl.create({
       title: 'Deseja mesmo excluir sua conta?',
-      message: 'Todos os dados e arquivos serão perdidos. Se está de acordo, digite sua senha e aperte Confirmar.',
+      subTitle: 'Todos os dados e arquivos serão perdidos. Se está de acordo, digite sua senha e aperte Confirmar.',
+      message: 'Observação: usuários logados com Facebook ou Google não podem remover a conta.',
       inputs: [
         {
           name: 'password',
@@ -359,7 +361,7 @@ export class MyApp {
           text: 'Confirmar',
           handler: (data) => {
             this.myServices.showLoading();
-            var user = this.afAuth.auth.currentUser;           
+            var user = this.afAuth.auth.currentUser;
             this.afAuth.auth.signInWithEmailAndPassword(user.email, data.password)
               .then(() => {
                 //Deletar dados no Storage, deve-se deletar um por um
@@ -368,15 +370,15 @@ export class MyApp {
                     this.myServices.dismissLoading();
                     let toast = this.myServices.criarToast('Arquivos do usuário removidos com sucesso.');
                     toast.present();
-                  }, error => {                    
-                    if(error.code == 'storage/object-not-found'){
-                    this.myServices.dismissLoading();
-                    let toast = this.myServices.criarToast('Arquivos do usuário removidos com sucesso.');
-                    toast.present();
+                  }, error => {
+                    if (error.code == 'storage/object-not-found') {
+                      this.myServices.dismissLoading();
+                      let toast = this.myServices.criarToast('Arquivos do usuário removidos com sucesso.');
+                      toast.present();
                     } else {
-                    this.myServices.dismissLoading();
-                    let toast = this.myServices.criarToast('Erro ao remover arquivos do usuário.');
-                    toast.present();
+                      this.myServices.dismissLoading();
+                      let toast = this.myServices.criarToast('Erro ao remover arquivos do usuário.');
+                      toast.present();
                     }
                   });
                 //-----------
@@ -416,13 +418,14 @@ export class MyApp {
                   });
               })
               .catch((error) => {
-                if (error.code = "auth/wrong-password") {
+                console.log(error)
+                if (error.code == "auth/wrong-password") {
                   this.myServices.dismissLoading();
-                  let toast = this.myServices.criarToast('Senha incorreta.');
+                  let toast = this.myServices.criarToast('Senha incorreta ou usuário logado com Google ou Facebook.');
                   toast.present();
                 } else {
                   this.myServices.dismissLoading();
-                  let toast = this.myServices.criarToast('Usuários logados com Facebook ou Google não podem trocar a senha por aqui.');
+                  let toast = this.myServices.criarToast('Erro. Não foi possível excluir o usuário.');
                   toast.present();
                 }
               })
