@@ -116,10 +116,16 @@ export class MyApp {
                   handler: () => {
                     this.myServices.showLoading();
                     this.databaseService.writeDatabase(this.userUid,
-                      { imgUrl: 'https://firebasestorage.googleapis.com/v0/b/comanda-eletroni-1525119433359.appspot.com/o/ProfileImages%2FdefaultImg%2Fdefault-avatar.png?alt=media&token=3a02ff5a-0a07-4a16-99e8-be90c8542cf5' });
-                    this.removeImg();
+                      { imgUrl: 'https://firebasestorage.googleapis.com/v0/b/comanda-eletroni-1525119433359.appspot.com/o/ProfileImages%2FdefaultImg%2Fdefault-avatar.png?alt=media&token=3a02ff5a-0a07-4a16-99e8-be90c8542cf5' })
+                      .then(() => {
+                        this.removeImg();
+                        this.imgUrl = 'https://firebasestorage.googleapis.com/v0/b/comanda-eletroni-1525119433359.appspot.com/o/ProfileImages%2FdefaultImg%2Fdefault-avatar.png?alt=media&token=3a02ff5a-0a07-4a16-99e8-be90c8542cf5';
+                      })
+                      .catch(() => {
+                        let toast = this.myServices.criarToast('Erro ao remover imagem de perfil.');
+                        toast.present();
+                      });
                     this.myServices.dismissLoading();
-                    this.menuCtrl.close();
                   }
                 }
               ]
@@ -156,9 +162,17 @@ export class MyApp {
           handler: data => {
             this.myServices.showLoading();
             if (data) {
-              this.databaseService.writeDatabase(this.userUid, data);
+              this.databaseService.writeDatabase(this.userUid, data)
+                .then(() => {
+                  this.displayName = data.name;
+                  let toast = this.myServices.criarToast('Nome trocado com sucesso.');
+                  toast.present();
+                })
+                .catch(() => {
+                  let toast = this.myServices.criarToast('Erro ao trocar nome.');
+                  toast.present();
+                });
               this.myServices.dismissLoading();
-              this.menuCtrl.close();
             } else {
               let toast = this.myServices.criarToast('Não foi possível trocar o nome.');
               toast.present();
@@ -202,29 +216,35 @@ export class MyApp {
       finalize(() => {
         this.downloadURL = fileRef.getDownloadURL();
         this.downloadURL.subscribe((URL) => {
-          this.databaseService.writeDatabase(this.userUid, { imgUrl: URL });
+          this.databaseService.writeDatabase(this.userUid, { imgUrl: URL })
+            .then(() => {
+              this.imgUrl = URL;
+              let toast = this.myServices.criarToast('Imagem de perfil atualizada com sucesso.');
+              toast.present();
+              this.progressIsLoading = false;
+            })
+            .catch(() => {
+              let toast = this.myServices.criarToast('Erro ao trocar foto de perfil.');
+              toast.present();
+              this.progressIsLoading = false;
+            });
           this.progressIsLoading = false;
-          this.menuCtrl.close();
-          let toast = this.myServices.criarToast('Imagem de perfil atualizada com sucesso.');
-          toast.present();
         }, error => {
         })
       })
-    )
-      .subscribe(() => {
+    ).subscribe(() => {
 
-      }, error => {
-        if (error.code == 'storage/canceled') {
-          let toast = this.myServices.criarToast('Envio de imagem cancelado.');
-          toast.present();
-          this.progressIsLoading = false;
-        } else {
-          let toast = this.myServices.criarToast('Erro ao enviar imagem.');
-          toast.present();
-          this.progressIsLoading = false;
-        }
-
-      });
+    }, error => {
+      if (error.code == 'storage/canceled') {
+        let toast = this.myServices.criarToast('Envio de imagem cancelado.');
+        toast.present();
+        this.progressIsLoading = false;
+      } else {
+        let toast = this.myServices.criarToast('Erro ao enviar imagem.');
+        toast.present();
+        this.progressIsLoading = false;
+      }
+    });
   }
 
   uploadHandler(type: string) {
@@ -245,8 +265,14 @@ export class MyApp {
         let toast = this.myServices.criarToast('Imagem de perfil removida com sucesso.');
         toast.present();
       }, error => {
-        let toast = this.myServices.criarToast('Erro ao remover imagem de perfil.');
-        toast.present();
+        if (error.code == 'storage/object-not-found') {
+          let toast = this.myServices.criarToast('A imagem de perfil já foi removida.');
+          toast.present();
+        } else {
+          let toast = this.myServices.criarToast('Erro ao remover imagem de perfil.');
+          toast.present();
+        }
+
       });
   }
 
@@ -290,7 +316,6 @@ export class MyApp {
           handler: (data) => {
             this.myServices.showLoading();
             var user = this.afAuth.auth.currentUser;
-            console.log(user)
             this.afAuth.auth.signInWithEmailAndPassword(user.email, data.passwordOld)
               .then(() => {
                 let isPasswordValid = this.myServices.validatePassword(data.password, data.passwordConfirm);
@@ -418,7 +443,6 @@ export class MyApp {
                   });
               })
               .catch((error) => {
-                console.log(error)
                 if (error.code == "auth/wrong-password") {
                   this.myServices.dismissLoading();
                   let toast = this.myServices.criarToast('Senha incorreta ou usuário logado com Google ou Facebook.');

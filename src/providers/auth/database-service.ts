@@ -23,8 +23,7 @@ export class DatabaseServiceProvider {
   }
 
   writeDatabase(userUid: string, userInfo: any) {
-    this.fireDatabase.object('users/' + userUid).update(userInfo);
-    return true;
+    return this.fireDatabase.object('users/' + userUid).update(userInfo);    
   }
 
   readDatabase(userUid: string) {

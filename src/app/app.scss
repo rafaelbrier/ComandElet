@@ -143,8 +143,7 @@ color: white;
 }
 
 progress:after {
-    content: attr(value)'%';
-    position: fixed;    
+    content: attr(value)'%';    
   }
 
   .side-menu-buttom-normal{
