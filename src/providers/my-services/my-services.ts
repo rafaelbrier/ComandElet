@@ -37,7 +37,7 @@ export class MyServicesProvider {
     validatePassword(password: string, passwordConfirm: string) {
         if (password != passwordConfirm) {
             return null;
-        } else if (password.length < 6) {
+        } else if (password.length < 6 || password.length > 20)  {
             return false;
         } else {
             return true;
