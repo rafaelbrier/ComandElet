@@ -7,9 +7,6 @@ import { Observable } from 'rxjs/Observable';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { CameraService } from '../../core/camera-service/camera-service'
 import { NgForm } from '@angular/forms';
-import { InvokeFunctionExpr } from '@angular/compiler';
-import { HomeAdminPage } from '../home-admin/home-admin';
-
 
 
 @Component({
@@ -33,7 +30,7 @@ export class CadastrarProdutoPage {
   numberPattern = /^\d+(\.\d{1,2})?$/;
 
 
-  constructor(private navParams: NavParams,
+  constructor(navParams: NavParams,
     private databaseService: DatabaseServiceProvider,
     private fireStorage: AngularFireStorage,
     private camera: Camera,
@@ -71,6 +68,7 @@ export class CadastrarProdutoPage {
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
         toast.present();
+        dataBaseObserver.unsubscribe();
       });
   }
 
@@ -109,7 +107,7 @@ export class CadastrarProdutoPage {
   changeId(newId: number) {
     const path = '/produtos';
 
-    const dataBaseObserver = this.databaseService.writeDatabase(path, { idCount: newId })
+      this.databaseService.writeDatabase(path, { idCount: newId })
       .then(() => {
         let toast = this.myServices.criarToast('Id trocado com sucesso.');
         toast.present();
@@ -131,8 +129,7 @@ export class CadastrarProdutoPage {
         this.cameraImgService = new CameraService(this.myServices,
           this.databaseService,
           this.fireStorage,
-          this.camera,
-          this.userUid,
+          this.camera,         
           this.events,
           this.prod,
           this.idCount,
@@ -175,8 +172,7 @@ export class CadastrarProdutoPage {
     this.cameraImgService = new CameraService(this.myServices,
       this.databaseService,
       this.fireStorage,
-      this.camera,
-      this.userUid,
+      this.camera,     
       this.events,
       this.prod.imgUrl,
       this.idCount,

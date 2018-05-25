@@ -9,7 +9,7 @@ export class AlertaTrocarNomeService {
   constructor(private myServices: MyServicesProvider,
     private databaseService: DatabaseServiceProvider,    
     private userUid: string,
-    private userName: string,
+    userName: string,
     private events: Events) {
 
       this.newName = userName;

@@ -1,4 +1,4 @@
-import { AlertOptions, Events, NavController } from "ionic-angular";
+import { Events, NavController } from "ionic-angular";
 import { MyServicesProvider } from "../../providers/my-services/my-services";
 import { DatabaseServiceProvider } from "../../providers/auth/database-service";
 import { AngularFireStorage, AngularFireUploadTask } from "angularfire2/storage";
@@ -23,8 +23,7 @@ export class CameraService  {
   constructor(private myServices: MyServicesProvider,
     private databaseService: DatabaseServiceProvider,
     private fireStorage: AngularFireStorage,
-    private camera: Camera,
-    private userUid: string,
+    private camera: Camera,    
     private events: Events,
     private prod: any,
     private idCount: number,
