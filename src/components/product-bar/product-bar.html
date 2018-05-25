@@ -1,6 +1,7 @@
 <ion-item>
   <ion-thumbnail item-start>
-    <img src="{{produto?.imgUrl}}">   
+    <img src="{{produto?.imgUrl}}">
+    <div><b>#{{produto?.id}}</b></div>   
   </ion-thumbnail>
   <h2 class="name-style">{{produto?.nome}}</h2>  
     <h3 text-wrap>{{produto?.descricao}}</h3>  
@@ -11,4 +12,5 @@
   <button *ngIf="isPreview" ion-button item-end icon-only solid class="side-menu-buttom-normal">  
       <ion-icon name="cart"></ion-icon >
   </button> 
+  
 </ion-item>

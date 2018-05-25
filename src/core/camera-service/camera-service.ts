@@ -25,8 +25,7 @@ export class CameraService  {
     private fireStorage: AngularFireStorage,
     private camera: Camera,    
     private events: Events,
-    private prod: any,
-    private idCount: number,
+    private prod: any,   
     private navCtrl: NavController) {
      
       this.isImageUploaded = false;
@@ -54,7 +53,7 @@ export class CameraService  {
   createUploadTask(file: string): void {     
 
     this.image = file;
-    const filePath = '/productsIcons/' + this.idCount.toString() + `.jpg`;
+    const filePath = '/productsIcons/' + this.prod.id.toString() + `.jpg`;
 
     const fileRef = this.fireStorage.ref(filePath);
 
@@ -69,7 +68,7 @@ export class CameraService  {
         this.downloadURL = fileRef.getDownloadURL();
         this.downloadURL.subscribe((URL) => {
           this.prod.imgUrl = URL;
-          this.databaseService.writeDatabase('/produtos/' + this.idCount.toString(), this.prod)
+          this.databaseService.writeDatabase('/produtos/' + this.prod.id.toString(), this.prod)
             .then(() => {                            
               this.isImageUploaded = true;
               this.progressIsLoading = false;  

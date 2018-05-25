@@ -11,9 +11,7 @@ import { Component, Input } from '@angular/core';
   templateUrl: 'product-bar.html'
 })
 export class ProductBarComponent {
-
-  text: string;  
-
+  
   @Input()
   produto: any;
   
@@ -23,9 +21,4 @@ export class ProductBarComponent {
   constructor() {  
     this.isPreview = false;
   }
-
-  openProductConfirm(){
-    console.log('botao')
-  }
-
 }

@@ -25,11 +25,11 @@
   <product-bar [produto]="prodPreview" [isPreview]="true"></product-bar>
   <br>
   <p class="subtitle fancy">
-    <span>Cadastrar Novo Produto (id: {{idCount}})</span>
+    <span>Cadastrar Novo Produto (id: {{prod.id}})</span>
   </p>
   <ion-list no-lines>
     <form id="prodForm" #form="ngForm" novalidate>
-      <ion-item>
+      <ion-item class=" input-border">
         <ion-label class="input-label-style">Nome: </ion-label>
         <ion-input name="nome" [(ngModel)]="prod.nome" type="text" #name="ngModel" required (input)="onNameInput()"></ion-input>
       </ion-item>
@@ -37,27 +37,27 @@
         O campo é obrigatório.
       </ion-item>
 
-      <ion-item>
+      <ion-item class=" input-border">
         <ion-label class="input-label-style">Descrição: </ion-label>
-        <ion-textarea name="descricao" [(ngModel)]="prod.descricao" type="number" #name="ngModel" required (input)="onDescInput()"></ion-textarea>
-      </ion-item>
+        <ion-textarea name="descricao" [(ngModel)]="prod.descricao" type="text" #name="ngModel" required (input)="onDescInput()"></ion-textarea>
+      </ion-item >
       <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)" class="error-text-style">
         O campo é obrigatório.
       </ion-item>
-      <ion-item>
+      <ion-item class=" input-border">
         <ion-label class="input-label-style">Preço: </ion-label>
-        <ion-textarea name="preco" [(ngModel)]="preco" type="tel" [pattern]="numberPattern" #name="ngModel" required (input)="onPriceInput()"></ion-textarea>
+        <ion-input name="preco" [(ngModel)]="preco" type="tel" [pattern]="numberPattern" #name="ngModel" required (input)="onPriceInput()"></ion-input>
       </ion-item>
       <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)" class="error-text-style">
         O campo é obrigatório.
-      </ion-item>
+      </ion-item> 
       <ion-item *ngIf="name.errors?.pattern && (name.dirty || name.touched)" class="error-text-style">
         Preço inválido.
       </ion-item>
-    </form>
-    <ion-item *ngIf="!progressIsLoading">
+      
+    <ion-item *ngIf="!progressIsLoading" class="input-border">
       <ion-label class="input-label-style">Imagem URL: </ion-label>
-      <ion-textarea name="img" [(ngModel)]="prod.imgUrl" type="text" #name="ngModel" required></ion-textarea>
+      <ion-textarea name="img" [(ngModel)]="prod.imgUrl" type="text" #name="ngModel" required ></ion-textarea>
     </ion-item>
     <ion-item class="progress-bar-especial" *ngIf="progressIsLoading">
       <div>Enviando imagem:</div>
@@ -78,6 +78,7 @@
     <button *ngIf="!progressIsLoading" (click)="registerProduct()" ion-button full style="background-color:#da8a00">
       <div>Cadastrar Produto</div>
     </button>
+  </form>
   </ion-list>
 
 </ion-content>

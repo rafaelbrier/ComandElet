@@ -17,7 +17,6 @@ export class CadastrarProdutoPage {
   @ViewChild('form') form: NgForm;
   //produto
   preco: string;
-  idCount: number;
   userUid: string;
   prodPreview: any;
   prod: any;
@@ -40,17 +39,18 @@ export class CadastrarProdutoPage {
     private alertCtrl: AlertController) {
 
     this.userUid = navParams.get("userUid");
-    this.idCount = null;
     this.file = null;
 
     this.prodPreview = {
+      id: null,
       nome: 'Nome',
-      imgUrl: '../../assets/imgs/logo.png',
+      imgUrl: 'https://firebasestorage.googleapis.com/v0/b/comanda-eletroni-1525119433359.appspot.com/o/productsIcons%2FiconEx.png?alt=media&token=464cf19c-0efc-4e8f-9c3c-1c08967af677',
       descricao: 'Informações do produto',
       preco: 0
     }
 
     this.prod = {
+      id: null,
       nome: '',
       imgUrl: '',
       descricao: '',
@@ -63,7 +63,8 @@ export class CadastrarProdutoPage {
 
     const dataBaseObserver = this.databaseService.readDatabase(path)
       .subscribe((res: any) => {
-        this.idCount = res.idCount;
+        this.prod.id = res.idCount;   
+        this.prodPreview.id = res.idCount;     
         dataBaseObserver.unsubscribe();
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
@@ -107,11 +108,12 @@ export class CadastrarProdutoPage {
   changeId(newId: number) {
     const path = '/produtos';
 
-      this.databaseService.writeDatabase(path, { idCount: newId })
+    this.databaseService.writeDatabase(path, { idCount: newId })
       .then(() => {
         let toast = this.myServices.criarToast('Id trocado com sucesso.');
         toast.present();
-        this.idCount = newId;
+        this.prod.id = newId;
+        this.prodPreview.id = newId;     
       }).catch(() => {
         let toast = this.myServices.criarToast('Erro ao trocar id.');
         toast.present();
@@ -119,9 +121,9 @@ export class CadastrarProdutoPage {
   }
 
   registerProduct() {
-    if (this.notAllFilledForm()) {
+    if (this.notAllFilledForm() && this.filterInt(this.preco)) {
 
-      if (this.idCount != null) {
+      if (this.prod.id != null) {
 
         this.progressIsLoading = false;
         this.isImgUploaded = false;
@@ -129,10 +131,9 @@ export class CadastrarProdutoPage {
         this.cameraImgService = new CameraService(this.myServices,
           this.databaseService,
           this.fireStorage,
-          this.camera,         
+          this.camera,
           this.events,
           this.prod,
-          this.idCount,
           this.navCtrl);
 
         this.events.subscribe('user:prodimg', (progressFromEvent, progressIsLoadingFromEvent: boolean, isImgUploadedFromEvent: boolean) => {
@@ -146,7 +147,7 @@ export class CadastrarProdutoPage {
           this.events.unsubscribe('user:newimage');
 
         } else if (this.prod.imgUrl != "") {
-          this.databaseService.writeDatabase('/produtos/' + this.idCount.toString(), this.prod)
+          this.databaseService.writeDatabase('/produtos/' + this.prod.id.toString(), this.prod)
             .then(() => {
               let toast = this.myServices.criarToast('Produto cadastrado com sucesso.');
               toast.present();
@@ -165,6 +166,17 @@ export class CadastrarProdutoPage {
         let toast = this.myServices.criarToast('Erro ao verificar o número de iDs disponíveis no banco de dados, tente novamente mais tarde.');
         toast.present();
       }
+    } else if (!this.notAllFilledForm()) {
+      let toast = this.myServices.criarToast('Preencha todos os campos vazios.');
+      toast.present();
+    }
+    else if (!this.filterInt(this.preco)) {
+      let toast = this.myServices.criarToast('Preço inválido.');
+      toast.present();
+    }
+    else {
+      let toast = this.myServices.criarToast('Erro inesperado.');
+      toast.present();
     }
   }
 
@@ -172,10 +184,9 @@ export class CadastrarProdutoPage {
     this.cameraImgService = new CameraService(this.myServices,
       this.databaseService,
       this.fireStorage,
-      this.camera,     
+      this.camera,
       this.events,
-      this.prod.imgUrl,
-      this.idCount,
+      this.prod,
       this.navCtrl);
 
     this.cameraImgService.getPhoto('gallery')
@@ -208,17 +219,15 @@ export class CadastrarProdutoPage {
     var preco = this.form.value["preco"];
 
     if (name == null || name == "" || desc == null || desc == "" || preco == null || preco == "") {
-      let toast = this.myServices.criarToast('Preencha todos os campos vazios.');
-      toast.present();
       return false;
     }
-
     return true;
   }
 
   filterInt(value) {
-    if (/^\d+(\.\d{1,2})?$/.test(value))
+    if (/^\d+(\.\d{1,2})?$/.test(value)) {
       return true;
-    return NaN;
+    }
+    else { return NaN; }
   }
 }
