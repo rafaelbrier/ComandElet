@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule, LOCALE_ID } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -25,7 +25,12 @@ import { DatabaseServiceProvider } from '../providers/auth/database-service';
 
 import { GooglePlus } from '@ionic-native/google-plus';
 import { Facebook } from '@ionic-native/facebook';
+import { ProductBarComponent } from '../components/product-bar/product-bar';
 
+import { registerLocaleData } from '@angular/common';
+import ptBr from '@angular/common/locales/pt';
+import { CadastrarProdutoPage } from '../pages/cadastrar-produto/cadastrar-produto';
+registerLocaleData(ptBr)
 
 
 @NgModule({
@@ -36,7 +41,9 @@ import { Facebook } from '@ionic-native/facebook';
     LoginTabPage,
     HomePage,
     ResetpasswordPage,
-    HomeAdminPage
+    HomeAdminPage,
+    ProductBarComponent,
+    CadastrarProdutoPage   
   ],
   imports: [
     BrowserModule,
@@ -57,9 +64,11 @@ import { Facebook } from '@ionic-native/facebook';
     LoginTabPage,
     HomePage,
     ResetpasswordPage,
-    HomeAdminPage
+    HomeAdminPage,
+    CadastrarProdutoPage  
   ],
   providers: [
+    {provide: LOCALE_ID, useValue: 'pt-BR'},
     StatusBar,
     SplashScreen,
     Camera,

@@ -55,7 +55,7 @@ export class AlertImagemPerfilService  {
   //REMOVER IMAGEM --------------------------------------------------------------------------------------------------------------------
   removeImgHandler() {
     this.myServices.showLoading();
-    this.databaseService.writeDatabase(this.userUid,
+    this.databaseService.writeDatabaseUser(this.userUid,
       { imgUrl: 'https://firebasestorage.googleapis.com/v0/b/comanda-eletroni-1525119433359.appspot.com/o/ProfileImages%2FdefaultImg%2Fdefault-avatar.png?alt=media&token=3a02ff5a-0a07-4a16-99e8-be90c8542cf5' })
       .then(() => {
         this.removeImg();
@@ -124,7 +124,7 @@ export class AlertImagemPerfilService  {
       finalize(() => {
         this.downloadURL = fileRef.getDownloadURL();
         this.downloadURL.subscribe((URL) => {
-          this.databaseService.writeDatabase(this.userUid, { imgUrl: URL })
+          this.databaseService.writeDatabaseUser(this.userUid, { imgUrl: URL })
             .then(() => {
               this.newImgUrl = URL;                  
               this.isImageUploaded = true;

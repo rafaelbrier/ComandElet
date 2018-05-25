@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, MenuController } from 'ionic-angular';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { AuthService } from '../../providers/auth/auth-service';
+import { CadastrarProdutoPage } from '../cadastrar-produto/cadastrar-produto';
 
 
 @Component({
@@ -17,10 +18,15 @@ export class HomeAdminPage {
     public myServices: MyServicesProvider,
     public authService: AuthService,
     public menuCtrl: MenuController) {
-
     this.menuCtrl.enable(true, 'myMenu');
 
-    this.userUid = navParams.get("userUid");
-
+    this.userUid = navParams.get("userUid");   
   }
+
+  registProducPage(){
+    this.navCtrl.push(CadastrarProdutoPage, {
+      userUid: this.userUid               
+    });       
+  }
+
 }

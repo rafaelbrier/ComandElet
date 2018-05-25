@@ -1,0 +1,83 @@
+<!--
+  Generated template for the CadastrarProdutoPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Cadastrar Produto</ion-title>    
+    <ion-buttons right>
+        <button ion-button   (click)="changeIdAlert()" style="background-color: #da8a00; color: white">
+         iD
+        </button>
+      </ion-buttons>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <p class="subtitle fancy">
+    <span>Pré-Visualização</span>
+  </p>
+  <product-bar [produto]="prodPreview" [isPreview]="true"></product-bar>
+  <br>
+  <p class="subtitle fancy">
+    <span>Cadastrar Novo Produto (id: {{idCount}})</span>
+  </p>
+  <ion-list no-lines>
+    <form id="prodForm" #form="ngForm" novalidate>
+      <ion-item>
+        <ion-label class="input-label-style">Nome: </ion-label>
+        <ion-input name="nome" [(ngModel)]="prod.nome" type="text" #name="ngModel" required (input)="onNameInput()"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)" class="error-text-style">
+        O campo é obrigatório.
+      </ion-item>
+
+      <ion-item>
+        <ion-label class="input-label-style">Descrição: </ion-label>
+        <ion-textarea name="descricao" [(ngModel)]="prod.descricao" type="number" #name="ngModel" required (input)="onDescInput()"></ion-textarea>
+      </ion-item>
+      <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)" class="error-text-style">
+        O campo é obrigatório.
+      </ion-item>
+      <ion-item>
+        <ion-label class="input-label-style">Preço: </ion-label>
+        <ion-textarea name="preco" [(ngModel)]="preco" type="tel" [pattern]="numberPattern" #name="ngModel" required (input)="onPriceInput()"></ion-textarea>
+      </ion-item>
+      <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)" class="error-text-style">
+        O campo é obrigatório.
+      </ion-item>
+      <ion-item *ngIf="name.errors?.pattern && (name.dirty || name.touched)" class="error-text-style">
+        Preço inválido.
+      </ion-item>
+    </form>
+    <ion-item *ngIf="!progressIsLoading">
+      <ion-label class="input-label-style">Imagem URL: </ion-label>
+      <ion-textarea name="img" [(ngModel)]="prod.imgUrl" type="text" #name="ngModel" required></ion-textarea>
+    </ion-item>
+    <ion-item class="progress-bar-especial" *ngIf="progressIsLoading">
+      <div>Enviando imagem:</div>
+      <div class="centralizado">
+        <progress max="100" [value]="(progress | async)" value="{{ progress | async }}" style="color: black"></progress>
+      </div>
+      <button (click)="taskImgUploadCancel()" class="side-menu-buttom-normal" ion-button>
+        <div>
+          Cancelar envio
+        </div>
+      </button>
+    </ion-item>
+    <div class="centralizado" *ngIf="!progressIsLoading">
+      <button ion-button style="background-color: #da8a00" (click)="testUrl()">Testar URL</button>
+      <button ion-button style="background-color: #da8a00" (click)="uploadImg()">Enviar Imagem</button>
+    </div>
+    <br>
+    <button *ngIf="!progressIsLoading" (click)="registerProduct()" ion-button full style="background-color:#da8a00">
+      <div>Cadastrar Produto</div>
+    </button>
+  </ion-list>
+
+</ion-content>

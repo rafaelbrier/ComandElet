@@ -22,15 +22,23 @@ export class DatabaseServiceProvider {
     this.fireDatabase.object('users/' + res.uid).update(userInfo);
   }
 
-  writeDatabase(userUid: string, userInfo: any) {
+  writeDatabaseUser(userUid: string, userInfo: any) {
     return this.fireDatabase.object('users/' + userUid).update(userInfo);    
   }
 
-  readDatabase(userUid: string) {
+  readDatabaseUser(userUid: string) {
     return this.fireDatabase.object('users/' + userUid).valueChanges();
   }
+  
+  readDatabase(path: string) {
+    return this.fireDatabase.object(path).valueChanges();
+  }
 
-  removeDatabase(userUid: string) {
+  writeDatabase(path: string, userInfo: any) {
+    return this.fireDatabase.object(path).update(userInfo);    
+  }
+
+  removeDatabaseUser(userUid: string) {
     return this.fireDatabase.object('users/' + userUid).remove();
   }
 

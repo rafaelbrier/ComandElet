@@ -77,7 +77,7 @@ export class MyApp {
 
   menuOpened() {
     if (this.userUid != null) {
-      const userDataObserver = this.databaseService.readDatabase(this.userUid)
+      const userDataObserver = this.databaseService.readDatabaseUser(this.userUid)
         .subscribe((resUser: any) => {
           this.displayName = resUser.name;
           this.imgUrl = resUser.imgUrl;
@@ -86,6 +86,7 @@ export class MyApp {
         }, error => {
           let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
           toast.present();
+          userDataObserver.unsubscribe();
         });
     }
   }

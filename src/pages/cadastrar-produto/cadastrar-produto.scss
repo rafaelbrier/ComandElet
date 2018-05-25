@@ -1,0 +1,46 @@
+.progress-bar-especial{
+  position: absolute;  
+  background: none; 
+  color: white;  
+  }
+
+.form-style{
+    background: rgba(54, 25, 25, .4);
+}
+
+.input-label-style{
+    color: #da8a00 !important;
+    font-size: 20px !important;
+  }
+  
+.subtitle {
+    margin: 0 0 2em 0;
+    font-weight: bold
+  }
+  .fancy {
+    line-height: 0.5;
+    text-align: center;
+  }
+
+  .fancy span {
+    display: inline-block;
+    position: relative;  
+  }
+  .fancy span:before,
+  .fancy span:after {
+    content: "";
+    position: absolute;
+    height: 5px;
+    border-bottom: 1px solid #eebd19;
+    border-top: 1px solid #eebd19;
+    top: 0;
+    width: 600px;
+  }
+  .fancy span:before {
+    right: 100%;
+    margin-right: 15px;
+  }
+  .fancy span:after {
+    left: 100%;
+    margin-left: 15px;
+  }

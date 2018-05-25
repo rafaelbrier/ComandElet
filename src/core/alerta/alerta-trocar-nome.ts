@@ -44,7 +44,7 @@ export class AlertaTrocarNomeService {
   confirmarHandler(data) {
     this.myServices.showLoading();
     if (this.isNameValid(data.name)) {
-      this.databaseService.writeDatabase(this.userUid, data)
+      this.databaseService.writeDatabaseUser(this.userUid, data)
         .then(() => {         
           let toast = this.myServices.criarToast('Nome trocado com sucesso.');
           toast.present(); 

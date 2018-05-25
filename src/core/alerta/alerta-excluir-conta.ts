@@ -70,7 +70,7 @@ export class AlertaExcluirContaService {
         //-----------
 
         //Excluir dados no Database
-        this.databaseService.removeDatabase(this.userUid)
+        this.databaseService.removeDatabaseUser(this.userUid)
           .then(() => {
             this.myServices.dismissLoading();
             let toast = this.myServices.criarToast('Dados do usuário removidos com sucesso.');
