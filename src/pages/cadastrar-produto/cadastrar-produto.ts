@@ -24,7 +24,7 @@ export class CadastrarProdutoPage {
   isImgUploaded: Boolean;
   progressIsLoading: Boolean;
   cameraImgService: CameraService;
-  file: any;
+  file: any;  
 
   numberPattern = /^\d+(\.\d{1,2})?$/;
 
@@ -120,7 +120,36 @@ export class CadastrarProdutoPage {
       })
   }
 
-  registerProduct() {
+  registerTypeConfirm(){
+      let alert = this.alertCtrl.create({
+        title: 'Confirmar cadastro de produto.',
+        message: 'O produto a ser cadastrado é uma Bebida ou Comida?',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            handler: () => {}
+          },
+          {
+            text: 'Comida',
+            handler: () => {
+              this.registerProduct('comida');
+            }
+            },
+            {
+              text: 'Bebida',
+              handler: () => {
+                this.registerProduct('bebida');
+              }                       
+          }
+        ]
+      });
+      alert.present();
+    }
+
+  
+
+  registerProduct(productType: string) {
     if (this.notAllFilledForm() && this.filterInt(this.preco)) {
 
       if (this.prod.id != null) {
@@ -143,14 +172,15 @@ export class CadastrarProdutoPage {
         });
 
         if (this.file != null && this.prod.imgUrl == "") {
-          this.cameraImgService.createUploadTask(this.file);
+          this.cameraImgService.createUploadTask(this.file, productType);          
           this.events.unsubscribe('user:newimage');
 
         } else if (this.prod.imgUrl != "") {
-          this.databaseService.writeDatabase('/produtos/' + this.prod.id.toString(), this.prod)
+          this.databaseService.writeDatabase('/produtos/' + productType +  '/' + this.prod.id.toString(), this.prod)
             .then(() => {
               let toast = this.myServices.criarToast('Produto cadastrado com sucesso.');
               toast.present();
+              this.cameraImgService.incrementId();
               setTimeout(() => { this.navCtrl.pop(); }, 1000)
             }).catch(() => {
               let toast = this.myServices.criarToast('Erro ao cadastrar usuário');

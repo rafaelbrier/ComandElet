@@ -36,7 +36,7 @@ export class CameraService  {
   //TROCAR IMAGEM ---------------------------------------------------------------------------------------------------------------------
   getPhoto(type) {
     const options: CameraOptions = {
-      quality: 40,
+      quality: 70,
       targetHeight: 100,
       targetWidth: 100,
       destinationType: this.camera.DestinationType.DATA_URL,
@@ -49,11 +49,26 @@ export class CameraService  {
     return this.camera.getPicture(options);
   }
 
+  incrementId(){
+    const path = '/produtos';
+    this.databaseService.writeDatabase(path, { idCount: this.prod.id + 1 })
+      .then(() => {}).catch(() => {
+      let toast = this.myServices.criarToast('Erro ao incrementar id.');
+      toast.present();  })
+  }
+  decrementId(){
+    const path = '/produtos';
+    this.databaseService.writeDatabase(path, { idCount: this.prod.id - 1 })
+      .then(() => {}).catch(() => {
+      let toast = this.myServices.criarToast('Erro ao decrementar id.');
+      toast.present();  })
+  }
+
  
-  createUploadTask(file: string): void {     
+  createUploadTask(file: string, productType: string): void {     
 
     this.image = file;
-    const filePath = '/productsIcons/' + this.prod.id.toString() + `.jpg`;
+    const filePath = '/productsIcons/' +  productType +  '/' + this.prod.id.toString() + `.jpg`;
 
     const fileRef = this.fireStorage.ref(filePath);
 
@@ -68,46 +83,39 @@ export class CameraService  {
         this.downloadURL = fileRef.getDownloadURL();
         this.downloadURL.subscribe((URL) => {
           this.prod.imgUrl = URL;
-          this.databaseService.writeDatabase('/produtos/' + this.prod.id.toString(), this.prod)
+          this.databaseService.writeDatabase('/produtos/' + productType +  '/' +  this.prod.id.toString(), this.prod)
             .then(() => {                            
               this.isImageUploaded = true;
               this.progressIsLoading = false;  
               this.events.publish('user:prodimg', this.progress, this.progressIsLoading, this.isImageUploaded);              
               let toast = this.myServices.criarToast('Produto cadastrado com sucesso.');              
-              toast.present();          
-              setTimeout(()=>{this.navCtrl.pop();}, 1000);       
+              toast.present(); 
+              this.incrementId();               
+              setTimeout(()=>{this.navCtrl.pop();}, 1000);                   
             })
             .catch(() => {
               let toast = this.myServices.criarToast('Erro ao cadastrar produto');
               toast.present();
               this.progressIsLoading = false;
+              
             });
           this.progressIsLoading = false;
         }, error => {
         })
       })
-    ).subscribe(() => {
-
+    ).subscribe(() => {     
     }, error => {
       if (error.code == 'storage/canceled') {
         let toast = this.myServices.criarToast('Envio de imagem cancelado.');
         toast.present();
-        this.progressIsLoading = false;
+        this.progressIsLoading = false;       
       } else {
         let toast = this.myServices.criarToast('Erro ao enviar imagem.');
         toast.present();
         this.progressIsLoading = false;
+       
       }
-    });
-  }
-
-  uploadHandler(type: string) {
-    this.getPhoto(type)
-      .then(base64 => {
-        this.createUploadTask(base64);
-      })
-      .catch(() => {
-      })
+    });   
   }
 
   taskCancel(){
