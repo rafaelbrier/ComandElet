@@ -12,27 +12,35 @@
       </button>
     </ion-buttons>
     <ion-buttons right>
-      <button ion-button icon-only large (click)="cartPage()">
+      <button ion-button icon-only large (click)="cartPage()" style="padding-top: 1px;">
         <ion-badge *ngIf="userCartSize">{{ userCartSize }}</ion-badge>
         <ion-icon name="cash"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
+  <ion-segment [(ngModel)]="produtos">
+      <ion-segment-button value="Bebidas" class="segment-style">
+        Bebidas
+      </ion-segment-button>
+      <ion-segment-button value="Comidas" class="segment-style">
+        Comidas
+      </ion-segment-button>
+    </ion-segment>
 </ion-header>
 
-<ion-content padding>
-  <p class="subtitle fancy">
-    <span>Comidas</span>
-  </p>
-  <ion-list *ngFor="let comidas of prodComidas">
-    <product-bar [produto]="comidas" (listButton)="addToCart($event)">
-    </product-bar>
-  </ion-list>
-  <p class="subtitle fancy">
-    <span>Bebidas</span>
-  </p>
-  <ion-list *ngFor="let bebidas of prodBebidas">
-    <product-bar [produto]="bebidas" (listButton)="addToCart($event)">
-    </product-bar>
-  </ion-list>
+<ion-content padding>  
+  <div [ngSwitch]="produtos">
+    <ion-list *ngSwitchCase="'Bebidas'">
+      <ion-list *ngFor="let bebidas of prodBebidas">
+        <product-bar [produto]="bebidas" (listButton)="addToCart($event)">
+        </product-bar>
+      </ion-list>
+    </ion-list>
+    <ion-list *ngSwitchCase="'Comidas'">
+      <ion-list *ngFor="let comidas of prodComidas">
+        <product-bar [produto]="comidas" (listButton)="addToCart($event)">
+        </product-bar>
+      </ion-list>
+    </ion-list>
+  </div>
 </ion-content>

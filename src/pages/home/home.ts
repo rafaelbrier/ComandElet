@@ -19,6 +19,7 @@ export class HomePage {
   prodComidas: any[];
   prodBebidas: any[];
   productId: number;  
+  produtos: string;
 
   userCart: [{
     id: Number,
@@ -39,6 +40,7 @@ export class HomePage {
     private alertCtrl: AlertController) {
 
     this.menuCtrl.enable(true, 'myMenu');
+    this.produtos = 'Bebidas';
 
     this.userCart = [{
       id: null,
@@ -143,6 +145,6 @@ export class HomePage {
   }
 
   cartPage(){
-    this.navCtrl.push(CarrinhoPage, {userCart: this.userCart});
+    this.navCtrl.push(CarrinhoPage, {userCart: this.userCart, userUid: this.userUid});
   }
 }

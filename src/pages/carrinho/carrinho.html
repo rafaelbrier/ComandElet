@@ -5,14 +5,27 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
   <ion-navbar>
-    <ion-title>carrinho</ion-title>
+    <ion-title class="centralizado" style=" padding-right: 15%">Carrinho</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 
 <ion-content padding>
 
 </ion-content>
+
+<ion-footer>
+    <ion-item>
+        <ion-label>Entrega</ion-label>
+        <ion-select [(ngModel)]="Entrega">
+          <ion-option value="retirar">Retirar</ion-option>
+          <ion-option value="entregar">Entregar</ion-option>
+        </ion-select>
+      </ion-item>
+    <button ion-button large full (click)="finalizarCompra()" class="button-style"> 
+      <div>
+        Finalizar Compra
+      </div>     
+      </button>
+</ion-footer>

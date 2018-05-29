@@ -1,13 +1,6 @@
 import { Component } from '@angular/core';
 import { NavParams, MenuController } from 'ionic-angular';
 
-/**
- * Generated class for the CarrinhoPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 
 @Component({
   selector: 'page-carrinho',
@@ -16,16 +9,19 @@ import { NavParams, MenuController } from 'ionic-angular';
 export class CarrinhoPage {
 
   userCart: any[];
+  userUid: string;
 
   constructor(public navParams: NavParams,
     private menuCtrl: MenuController) {
-      this.userCart = navParams.get("userCart");   
+
+      this.userCart = navParams.get("userCart");
+      this.userUid = navParams.get("userUid");   
 
     this.menuCtrl.enable(true, 'myMenu');
   }
 
   ionViewDidLoad() {
-    console.log(this.userCart)
+    console.log(this.userCart, this.userUid)
   }
 
 }
