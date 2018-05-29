@@ -43,6 +43,13 @@ export class MyServicesProvider {
             return true;
         }
     }
+
+    filterInt(value) {
+        if (/^\d+(\.\d{1,2})?$/.test(value)) {
+          return true;
+        }
+        else { return NaN; }
+      }
 }
 
 

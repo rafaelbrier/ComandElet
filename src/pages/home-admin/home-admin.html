@@ -6,8 +6,14 @@
 
 <ion-content padding>
     <ion-list>
-        <button (click)="registProducPage()" ion-button large="true">
-            Cadastrar Novo Produto
-        </button>       
+        <p class="subtitle fancy">
+            <span>Serviços de Produtos</span>
+        </p>
+        <button (click)="removeProduct()" ion-button full large="true" class="button-style">
+            <div> Remover Produto </div>
+        </button>
+        <button (click)="registProducPage()" ion-button full large="true" class="button-style">
+            <div> Cadastrar Novo Produto </div>
+        </button>
     </ion-list>
 </ion-content>

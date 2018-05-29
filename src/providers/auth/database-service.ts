@@ -2,12 +2,14 @@
 import { Injectable } from '@angular/core';
 import { User } from './users';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireStorage } from 'angularfire2/storage';
 
 
 @Injectable()
 export class DatabaseServiceProvider {
 
-  constructor(private fireDatabase: AngularFireDatabase) {
+  constructor(private fireDatabase: AngularFireDatabase,
+              private fireStorage: AngularFireStorage ) {
 
   }
 
@@ -42,5 +44,11 @@ export class DatabaseServiceProvider {
     return this.fireDatabase.object('users/' + userUid).remove();
   }
 
+  removeDatabase(path) {
+    return this.fireDatabase.object(path).remove();
+  }
 
+  removeFireStorageFile(path) {
+    return this.fireStorage.ref(path).delete();
+  }
 }

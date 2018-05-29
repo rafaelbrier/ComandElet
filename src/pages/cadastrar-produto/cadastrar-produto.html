@@ -25,7 +25,7 @@
   <product-bar [produto]="prodPreview" [isPreview]="true"></product-bar>
   <br>
   <p class="subtitle fancy">
-    <span>Cadastrar Novo Produto (id: {{prod.id}})</span>
+    <span>Cadastrar Novo Produto (ID: {{prod.id}})</span>
   </p>
   <ion-list no-lines>
     <form id="prodForm" #form="ngForm" novalidate>
@@ -70,7 +70,7 @@
         </div>
       </button>
     </ion-item>
-    <div class="centralizado" *ngIf="!progressIsLoading">
+    <div style="text-align: center" *ngIf="!progressIsLoading">
       <button ion-button style="background-color: #da8a00" (click)="testUrl()">Testar URL</button>
       <button ion-button style="background-color: #da8a00" (click)="uploadImg()">Enviar Imagem</button>
     </div>

@@ -88,7 +88,7 @@ export class CadastrarProdutoPage {
       }, {
         text: 'Confirmar',
         handler: data => {
-          if (this.filterInt(data.id)) {
+          if (this.myServices.filterInt(data.id)) {
             if (Number.isInteger(Number(data.id))) {
               this.changeId(Number(data.id));
             } else {
@@ -150,7 +150,7 @@ export class CadastrarProdutoPage {
   
 
   registerProduct(productType: string) {
-    if (this.notAllFilledForm() && this.filterInt(this.preco)) {
+    if (this.notAllFilledForm() && this.myServices.filterInt(this.preco)) {
 
       if (this.prod.id != null) {
 
@@ -200,7 +200,7 @@ export class CadastrarProdutoPage {
       let toast = this.myServices.criarToast('Preencha todos os campos vazios.');
       toast.present();
     }
-    else if (!this.filterInt(this.preco)) {
+    else if (!this.myServices.filterInt(this.preco)) {
       let toast = this.myServices.criarToast('Preço inválido.');
       toast.present();
     }
@@ -237,7 +237,7 @@ export class CadastrarProdutoPage {
     this.prodPreview.descricao = this.prod.descricao;
   }
   onPriceInput() {
-    if (this.filterInt(this.preco)) {
+    if (this.myServices.filterInt(this.preco)) {
       this.prodPreview.preco = Number(this.preco);
       this.prod.preco = Number(this.preco);
     }
@@ -252,12 +252,5 @@ export class CadastrarProdutoPage {
       return false;
     }
     return true;
-  }
-
-  filterInt(value) {
-    if (/^\d+(\.\d{1,2})?$/.test(value)) {
-      return true;
-    }
-    else { return NaN; }
   }
 }

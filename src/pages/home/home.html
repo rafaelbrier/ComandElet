@@ -1,26 +1,32 @@
 <ion-header>
-<ion-navbar>
-   <button ion-button menuToggle icon-only >
-     <ion-icon name="menu"></ion-icon>
-    </button> 
+  <ion-navbar>
+    <button ion-button menuToggle icon-only>
+      <ion-icon name="menu"></ion-icon>
+    </button>
 
-      <ion-title class = "centralizado">Home</ion-title>
-  
-      <ion-buttons right *ngIf="isAdmin">
-        <button ion-button icon-only  (click)="adminPage()">
-          <ion-icon name="lock"></ion-icon>
-        </button>
-      </ion-buttons>
-    </ion-navbar>   
+    <ion-title class="centralizado">Home</ion-title>
+
+    <ion-buttons right *ngIf="isAdmin">
+      <button ion-button icon-only (click)="adminPage()">
+        <ion-icon name="lock"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
 </ion-header>
 
 <ion-content padding>
- <ion-list>
-   <product-bar [produto]="prod">
-   </product-bar>
-   <product-bar>
-  </product-bar>
- </ion-list>
+  <p class="subtitle fancy">
+    <span>Comidas</span>
+  </p>
+  <ion-list *ngFor="let comidas of prodComidas">
+    <product-bar [produto]="comidas">
+    </product-bar>
+  </ion-list>
+  <p class="subtitle fancy">
+    <span>Bebidas</span>
+  </p>
+  <ion-list *ngFor="let bebidas of prodBebidas">
+    <product-bar [produto]="bebidas">
+    </product-bar>
+  </ion-list>
 </ion-content>
-
-
