@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, MenuController, Events } from 'ionic-angular';
+import { NavController, MenuController, Events, AlertController } from 'ionic-angular';
 import { AuthService } from '../../providers/auth/auth-service';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { DatabaseServiceProvider } from '../../providers/auth/database-service';
@@ -23,7 +23,8 @@ export class HomePage {
     private myServices: MyServicesProvider,
     private dataService: DatabaseServiceProvider,    
     public menuCtrl: MenuController,
-    public events: Events) {
+    public events: Events,
+    private alertCtrl: AlertController) {
 
     this.menuCtrl.enable(true, 'myMenu');
 
@@ -99,7 +100,7 @@ export class HomePage {
       });
   }
 
- openProductConfirm(){
-   console.log('s')
+ addToCart(emitVars: any){
+   
  }
 }

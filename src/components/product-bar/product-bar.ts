@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 /**
  * Generated class for the ProductsBarComponent component.
@@ -18,7 +18,14 @@ export class ProductBarComponent {
   @Input()
   isPreview: boolean;
 
+  @Output() listButton = new EventEmitter();
+
   constructor() {  
     this.isPreview = false;
+  }
+
+  listButtonClick(){
+    let emitVars = {id: this.produto.id, nome: this.produto.nome, preco: this.produto.preco};
+    this.listButton.emit(emitVars);    
   }
 }

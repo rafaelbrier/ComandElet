@@ -6,7 +6,7 @@
   <h2 class="name-style">{{produto?.nome}}</h2>  
     <h3 text-wrap>{{produto?.descricao}}</h3>  
   <h2 class="price-style"> <b>{{produto?.preco | currency:'BRL':symbol:'.2-2'}}</b></h2>
-  <button *ngIf="!isPreview" ion-button item-end icon-only solid class="side-menu-buttom-normal" (click)="openProductConfirm()">  
+  <button *ngIf="!isPreview" ion-button item-end icon-only solid class="side-menu-buttom-normal" (click)="listButtonClick()">  
       <ion-icon name="cart"></ion-icon >
   </button> 
   <button *ngIf="isPreview" ion-button item-end icon-only solid class="side-menu-buttom-normal">  

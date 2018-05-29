@@ -19,14 +19,14 @@
     <span>Comidas</span>
   </p>
   <ion-list *ngFor="let comidas of prodComidas">
-    <product-bar [produto]="comidas">
+    <product-bar [produto]="comidas" (listButton)="addToCart($event)">
     </product-bar>
   </ion-list>
   <p class="subtitle fancy">
     <span>Bebidas</span>
   </p>
   <ion-list *ngFor="let bebidas of prodBebidas">
-    <product-bar [produto]="bebidas">
+    <product-bar [produto]="bebidas" (listButton)="addToCart($event)">
     </product-bar>
   </ion-list>
 </ion-content>
