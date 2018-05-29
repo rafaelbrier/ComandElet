@@ -4,6 +4,7 @@ import { AuthService } from '../../providers/auth/auth-service';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { DatabaseServiceProvider } from '../../providers/auth/database-service';
 import { HomeAdminPage } from '../home-admin/home-admin';
+import { AlertaAddToCart } from '../../core/alerta/alerta-addto-cart';
 
 
 @Component({
@@ -18,15 +19,29 @@ export class HomePage {
   prodBebidas: any[];
   productId: number;
 
+  userCart: [{
+    id: Number,
+    nome: string,
+    obs: string,
+    preco: Number
+  }];
+
   constructor(public navCtrl: NavController,
     private authService: AuthService,
     private myServices: MyServicesProvider,
-    private dataService: DatabaseServiceProvider,    
+    private dataService: DatabaseServiceProvider,
     public menuCtrl: MenuController,
     public events: Events,
     private alertCtrl: AlertController) {
 
     this.menuCtrl.enable(true, 'myMenu');
+
+    this.userCart = [{
+      id: null,
+      nome: '',
+      obs: '',
+      preco: null
+    }];
 
     const authObserver = this.authService.loggedUserInfo().subscribe(user => {
       this.isAdmin = false;
@@ -100,7 +115,26 @@ export class HomePage {
       });
   }
 
- addToCart(emitVars: any){
-   
- }
+  addToCart(emitVars: any) {
+    let addtoCartAlert = new AlertaAddToCart();
+    let alert = this.alertCtrl.create(addtoCartAlert.createAlertOptions(emitVars.nome, emitVars.id));
+    alert.addInput(addtoCartAlert.inputAdd());
+    alert.addButton({
+      text: 'Confirmar',
+      handler: (observ) => {
+        this.confirmarHandler(emitVars, observ.Obs);
+      }
+    });
+    alert.present();
+  }
+
+  confirmarHandler(emitVars: any, obs: string) {
+    emitVars["obs"] = obs;   
+    if (this.userCart["0"].id == null) {
+      this.userCart["0"] = emitVars;
+    } else {
+      this.userCart.push(emitVars);
+    }
+    console.log(this.userCart)
+  }
 }
