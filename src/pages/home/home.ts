@@ -5,6 +5,7 @@ import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { DatabaseServiceProvider } from '../../providers/auth/database-service';
 import { HomeAdminPage } from '../home-admin/home-admin';
 import { AlertaAddToCart } from '../../core/alerta/alerta-addto-cart';
+import { CarrinhoPage } from '../carrinho/carrinho';
 
 
 @Component({
@@ -17,14 +18,17 @@ export class HomePage {
   userUid: string;
   prodComidas: any[];
   prodBebidas: any[];
-  productId: number;
+  productId: number;  
 
   userCart: [{
     id: Number,
     nome: string,
     obs: string,
-    preco: Number
+    preco: Number,
+    imgUrl: string
   }];
+
+  userCartSize: Number;
 
   constructor(public navCtrl: NavController,
     private authService: AuthService,
@@ -40,7 +44,8 @@ export class HomePage {
       id: null,
       nome: '',
       obs: '',
-      preco: null
+      preco: null,
+      imgUrl: ''
     }];
 
     const authObserver = this.authService.loggedUserInfo().subscribe(user => {
@@ -127,7 +132,6 @@ export class HomePage {
     });
     alert.present();
   }
-
   confirmarHandler(emitVars: any, obs: string) {
     emitVars["obs"] = obs;   
     if (this.userCart["0"].id == null) {
@@ -135,6 +139,10 @@ export class HomePage {
     } else {
       this.userCart.push(emitVars);
     }
-    console.log(this.userCart)
+    this.userCartSize = this.userCart.length;  
+  }
+
+  cartPage(){
+    this.navCtrl.push(CarrinhoPage, {userCart: this.userCart});
   }
 }

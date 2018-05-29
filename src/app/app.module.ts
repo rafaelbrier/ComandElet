@@ -30,6 +30,7 @@ import { ProductBarComponent } from '../components/product-bar/product-bar';
 import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
 import { CadastrarProdutoPage } from '../pages/cadastrar-produto/cadastrar-produto';
+import { CarrinhoPage } from '../pages/carrinho/carrinho';
 registerLocaleData(ptBr)
 
 
@@ -43,7 +44,8 @@ registerLocaleData(ptBr)
     ResetpasswordPage,
     HomeAdminPage,
     ProductBarComponent,
-    CadastrarProdutoPage   
+    CadastrarProdutoPage,
+    CarrinhoPage   
   ],
   imports: [
     BrowserModule,
@@ -65,7 +67,8 @@ registerLocaleData(ptBr)
     HomePage,
     ResetpasswordPage,
     HomeAdminPage,
-    CadastrarProdutoPage  
+    CadastrarProdutoPage,
+    CarrinhoPage  
   ],
   providers: [
     {provide: LOCALE_ID, useValue: 'pt-BR'},

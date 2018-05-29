@@ -11,6 +11,12 @@
         <ion-icon name="lock"></ion-icon>
       </button>
     </ion-buttons>
+    <ion-buttons right>
+      <button ion-button icon-only large (click)="cartPage()">
+        <ion-badge *ngIf="userCartSize">{{ userCartSize }}</ion-badge>
+        <ion-icon name="cash"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
