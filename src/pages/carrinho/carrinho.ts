@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavParams, MenuController } from 'ionic-angular';
+import { NavParams, MenuController, Events } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 
@@ -11,10 +11,11 @@ import { MyServicesProvider } from '../../providers/my-services/my-services';
 export class CarrinhoPage {
 
   @ViewChild('form') form: NgForm;
-  
-  userCart: any[];
+
+  userCartProd: any[];
   userUid: string;
   entregar: boolean;
+  IDtoRemove: number[];
 
   entregarInfo: {
     nome: string,
@@ -23,52 +24,73 @@ export class CarrinhoPage {
     obs: string
   }
 
-  telPattern ='^[\(]\d{2}[\)]\d{4}[\-]\d{4}$';
+  telPattern = '^[\(]\d{2}[\)]\d{4}[\-]\d{4}$';
 
   constructor(public navParams: NavParams,
     private menuCtrl: MenuController,
-    private myServices: MyServicesProvider) {
+    private myServices: MyServicesProvider,
+    private events: Events) {
 
-      this.userCart = navParams.get("userCart");
-      this.userUid = navParams.get("userUid");   
-
+    this.userCartProd = navParams.get("userCart");
+    this.userUid = navParams.get("userUid");
     this.menuCtrl.enable(true, 'myMenu');
-    
-    this.entregarInfo =  {
+    this.entregarInfo = {
       nome: '',
       telefone: '',
       endereco: '',
       obs: ''
     }
+
+    if (this.userCartProd) {
+      this.userCartProd.map((o) => {
+        if (!o["quantidade"]) {
+          o["quantidade"] = 1
+        }
+        if (!o["precobase"]) {
+          o["precobase"] = o.preco;
+        }
+      })
     }
-
-  ionViewDidLoad() {    
   }
 
-  finalizarCompra(){
-    if(this.entregar)
-    this.finalizarCompraEntrega();
+  finalizarCompra() {
+    if (this.entregar)
+      this.finalizarCompraEntrega();
     else
-    this.finalizarCompraSemEntrega();   
+      this.finalizarCompraSemEntrega();
   }
 
-  finalizarCompraEntrega(){
-    if(this.AllFilledForm()){
+  finalizarCompraEntrega() {
+    if (this.AllFilledForm()) {
     } else {
       let toast = this.myServices.criarToast('Preencha as informações necessárias.');
       toast.present();
     }
   }
 
-  finalizarCompraSemEntrega(){
+  finalizarCompraSemEntrega() {
   }
 
-  quantityChange(quantidade: any){
-    console.log(quantidade)
+  quantityChange(prodQtChange: any) {
+    let prodToChange = this.userCartProd.find((o) => o.id == prodQtChange.id);
+    prodToChange.preco = prodQtChange.newPrice;
+    prodToChange.quantidade = prodQtChange.qtMultiplier;
   }
 
-  
-   AllFilledForm() {
+  removeItem(ID: any) {
+    if (this.IDtoRemove) {
+      this.IDtoRemove.push(ID);
+    } else {
+      this.IDtoRemove = [0];
+      this.IDtoRemove["0"] = ID;
+    }
+    this.events.publish('id:toRemove', this.IDtoRemove);
+
+    this.userCartProd = this.userCartProd.filter(obj => obj.id !== ID);
+  }
+
+
+  AllFilledForm() {
     var check1 = this.form.value["nome"];
     var check2 = this.form.value["telefone"];
     var check3 = this.form.value["endereco"];

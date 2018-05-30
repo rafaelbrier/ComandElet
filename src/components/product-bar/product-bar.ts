@@ -25,7 +25,7 @@ export class ProductBarComponent {
   }
 
   listButtonClick(){
-    let emitVars = {id: this.produto.id, nome: this.produto.nome, preco: this.produto.preco, imgUrl: this.produto.imgUrl};
+    let emitVars = {id: this.produto.id, nome: this.produto.nome, desc: this.produto.descricao, preco: this.produto.preco};
     this.listButton.emit(emitVars);    
   }
 }

@@ -6,32 +6,51 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class CartBarComponent {
  
-  qtMultiplier: number;
+ 
+  basePrice: number;
+  newPrice: number;
 
   @Input()
-  produto: any;  
+  prodCart: any;  
 
   @Output() 
   onQuantidadeChange = new EventEmitter();
+
+  @Output()
+  removeItem = new EventEmitter();
  
   constructor() {   
-    this.qtMultiplier = 1;
+    this.basePrice = null;  
   }
 
  addQuantityClick(){
-   this.qtMultiplier = (this.qtMultiplier == 10) ? 10 : this.qtMultiplier + 1;   
-    this.onQuantidadeChange.emit({
-      novaQuantidade: this.qtMultiplier,
-      produtoEditado: this.produto
-    });    
+  this.basePrice = this.basePrice == null ? this.prodCart.precobase : this.basePrice;  
+  // this.qtMultiplier = this.prodCart.preco/this.basePrice;
+
+   if(this.prodCart.quantidade == 10){
+     this.prodCart.quantidade = 10;
+   } else {
+     this.prodCart.quantidade = this.prodCart.quantidade + 1;
+     this.newPrice= this.prodCart.quantidade*this.basePrice;
+   }  
+    this.onQuantidadeChange.emit({id: this.prodCart.id, newPrice: this.newPrice, qtMultiplier: this.prodCart.quantidade});    
   }
 
-  removeQuantityClick(){
-    this.qtMultiplier = (this.qtMultiplier == 1) ? 1 : this.qtMultiplier - 1;
-    this.onQuantidadeChange.emit({
-      novaQuantidade: this.qtMultiplier,
-      produtoEditado: this.produto
-    });   
+  removeQuantityClick(){  
+    this.basePrice = this.basePrice == null ? this.prodCart.precobase : this.basePrice;
+    // this.qtMultiplier = this.prodCart.preco/this.basePrice;
+
+    if(this.prodCart.quantidade == 1){
+      this.prodCart.quantidade = 1;
+    } else {
+      this.prodCart.quantidade = this.prodCart.quantidade - 1;
+      this.newPrice = this.prodCart.quantidade*this.basePrice;
+    } 
+    this.onQuantidadeChange.emit({id: this.prodCart.id, newPrice: this.newPrice, qtMultiplier: this.prodCart.quantidade}); 
  }
+    
+ removeItemClick(){
+  this.removeItem.emit(this.prodCart.id);
+}
 
 }

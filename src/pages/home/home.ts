@@ -18,18 +18,19 @@ export class HomePage {
   userUid: string;
   prodComidas: any[];
   prodBebidas: any[];
-  productId: number;  
+  productId: number;
   produtos: string;
 
   userCart: [{
     id: Number,
     nome: string,
+    desc: string,
     obs: string,
-    preco: Number,
-    imgUrl: string
+    preco: Number
   }];
 
-  userCartSize: Number;
+  IDtoRemove: number[];
+  userCartSize: number;
 
   constructor(public navCtrl: NavController,
     private authService: AuthService,
@@ -39,16 +40,13 @@ export class HomePage {
     public events: Events,
     private alertCtrl: AlertController) {
 
+    this.events.subscribe('id:toRemove', IDRemove => {
+      this.IDtoRemove = IDRemove;
+      console.log(this.IDtoRemove);
+    });
+
     this.menuCtrl.enable(true, 'myMenu');
     this.produtos = 'Bebidas';
-
-    this.userCart = [{
-      id: null,
-      nome: '',
-      obs: '',
-      preco: null,
-      imgUrl: ''
-    }];
 
     const authObserver = this.authService.loggedUserInfo().subscribe(user => {
       this.isAdmin = false;
@@ -75,10 +73,20 @@ export class HomePage {
   }
 
   ionViewWillEnter() {
+
+    if (this.IDtoRemove && this.userCart) {
+      this.IDtoRemove.forEach(element => {
+        var arrayObj = this.userCart.filter(obj => obj.id != element);
+        this.userCart = Object.assign(arrayObj);
+        this.userCartSize = this.userCart.length;
+      });
+      this.IDtoRemove = null;
+    }
+
     let pathComidas = '/produtos/' + 'comida/';
     let pathBebidas = '/produtos/' + 'bebida/';
     this.dataService.readDatabase(pathComidas)
-      .subscribe((listComidas) => {     
+      .subscribe((listComidas) => {
         this.prodComidas = Object.keys(listComidas).map(key => listComidas[key]);
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados das comidas.');
@@ -135,16 +143,23 @@ export class HomePage {
     alert.present();
   }
   confirmarHandler(emitVars: any, obs: string) {
-    emitVars["obs"] = obs;   
-    if (this.userCart["0"].id == null) {
-      this.userCart["0"] = emitVars;
-    } else {
+    emitVars["obs"] = obs;
+    if (this.userCart) {
       this.userCart.push(emitVars);
+    } else {
+      this.userCart = [{
+        id: null,
+        nome: '',
+        desc: '',
+        obs: '',
+        preco: null
+      }];
+      this.userCart["0"] = emitVars;
     }
-    this.userCartSize = this.userCart.length;  
+    this.userCartSize = this.userCart.length;
   }
 
-  cartPage(){
-    this.navCtrl.push(CarrinhoPage, {userCart: this.userCart, userUid: this.userUid});
+  cartPage() {
+    this.navCtrl.push(CarrinhoPage, { userCart: this.userCart, userUid: this.userUid });
   }
 }

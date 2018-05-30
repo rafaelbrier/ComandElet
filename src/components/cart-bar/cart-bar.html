@@ -2,12 +2,19 @@
   <ion-row align-items-center style="border-bottom: 2px solid; padding-top: 10px;">
     <ion-col col-2>
       <div style="font-size: 20px; text-align: center;">
-        <b>#25</b>
+        <b>#{{prodCart?.id}}</b>
+      </div>
+      <div class="centralizado">
+        <button ion-button icon-only small round (click)="removeItemClick()" style="background-color: rgb(245, 228, 185); color: black; font-size: 13px">
+          <ion-icon name="close"></ion-icon>
+        </button>
       </div>
     </ion-col>
     <ion-col col-7>
-      <div class="cartname-style">NOMENOMENOME</div>
-      <div style="font-size: 13px; text-align: center;" text-wrap>OBSERVAÇÃO DO PRODUTO</div>
+      <div class="cartname-style">{{prodCart?.nome}}:
+        <span class="cartdesc-style">{{prodCart?.desc}}</span>
+      </div>   
+      <div style="font-size: 17px;  font-weight: bold" text-wrap>Observações: <span class="cartdesc-style">{{prodCart?.obs}}</span></div>
     </ion-col>
     <ion-col col-3 style="text-align: center;">
       <span>
@@ -16,17 +23,16 @@
         </button>        
       </span>
       <span style="padding: 2%;">
-        <b style="font-size:20px; text-align: center;">{{qtMultiplier}}</b>
+        <b style="font-size:20px; text-align: center;">{{prodCart?.quantidade}}</b>
       </span>
       <span>
         <button ion-button icon-only small round class="side-menu-buttom-remove" (click)="removeQuantityClick()">
           <ion-icon name="remove"></ion-icon>
         </button>
-
       </span>
       <div>
         <h2 style="font-size: 18px; text-align: center; margin-top: 3px">
-          <b>{{25.4 | currency:'BRL':symbol:'.2-2'}}</b>
+          <b>{{prodCart?.preco | currency:'BRL':symbol:'.2-2'}}</b>
         </h2>
       </div>
     </ion-col>
