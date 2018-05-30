@@ -24,9 +24,9 @@ export class CadastrarProdutoPage {
   isImgUploaded: Boolean;
   progressIsLoading: Boolean;
   cameraImgService: CameraService;
-  file: any;  
+  file: any;
 
-  numberPattern = /^\d+(\.\d{1,2})?$/;
+  numberPattern = '^\d+(\.\d{1,2})?$';
 
 
   constructor(navParams: NavParams,
@@ -63,8 +63,8 @@ export class CadastrarProdutoPage {
 
     const dataBaseObserver = this.databaseService.readDatabase(path)
       .subscribe((res: any) => {
-        this.prod.id = res.idCount;   
-        this.prodPreview.id = res.idCount;     
+        this.prod.id = res.idCount;
+        this.prodPreview.id = res.idCount;
         dataBaseObserver.unsubscribe();
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
@@ -113,44 +113,44 @@ export class CadastrarProdutoPage {
         let toast = this.myServices.criarToast('Id trocado com sucesso.');
         toast.present();
         this.prod.id = newId;
-        this.prodPreview.id = newId;     
+        this.prodPreview.id = newId;
       }).catch(() => {
         let toast = this.myServices.criarToast('Erro ao trocar id.');
         toast.present();
       })
   }
 
-  registerTypeConfirm(){
-      let alert = this.alertCtrl.create({
-        title: 'Confirmar cadastro de produto.',
-        message: 'O produto a ser cadastrado é uma Bebida ou Comida?',
-        buttons: [
-          {
-            text: 'Cancelar',
-            role: 'cancel',
-            handler: () => {}
-          },
-          {
-            text: 'Comida',
-            handler: () => {
-              this.registerProduct('comida');
-            }
-            },
-            {
-              text: 'Bebida',
-              handler: () => {
-                this.registerProduct('bebida');
-              }                       
+  registerTypeConfirm() {
+    let alert = this.alertCtrl.create({
+      title: 'Confirmar cadastro de produto.',
+      message: 'O produto a ser cadastrado é uma Bebida ou Comida?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => { }
+        },
+        {
+          text: 'Comida',
+          handler: () => {
+            this.registerProduct('comida');
           }
-        ]
-      });
-      alert.present();
-    }
+        },
+        {
+          text: 'Bebida',
+          handler: () => {
+            this.registerProduct('bebida');
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
 
-  
+
 
   registerProduct(productType: string) {
-    if (this.notAllFilledForm() && this.myServices.filterInt(this.preco)) {
+    if (this.AllFilledForm() && this.myServices.filterInt(this.preco)) {
 
       if (this.prod.id != null) {
 
@@ -172,11 +172,11 @@ export class CadastrarProdutoPage {
         });
 
         if (this.file != null && this.prod.imgUrl == "") {
-          this.cameraImgService.createUploadTask(this.file, productType);          
+          this.cameraImgService.createUploadTask(this.file, productType);
           this.events.unsubscribe('user:newimage');
 
         } else if (this.prod.imgUrl != "") {
-          this.databaseService.writeDatabase('/produtos/' + productType +  '/' + this.prod.id.toString(), this.prod)
+          this.databaseService.writeDatabase('/produtos/' + productType + '/' + this.prod.id.toString(), this.prod)
             .then(() => {
               let toast = this.myServices.criarToast('Produto cadastrado com sucesso.');
               toast.present();
@@ -196,7 +196,7 @@ export class CadastrarProdutoPage {
         let toast = this.myServices.criarToast('Erro ao verificar o número de iDs disponíveis no banco de dados, tente novamente mais tarde.');
         toast.present();
       }
-    } else if (!this.notAllFilledForm()) {
+    } else if (!this.AllFilledForm()) {
       let toast = this.myServices.criarToast('Preencha todos os campos vazios.');
       toast.present();
     }
@@ -243,7 +243,7 @@ export class CadastrarProdutoPage {
     }
   }
 
-  notAllFilledForm() {
+  AllFilledForm() {
     var name = this.form.value["nome"];
     var desc = this.form.value["descricao"];
     var preco = this.form.value["preco"];

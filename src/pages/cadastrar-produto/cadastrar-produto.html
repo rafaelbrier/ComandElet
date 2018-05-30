@@ -7,12 +7,12 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Cadastrar Produto</ion-title>    
+    <ion-title>Cadastrar Produto</ion-title>
     <ion-buttons right>
-        <button ion-button   (click)="changeIdAlert()" style="background-color: #da8a00; color: white">
-         iD
-        </button>
-      </ion-buttons>
+      <button ion-button (click)="changeIdAlert()" style="background-color: #da8a00; color: white">
+        iD
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>
@@ -31,54 +31,57 @@
     <form id="prodForm" #form="ngForm" novalidate>
       <ion-item class=" input-border">
         <ion-label class="input-label-style">Nome: </ion-label>
-        <ion-input name="nome" [(ngModel)]="prod.nome" type="text" #name="ngModel" required (input)="onNameInput()"></ion-input>
+        <ion-input name="nome" [(ngModel)]="prod.nome" type="text" #nome="ngModel" required (input)="onNameInput()"></ion-input>
       </ion-item>
-      <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)" class="error-text-style">
+      <ion-item *ngIf="nome?.errors?.required && (nome.dirty || nome.touched)" class="error-text-style">
         O campo é obrigatório.
       </ion-item>
 
       <ion-item class=" input-border">
         <ion-label class="input-label-style">Descrição: </ion-label>
-        <ion-textarea name="descricao" [(ngModel)]="prod.descricao" type="text" #name="ngModel" required (input)="onDescInput()"></ion-textarea>
-      </ion-item >
-      <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)" class="error-text-style">
+        <ion-textarea name="descricao" [(ngModel)]="prod.descricao" type="text" #descricao="ngModel" required (input)="onDescInput()"></ion-textarea>
+      </ion-item>
+      <ion-item *ngIf="descricao?.errors?.required && (descricao.dirty || descricao.touched)" class="error-text-style">
         O campo é obrigatório.
       </ion-item>
       <ion-item class=" input-border">
         <ion-label class="input-label-style">Preço: </ion-label>
-        <ion-input name="preco" [(ngModel)]="preco" type="tel" [pattern]="numberPattern" #name="ngModel" required (input)="onPriceInput()"></ion-input>
+        <ion-input name="price" [(ngModel)]="preco" type="tel" [pattern]="numberPattern" #price="ngModel" required (input)="onPriceInput()"></ion-input>
       </ion-item>
-      <ion-item *ngIf="name.errors?.required && (name.dirty || name.touched)" class="error-text-style">
+      <ion-item *ngIf="price?.errors?.required && (price.dirty || price.touched)" class="error-text-style">
         O campo é obrigatório.
-      </ion-item> 
-      <ion-item *ngIf="name.errors?.pattern && (name.dirty || name.touched)" class="error-text-style">
+      </ion-item>
+      <ion-item *ngIf="price?.errors?.pattern && (price.dirty || price.touched)" class="error-text-style">
         Preço inválido.
       </ion-item>
-      
-    <ion-item *ngIf="!progressIsLoading" class="input-border">
-      <ion-label class="input-label-style">Imagem URL: </ion-label>
-      <ion-textarea name="img" [(ngModel)]="prod.imgUrl" type="text" #name="ngModel" required ></ion-textarea>
-    </ion-item>
-    <ion-item class="progress-bar-especial" *ngIf="progressIsLoading">
-      <div>Enviando imagem:</div>
-      <div class="centralizado">
-        <progress max="100" [value]="(progress | async)" value="{{ progress | async }}" style="color: black"></progress>
-      </div>
-      <button (click)="taskImgUploadCancel()" class="side-menu-buttom-normal" ion-button>
-        <div>
-          Cancelar envio
+
+      <ion-item *ngIf="!progressIsLoading" class="input-border">
+        <ion-label class="input-label-style">Imagem URL: </ion-label>
+        <ion-textarea name="img" [(ngModel)]="prod.imgUrl" type="text" #img="ngModel" required></ion-textarea>
+      </ion-item>
+      <ion-item *ngIf="img?.errors?.required && (img.dirty || img.touched)" class="error-text-style">
+        O campo é obrigatório.
+      </ion-item>
+      <ion-item class="progress-bar-especial" *ngIf="progressIsLoading">
+        <div>Enviando imagem:</div>
+        <div class="centralizado">
+          <progress max="100" [value]="(progress | async)" value="{{ progress | async }}" style="color: black"></progress>
         </div>
+        <button (click)="taskImgUploadCancel()" class="side-menu-buttom-normal" ion-button>
+          <div>
+            Cancelar envio
+          </div>
+        </button>
+      </ion-item>
+      <div style="text-align: center" *ngIf="!progressIsLoading">
+        <button ion-button style="background-color: #da8a00" (click)="testUrl()">Testar URL</button>
+        <button ion-button style="background-color: #da8a00" (click)="uploadImg()">Enviar Imagem</button>
+      </div>
+      <br>
+      <button *ngIf="!progressIsLoading" (click)="registerTypeConfirm()" ion-button full style="background-color:#da8a00">
+        <div>Cadastrar Produto</div>
       </button>
-    </ion-item>
-    <div style="text-align: center" *ngIf="!progressIsLoading">
-      <button ion-button style="background-color: #da8a00" (click)="testUrl()">Testar URL</button>
-      <button ion-button style="background-color: #da8a00" (click)="uploadImg()">Enviar Imagem</button>
-    </div>
-    <br>
-    <button *ngIf="!progressIsLoading" (click)="registerTypeConfirm()" ion-button full style="background-color:#da8a00">
-      <div>Cadastrar Produto</div>
-    </button>
-  </form>
+    </form>
   </ion-list>
 
 </ion-content>

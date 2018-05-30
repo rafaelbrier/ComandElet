@@ -26,6 +26,7 @@ import { DatabaseServiceProvider } from '../providers/auth/database-service';
 import { GooglePlus } from '@ionic-native/google-plus';
 import { Facebook } from '@ionic-native/facebook';
 import { ProductBarComponent } from '../components/product-bar/product-bar';
+import { CartBarComponent } from '../components/cart-bar/cart-bar';
 
 import { registerLocaleData } from '@angular/common';
 import ptBr from '@angular/common/locales/pt';
@@ -42,10 +43,11 @@ registerLocaleData(ptBr)
     LoginTabPage,
     HomePage,
     ResetpasswordPage,
-    HomeAdminPage,
-    ProductBarComponent,
+    HomeAdminPage,   
     CadastrarProdutoPage,
-    CarrinhoPage   
+    CarrinhoPage,
+    ProductBarComponent,
+    CartBarComponent   
   ],
   imports: [
     BrowserModule,

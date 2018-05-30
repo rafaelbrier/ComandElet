@@ -78,7 +78,7 @@ export class HomePage {
     let pathComidas = '/produtos/' + 'comida/';
     let pathBebidas = '/produtos/' + 'bebida/';
     this.dataService.readDatabase(pathComidas)
-      .subscribe((listComidas) => {
+      .subscribe((listComidas) => {     
         this.prodComidas = Object.keys(listComidas).map(key => listComidas[key]);
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados das comidas.');

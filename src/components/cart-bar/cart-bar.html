@@ -1,0 +1,34 @@
+<ion-grid no-padding>
+  <ion-row align-items-center style="border-bottom: 2px solid; padding-top: 10px;">
+    <ion-col col-2>
+      <div style="font-size: 20px; text-align: center;">
+        <b>#25</b>
+      </div>
+    </ion-col>
+    <ion-col col-7>
+      <div class="cartname-style">NOMENOMENOME</div>
+      <div style="font-size: 13px; text-align: center;" text-wrap>OBSERVAÇÃO DO PRODUTO</div>
+    </ion-col>
+    <ion-col col-3 style="text-align: center;">
+      <span>
+        <button ion-button icon-only small round class="side-menu-buttom-add" (click)="addQuantityClick()">
+          <ion-icon name="add"></ion-icon>
+        </button>        
+      </span>
+      <span style="padding: 2%;">
+        <b style="font-size:20px; text-align: center;">{{qtMultiplier}}</b>
+      </span>
+      <span>
+        <button ion-button icon-only small round class="side-menu-buttom-remove" (click)="removeQuantityClick()">
+          <ion-icon name="remove"></ion-icon>
+        </button>
+
+      </span>
+      <div>
+        <h2 style="font-size: 18px; text-align: center; margin-top: 3px">
+          <b>{{25.4 | currency:'BRL':symbol:'.2-2'}}</b>
+        </h2>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>

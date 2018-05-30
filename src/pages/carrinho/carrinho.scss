@@ -1,4 +1,20 @@
 .button-style{
     background-color: #da8a00;
  }
- 
+
+ .toggle-md.toggle-checked .toggle-icon {
+    background-color: #d1ad6e;
+}
+
+
+.toggle-md.toggle-checked .toggle-inner {
+    -webkit-transform: translate3d(16px, 0, 0);
+    transform: translate3d(16px, 0, 0);
+    background-color: #da8a00;
+}
+
+.label-style{
+    color: #da8a00 ;
+    font-size: 20px ;
+    font-weight: bold;
+  }

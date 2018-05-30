@@ -4,28 +4,79 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
+<ion-header style="border-bottom: 2px solid;">
   <ion-navbar>
     <ion-title class="centralizado" style=" padding-right: 15%">Carrinho</ion-title>
   </ion-navbar>
+  <ion-grid style="border-top: 2px solid;">
+      <ion-row >
+        <ion-col col-2>        
+            <div class="centralizado"><b>ID</b></div>          
+        </ion-col>
+        <ion-col col-7>
+            <div class="centralizado"><b>PRODUTO/OBSERVAÇÕES</b></div>           
+        </ion-col>
+        <ion-col col-3>
+            <div class="centralizado"v><b>QTD/PREÇO</b></div>           
+        </ion-col>     
+      </ion-row>
+    </ion-grid>
 </ion-header>
 
 
-<ion-content padding>
-
+<ion-content style="padding: 1%">
+    <cart-bar [produto]="comidas" (onQuantidadeChange)="quantityChange($event)">
+    </cart-bar>
+    <cart-bar [produto]="comidas" (onQuantidadeChange)="quantityChange($event)">
+    </cart-bar>
 </ion-content>
 
 <ion-footer>
     <ion-item>
-        <ion-label>Entrega</ion-label>
-        <ion-select [(ngModel)]="Entrega">
-          <ion-option value="retirar">Retirar</ion-option>
-          <ion-option value="entregar">Entregar</ion-option>
-        </ion-select>
+      <ion-label class="label-style">Entregar</ion-label>
+      <ion-toggle [(ngModel)]="entregar"></ion-toggle>
+    </ion-item>
+  <ion-list no-lines *ngIf="entregar">
+      <p class="subtitle fancy">
+          <span>Informações da Entrega</span>
+        </p>
+    <form id="entregarInfo" #form="ngForm" novalidate>
+      <ion-item class=" input-border">
+        <ion-label class="input-label-style">Nome: </ion-label>
+        <ion-input name="nome" [(ngModel)]="entregarInfo.nome" type="text" #nome="ngModel" required ></ion-input>
       </ion-item>
-    <button ion-button large full (click)="finalizarCompra()" class="button-style"> 
-      <div>
-        Finalizar Compra
-      </div>     
-      </button>
+      <ion-item *ngIf="nome?.errors?.required && (nome.dirty || nome.touched)" class="error-text-style">
+        O campo é obrigatório.
+      </ion-item>      
+      <ion-item class="input-border">
+          <ion-label class="input-label-style">Telefone: </ion-label>
+          <ion-input name="telefone" [(ngModel)]="entregarInfo.telefone" type="tel" [pattern]="telPattern" #telefone="ngModel"
+          placeholder="(XX)XXXX-XXXX" required></ion-input>
+        </ion-item>
+        <ion-item *ngIf="telefone?.errors?.required && (telefone.dirty || telefone.touched)" class="error-text-style">
+          O campo é obrigatório.
+        </ion-item>
+        <ion-item *ngIf="telefone?.errors?.pattern && (telefone.dirty || telefone.touched)" class="error-text-style">
+          Telefone inválido.
+        </ion-item>
+      <ion-item class="input-border">
+          <ion-label class="input-label-style">Endereço: </ion-label>
+          <ion-textarea name="endereco" [(ngModel)]="entregarInfo.endereco" type="text" #endereco="ngModel" required></ion-textarea>
+        </ion-item>
+        <ion-item *ngIf="endereco?.errors?.required && (endereco.dirty || endereco.touched)" class="error-text-style">
+          O campo é obrigatório.
+        </ion-item>     
+      <ion-item class=" input-border">
+          <ion-label class="input-label-style">Observações: </ion-label>
+          <ion-textarea name="obs" [(ngModel)]="entregarInfo.obs" type="text"></ion-textarea>
+        </ion-item>   
+        <br>     
+    </form>
+  </ion-list>
+  
+  <button ion-button large full round (click)="finalizarCompra()" class="button-style">
+    <div>
+      Finalizar Compra
+    </div>
+  </button>
 </ion-footer>
