@@ -26,7 +26,7 @@ export class CarrinhoPage {
     obs: string
   }
 
-  telPattern = /^[\(]\d{2}[\)]\d{4}[\-]\d{4}$/;
+  telPattern = /^[\(]\d{2}[\)]\d{4,5}[\-]\d{4}$/;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private menuCtrl: MenuController,
@@ -106,15 +106,17 @@ export class CarrinhoPage {
   CompraConfirmada(eParaEntregar: boolean) { 
     var dataToSend;
     if(this.userCartProd && this.userCartProd. length >= 1){    
-    var dateNow = new Date();     
+    var dateNow = new Date();
+    var options =  { weekday: 'long', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short'};    
     if(eParaEntregar && this.entregarInfo){
-      dataToSend = {consumo: this.userCartProd, entrega: this.entregarInfo, dataCompra: dateNow.toUTCString()};    
+      dataToSend = {consumo: this.userCartProd, entrega: this.entregarInfo, horaCompra: dateNow.toLocaleString('pt-BR', options)};    
     }
     else {
-      dataToSend = {consumo: this.userCartProd, dataCompra: dateNow.toUTCString()};    
+      dataToSend = {consumo: this.userCartProd, horaCompra: dateNow.toLocaleString('pt-BR', options)};    
     }
      this.myServices.showLoading();           
-     var pathWrite = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos em Debito/' + pedidosCont + ' - ' + dateNow.toDateString();       
+     var pathWrite = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos em Debito/' + pedidosCont + ' - ' + dateNow.toLocaleDateString('pt-BR',
+     {year: 'numeric', month: 'long', day: 'numeric'});       
      this.databaseService.writeDatabase(pathWrite, dataToSend)
      .then(()=>{       
       let alert = this.alertCtrl.create({

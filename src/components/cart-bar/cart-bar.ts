@@ -21,11 +21,13 @@ export class CartBarComponent {
  
   constructor() {   
     this.basePrice = null;  
+    setTimeout(() => {
+      this.setInitialQuantity();  
+    }, 200);    
   }
 
  addQuantityClick(){
-  this.basePrice = this.basePrice == null ? this.prodCart.precobase : this.basePrice;  
-  // this.qtMultiplier = this.prodCart.preco/this.basePrice;
+  this.basePrice = this.basePrice == null ? this.prodCart.precobase : this.basePrice;    
 
    if(this.prodCart.quantidade == 10){
      this.prodCart.quantidade = 10;
@@ -37,11 +39,11 @@ export class CartBarComponent {
   }
 
   removeQuantityClick(){  
-    this.basePrice = this.basePrice == null ? this.prodCart.precobase : this.basePrice;
-    // this.qtMultiplier = this.prodCart.preco/this.basePrice;
-
+    this.basePrice = this.basePrice == null ? this.prodCart.precobase : this.basePrice;   
+ 
     if(this.prodCart.quantidade == 1){
       this.prodCart.quantidade = 1;
+      this.newPrice = this.prodCart.quantidade*this.basePrice;
     } else {
       this.prodCart.quantidade = this.prodCart.quantidade - 1;
       this.newPrice = this.prodCart.quantidade*this.basePrice;
@@ -51,6 +53,10 @@ export class CartBarComponent {
     
  removeItemClick(){
   this.removeItem.emit(this.prodCart.id);
+}
+
+setInitialQuantity(){
+this.prodCart.quantidade = 1;
 }
 
 }

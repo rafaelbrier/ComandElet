@@ -2,9 +2,9 @@
   <ion-grid>
     <ion-row>
       <ion-col col-10>
-        <div style="font-size: 20px; font-weight: bold; color: #bb5501">{{pedidosData?.nome}}</div>
-        <div class="cartname-style">Data:
-          <span class="cartdesc-style">{{pedidosData?.dataCompra}}</span>
+        <div style="font-size: 20px; font-weight: bold; color: #bb5501">Nº {{pedidosData?.nome}}</div>
+        <div class="cartname-style">Hora:
+          <span class="cartdesc-style">{{pedidosData?.horaCompra}}</span>
         </div>
         <div class="cartname-style" text-wrap *ngIf="entrega">Entrega:
           <span class="cartdesc-style">{{entregaStringPri}}</span>
@@ -14,7 +14,7 @@
       </ion-col>
       <ion-col col-2>
         <div>
-          <ion-buttons right >
+          <ion-buttons right>
             <button ion-button icon-only small 
               [ngClass]="{'side-menu-buttom-remove': showBar, 'side-menu-buttom-add': !showBar}"
               (click)="showBar = !showBar; listShow = showBar">

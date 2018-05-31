@@ -14,6 +14,7 @@ import { DatabaseServiceProvider } from '../../providers/auth/database-service';
 export class HomeAdminPage {
 
   userUid: string;
+  productBarShow: boolean;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -23,8 +24,9 @@ export class HomeAdminPage {
     private alertCtrl: AlertController,
     private actionSheetCtrl: ActionSheetController,
     private dataService: DatabaseServiceProvider) {
+      
     this.menuCtrl.enable(true, 'myMenu');
-
+    this.productBarShow = false;
     this.userUid = navParams.get("userUid");   
   }
 
