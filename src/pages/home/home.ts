@@ -41,8 +41,7 @@ export class HomePage {
     private alertCtrl: AlertController) {
 
     this.events.subscribe('id:toRemove', IDRemove => {
-      this.IDtoRemove = IDRemove;
-      console.log(this.IDtoRemove);
+      this.IDtoRemove = IDRemove;     
     });
 
     this.menuCtrl.enable(true, 'myMenu');

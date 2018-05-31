@@ -1,9 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavParams, MenuController, Events } from 'ionic-angular';
+import { NavParams, MenuController, Events, AlertController, NavController } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
+import { DatabaseServiceProvider } from '../../providers/auth/database-service';
 
 
+var pedidosCont: any;
 @Component({
   selector: 'page-carrinho',
   templateUrl: 'carrinho.html',
@@ -11,11 +13,11 @@ import { MyServicesProvider } from '../../providers/my-services/my-services';
 export class CarrinhoPage {
 
   @ViewChild('form') form: NgForm;
-
+  
   userCartProd: any[];
   userUid: string;
   entregar: boolean;
-  IDtoRemove: number[];
+  IDtoRemove: number[];   
 
   entregarInfo: {
     nome: string,
@@ -24,12 +26,14 @@ export class CarrinhoPage {
     obs: string
   }
 
-  telPattern = '^[\(]\d{2}[\)]\d{4}[\-]\d{4}$';
+  telPattern = /^[\(]\d{2}[\)]\d{4}[\-]\d{4}$/;
 
-  constructor(public navParams: NavParams,
+  constructor(public navCtrl: NavController, public navParams: NavParams,
     private menuCtrl: MenuController,
     private myServices: MyServicesProvider,
-    private events: Events) {
+    private events: Events,
+    private databaseService: DatabaseServiceProvider,
+    private alertCtrl: AlertController) {
 
     this.userCartProd = navParams.get("userCart");
     this.userUid = navParams.get("userUid");
@@ -53,22 +57,99 @@ export class CarrinhoPage {
     }
   }
 
+  ionViewWillEnter(){
+    var pathRead = 'users/' + this.userUid + '/pedidosCont';  
+    this.databaseService.readDatabase(pathRead)
+    .subscribe((res)=>{
+      pedidosCont =  res;      
+    }, error => {
+      let toast = this.myServices.criarToast('Não foi possível ler o ID dos produtos.');
+      toast.present();
+    })   
+  }
+
   finalizarCompra() {
     if (this.entregar)
-      this.finalizarCompraEntrega();
+      this.finalizarCompraConfirm(true);
     else
-      this.finalizarCompraSemEntrega();
+      this.finalizarCompraConfirm(false);
   }
 
-  finalizarCompraEntrega() {
-    if (this.AllFilledForm()) {
+  finalizarCompraConfirm(eParaEntregar: boolean){
+    let confirm = this.alertCtrl.create({
+      title: 'Deseja mesmo finalizar a compra?',
+      message: 'Após finalizar a compra o pagamento deve ser efetuado para a devida baixa no sistema.',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'         
+        }, {
+          text: 'Confirmar',
+          handler: () => {
+          if(eParaEntregar) {
+            if (this.AllFilledForm()) {                 
+              this.CompraConfirmada(true);             
+            } else {
+              let toast = this.myServices.criarToast('Preencha as informações de entrega necessárias.');
+              toast.present();
+            }
+          } else {
+            this.CompraConfirmada(false);
+          }}}]});
+    confirm.present();
+  }    
+
+  CompraConfirmada(eParaEntregar: boolean) { 
+    var dataToSend;
+    if(this.userCartProd && this.userCartProd. length >= 1){    
+    var dateNow = new Date();     
+    if(eParaEntregar && this.entregarInfo){
+      dataToSend = {consumo: this.userCartProd, entrega: this.entregarInfo, dataCompra: dateNow.toUTCString()};    
+    }
+    else {
+      dataToSend = {consumo: this.userCartProd, dataCompra: dateNow.toUTCString()};    
+    }
+     this.myServices.showLoading();           
+     var pathWrite = 'users/' + this.userUid + '/cart/' + '/PedidosinDebt/' + pedidosCont + ' - ' + dateNow.toDateString();       
+     this.databaseService.writeDatabase(pathWrite, dataToSend)
+     .then(()=>{       
+      let alert = this.alertCtrl.create({
+        title: 'Compra efetuada, aguardando pagamento!',
+        subTitle: 'A compra estará disponível no menu na seção "contas - em débito". Após o pagamento a mesma será movida para seção "contas - pagas"!',
+        buttons: ['OK']
+      });
+      this.myServices.dismissLoading();
+      alert.present();   
+      this.IDtoRemove = this.userCartProd.map((obj) => obj.id);
+      this.events.publish('id:toRemove', this.IDtoRemove);  
+      delete this.userCartProd["dataCompra"]; 
+      this.incrementId();   
+      this.navCtrl.pop(); 
+     }).catch((error)=>{
+      let toast = this.myServices.criarToast('Erro ao finalizar compra.');
+      toast.present();
+      this.myServices.dismissLoading();
+   })      
     } else {
-      let toast = this.myServices.criarToast('Preencha as informações necessárias.');
+      let toast = this.myServices.criarToast('O carrinho está vazio.');
+      toast.present();
+      this.myServices.dismissLoading();
+    }   
+   }
+
+   incrementId(){
+    if(this.myServices.filterInt(pedidosCont)){
+      pedidosCont = Number.parseInt(pedidosCont) + 1;      
+      
+    const path = 'users/' + this.userUid;
+    this.databaseService.writeDatabase(path, { pedidosCont:  pedidosCont})
+      .then(() => {}).catch(() => {
+      let toast = this.myServices.criarToast('Erro ao incrementar id.');
+      toast.present();  })
+    } else {
+      let toast = this.myServices.criarToast('Erro ao incrementar id.');
       toast.present();
     }
-  }
-
-  finalizarCompraSemEntrega() {
   }
 
   quantityChange(prodQtChange: any) {

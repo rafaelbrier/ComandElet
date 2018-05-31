@@ -50,5 +50,5 @@ export class DatabaseServiceProvider {
 
   removeFireStorageFile(path) {
     return this.fireStorage.ref(path).delete();
-  }
+  }  
 }
