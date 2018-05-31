@@ -11,6 +11,12 @@
         </ion-item>
         <ion-list no-lines>
             <ion-item style="background: none">
+                <button (click)="meusPedidosPage()" ion-button full outline icon-left large="true">
+                    <ion-icon name="clipboard"></ion-icon>
+                    <div>
+                        Meus Pedidos
+                    </div>
+                </button>
                 <button (click)="changePassword()" ion-button full outline icon-left large="true">
                     <ion-icon name="key"></ion-icon>
                     <div>
@@ -29,7 +35,7 @@
                         Sair
                     </div>
                 </button>
-            </ion-item>            
+            </ion-item>
             <ion-item class="progress-bar" *ngIf="progressIsLoading">
                 <div>Enviando imagem:</div>
                 <div class="centralizado">

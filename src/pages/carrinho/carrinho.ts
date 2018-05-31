@@ -115,7 +115,7 @@ export class CarrinhoPage {
      .then(()=>{       
       let alert = this.alertCtrl.create({
         title: 'Compra efetuada, aguardando pagamento!',
-        subTitle: 'A compra estará disponível no menu na seção "contas - em débito". Após o pagamento a mesma será movida para seção "contas - pagas"!',
+        subTitle: 'A compra estará disponível no menu na seção "meus pedidos - em débito". Após o pagamento a mesma será movida para seção "meus pedidos - pagos"!',
         buttons: ['OK']
       });
       this.myServices.dismissLoading();

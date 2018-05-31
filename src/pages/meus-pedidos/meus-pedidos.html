@@ -1,0 +1,18 @@
+<ion-header>
+    <ion-navbar>  
+      <ion-title class="centralizado" style="padding-right: 15%">Meus Pedidos</ion-title>  
+    </ion-navbar>
+    <ion-segment [(ngModel)]="pedidosEfetuados" style="border-top: 2px solid;">
+        <ion-segment-button value="inDebt" class="segment-style">
+          Em Débito
+        </ion-segment-button>
+        <ion-segment-button value="paid" class="segment-style">
+          Pagos
+        </ion-segment-button>
+      </ion-segment>
+  </ion-header>
+
+
+<ion-content padding>
+  <pedido-bar></pedido-bar>
+</ion-content>

@@ -15,6 +15,7 @@ import { AlertaExcluirContaService } from '../core/alerta/alerta-excluir-conta';
 import { AlertaTrocarSenhaService } from '../core/alerta/alerta-trocar-senha';
 import { AlertaTrocarNomeService } from '../core/alerta/alerta-trocar-nome';
 import { AlertImagemPerfilService } from '../core/alerta/alerta-imagem-perfil';
+import { MeusPedidosPage } from '../pages/meus-pedidos/meus-pedidos';
 
 @Component({
   templateUrl: 'app.html'
@@ -89,6 +90,11 @@ export class MyApp {
           userDataObserver.unsubscribe();
         });
     }
+  }
+
+  meusPedidosPage(){
+    this.menuCtrl.close();
+    this.navCtrl.push(MeusPedidosPage, {userUid: this.userUid});   
   }
 
   //TROCAR FOTO DE PERFIL ---------------------------------------------------------------------------------------------------------------------
