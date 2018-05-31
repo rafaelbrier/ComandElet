@@ -29,13 +29,6 @@ export class PedidoBarComponent {
       this.checkEntrega();  
     }, 500);    
   }
-
-  showBarChange(){
-    this.showBar = !this.showBar;
-    if(this.showBar) this.listShow = true;
-    else this.listShow = false;
-   
-  }
   
   checkEntrega(){
   if(this.pedidosData.entrega){

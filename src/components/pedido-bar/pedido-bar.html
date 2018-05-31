@@ -14,16 +14,13 @@
       </ion-col>
       <ion-col col-2>
         <div>
-          <ion-buttons right *ngIf="showBar">
-            <button ion-button icon-only  small class="side-menu-buttom-remove" (click)="showBarChange()">
-              <ion-icon name="remove"></ion-icon>
+          <ion-buttons right >
+            <button ion-button icon-only small 
+              [ngClass]="{'side-menu-buttom-remove': showBar, 'side-menu-buttom-add': !showBar}"
+              (click)="showBar = !showBar; listShow = showBar">
+              <ion-icon name="{{ showBar ? 'remove' : 'add'}}"></ion-icon>
             </button>
-          </ion-buttons>
-          <ion-buttons right *ngIf="!showBar">
-            <button ion-button icon-only  small class="side-menu-buttom-add" (click)="showBarChange()">
-              <ion-icon name="add"></ion-icon>
-            </button>
-          </ion-buttons>
+          </ion-buttons>          
         </div>
       </ion-col>
     </ion-row>
