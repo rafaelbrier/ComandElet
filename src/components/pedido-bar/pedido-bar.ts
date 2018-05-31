@@ -27,7 +27,7 @@ export class PedidoBarComponent {
     this.showBar = false;  
     setTimeout(() => {
       this.checkEntrega();  
-    }, 500);    
+    }, 300);    
   }
   
   checkEntrega(){

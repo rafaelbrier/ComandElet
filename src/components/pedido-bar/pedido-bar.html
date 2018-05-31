@@ -2,8 +2,8 @@
   <ion-grid>
     <ion-row>
       <ion-col col-10>
-        <div style="font-size: 20px; font-weight: bold; color: #bb5501">Nº {{pedidosData?.nome}}</div>
-        <div class="cartname-style">Hora:
+        <div style="font-size: 20px; font-weight: bold; color: #bb5501" text-wrap>Nº {{pedidosData?.nome}}</div>
+        <div class="cartname-style" text-wrap>Hora:
           <span class="cartdesc-style">{{pedidosData?.horaCompra}}</span>
         </div>
         <div class="cartname-style" text-wrap *ngIf="entrega">Entrega:
@@ -29,13 +29,13 @@
 
 <ion-list *ngFor="let produtosComprados of pedidosData.consumo">
   <ion-item class="item-pedido-style" *ngIf="listShow">
-    <div class="cartname-style">{{produtosComprados?.quantidade}}x (#{{produtosComprados?.id}}) {{produtosComprados?.nome}}:
+    <div class="cartname-style" text-wrap>{{produtosComprados?.quantidade}}x (#{{produtosComprados?.id}}) {{produtosComprados?.nome}}:
       <span class="cartdesc-style">{{produtosComprados?.desc}}</span>
     </div>
     <div style="font-size: 17px;  font-weight: bold" text-wrap>Observações:
       <span class="cartdesc-style">{{produtosComprados?.obs}}</span>
     </div>
-    <div>
+    <div text-wrap>
       <b style="font-size: 17px;  font-weight: bold">Preço:</b>
       <span class="cartdesc-style">
         Unidade {{produtosComprados?.precobase| currency:'BRL':symbol:'.2-2'}} - Total {{produtosComprados?.preco| currency:'BRL':symbol:'.2-2'}}

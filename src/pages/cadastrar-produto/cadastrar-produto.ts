@@ -26,7 +26,7 @@ export class CadastrarProdutoPage {
   cameraImgService: CameraService;
   file: any;
 
-  numberPattern = '^\d+(\.\d{1,2})?$';
+  numberPattern = /^\d+(\.\d{1,2})?$/;
 
 
   constructor(navParams: NavParams,

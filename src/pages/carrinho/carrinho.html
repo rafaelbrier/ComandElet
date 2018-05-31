@@ -7,24 +7,24 @@
 <ion-header style="border-bottom: 2px solid;">
   <ion-navbar>
     <ion-title class="centralizado" style=" padding-right: 15%">Carrinho</ion-title>
-  </ion-navbar>
-  <ion-grid style="border-top: 2px solid;">
-      <ion-row >
-        <ion-col col-2>        
-            <div class="centralizado"><b>ID</b></div>          
-        </ion-col>
-        <ion-col col-7>
-            <div class="centralizado"><b>PRODUTO/OBSERVAÇÕES</b></div>           
-        </ion-col>
-        <ion-col col-3>
-            <div class="centralizado"v><b>QTD/PREÇO</b></div>           
-        </ion-col>     
-      </ion-row>
-    </ion-grid>
+  </ion-navbar> 
 </ion-header>
 
 
 <ion-content style="padding: 1%">
+    <ion-grid style="border-top: 2px solid; border-bottom: 2px solid">
+        <ion-row >
+          <ion-col col-2>        
+              <div class="centralizado"><b>ID</b></div>          
+          </ion-col>
+          <ion-col col-7>
+              <div class="centralizado"><b>PRODUTO/OBSERVAÇÕES</b></div>           
+          </ion-col>
+          <ion-col col-3>
+              <div class="centralizado"v><b>QTD/PREÇO</b></div>           
+          </ion-col>     
+        </ion-row>
+      </ion-grid>
   <ion-list  *ngFor="let prodUser of userCartProd">
     <cart-bar [prodCart]="prodUser" (removeItem)="removeItem($event)" (onQuantidadeChange)="quantityChange($event)">
     </cart-bar>
