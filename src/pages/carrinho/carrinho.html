@@ -69,10 +69,13 @@
         </ion-item>   
         <br>     
     </form>
-  </ion-list>  
+  </ion-list>   
 </ion-content>
 
 <ion-footer>   
+    <div style="font-size: 17px;  font-weight: bold; text-align: center; border-top: 2px solid;" text-wrap>Total:
+        <span style="font-size: 17px;  font-weight: bold; text-align: center; color: blue">{{precoTotal | currency:'BRL':symbol:'.2-2'}}</span>
+        </div>
   <button ion-button large full round (click)="finalizarCompra()" class="button-style">
     <div>
       Finalizar Compra

@@ -2,7 +2,7 @@
   <ion-grid>
     <ion-row>
       <ion-col col-10>
-        <div style="font-size: 20px; font-weight: bold; color: #bb5501" text-wrap>Nº {{pedidosData?.nome}}</div>
+        <div style="font-size: 20px; font-weight: bold; color: #bb5501" text-wrap>#{{pedidosData?.nome}}</div>
         <div class="cartname-style" text-wrap>Hora:
           <span class="cartdesc-style">{{pedidosData?.horaCompra}}</span>
         </div>
@@ -11,6 +11,9 @@
           <div class="cartdesc-style">{{this.pedidosData.entrega.endereco}}</div>
           <div class="cartdesc-style">{{entregaStringSec}}</div>
         </div>
+        <div class="cartname-style">Total:
+            <span style="font-weight: bold; font-size: 17px; color: blue">{{pedidosData?.precoTotal | currency:'BRL':symbol:'.2-2'}}</span>
+          </div>
       </ion-col>
       <ion-col col-2>
         <div>
@@ -38,8 +41,9 @@
     <div text-wrap>
       <b style="font-size: 17px;  font-weight: bold">Preço:</b>
       <span class="cartdesc-style">
-        Unidade {{produtosComprados?.precobase| currency:'BRL':symbol:'.2-2'}} - Total {{produtosComprados?.preco| currency:'BRL':symbol:'.2-2'}}
+        Unidade: {{produtosComprados?.precobase| currency:'BRL':symbol:'.2-2'}} - Total: 
       </span>
+      <span class="cartdesc-style" style="color:blue">{{produtosComprados?.preco| currency:'BRL':symbol:'.2-2'}}</span>
     </div>
   </ion-item>
 </ion-list>

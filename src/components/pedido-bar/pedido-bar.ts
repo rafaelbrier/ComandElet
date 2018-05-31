@@ -13,7 +13,7 @@ import { Component, Input } from '@angular/core';
 export class PedidoBarComponent {
 
   showBar: boolean;
-  listShow: boolean; 
+  listShow: boolean;
   entregaStringPri: string;
   entregaStringSec: string;
 
@@ -23,22 +23,22 @@ export class PedidoBarComponent {
   @Input()
   pedidosData: any;
 
-  constructor() { 
-    this.showBar = false;  
+  constructor() {
+    this.showBar = false;
     setTimeout(() => {
-      this.checkEntrega();  
-    }, 300);    
+      this.checkEntrega();
+    }, 300);
   }
-  
-  checkEntrega(){
-  if(this.pedidosData.entrega){
-    this.entrega = true;
-    this.entregaStringPri = this.pedidosData.entrega.nome + ', ' +this.pedidosData.entrega.telefone;
-    this.entregaStringSec = 'Obs: ' + this.pedidosData.entrega.obs;
 
-  } else {
-    this.entrega = false;
-  }  
-}
+  checkEntrega() {
+    if (this.pedidosData.entrega) {
+      this.entrega = true;
+      this.entregaStringPri = this.pedidosData.entrega.nome + ', ' + this.pedidosData.entrega.telefone;
+      this.entregaStringSec = 'Obs: ' + this.pedidosData.entrega.obs;
+
+    } else {
+      this.entrega = false;
+    }
+  }
 
 }
