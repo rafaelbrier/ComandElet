@@ -1,4 +1,48 @@
-<!-- Generated template for the PedidoBarComponent component -->
-<div>
-  PEDIDO-BAR
+<div class="item-pedido-style-border">
+  <ion-grid>
+    <ion-row>
+      <ion-col col-10>
+        <div style="font-size: 20px; font-weight: bold; color: #bb5501">{{pedidosData?.nome}}</div>
+        <div class="cartname-style">Data:
+          <span class="cartdesc-style">{{pedidosData?.dataCompra}}</span>
+        </div>
+        <div class="cartname-style" text-wrap *ngIf="entrega">Entrega:
+          <span class="cartdesc-style">{{entregaStringPri}}</span>
+          <div class="cartdesc-style">{{this.pedidosData.entrega.endereco}}</div>
+          <div class="cartdesc-style">{{entregaStringSec}}</div>
+        </div>
+      </ion-col>
+      <ion-col col-2>
+        <div>
+          <ion-buttons right *ngIf="showBar">
+            <button ion-button icon-only  small class="side-menu-buttom-remove" (click)="showBarChange()">
+              <ion-icon name="remove"></ion-icon>
+            </button>
+          </ion-buttons>
+          <ion-buttons right *ngIf="!showBar">
+            <button ion-button icon-only  small class="side-menu-buttom-add" (click)="showBarChange()">
+              <ion-icon name="add"></ion-icon>
+            </button>
+          </ion-buttons>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </div>
+
+<ion-list *ngFor="let produtosComprados of pedidosData.consumo">
+  <ion-item class="item-pedido-style" *ngIf="listShow">
+    <div class="cartname-style">{{produtosComprados?.quantidade}}x (#{{produtosComprados?.id}}) {{produtosComprados?.nome}}:
+      <span class="cartdesc-style">{{produtosComprados?.desc}}</span>
+    </div>
+    <div style="font-size: 17px;  font-weight: bold" text-wrap>Observações:
+      <span class="cartdesc-style">{{produtosComprados?.obs}}</span>
+    </div>
+    <div>
+      <b style="font-size: 17px;  font-weight: bold">Preço:</b>
+      <span class="cartdesc-style">
+        Unidade {{produtosComprados?.precobase| currency:'BRL':symbol:'.2-2'}} - Total {{produtosComprados?.preco| currency:'BRL':symbol:'.2-2'}}
+      </span>
+    </div>
+  </ion-item>
+</ion-list>

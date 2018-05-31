@@ -14,5 +14,19 @@
 
 
 <ion-content padding>
-  <pedido-bar></pedido-bar>
+    <div [ngSwitch]="pedidosEfetuados">
+        <ion-list *ngSwitchCase="'inDebt'">
+          <ion-list *ngFor="let comprasInDebt of registroComprasInDebt">
+            <pedido-bar [pedidosData]="comprasInDebt" >
+            </pedido-bar>
+          </ion-list>
+        </ion-list>
+        <ion-list *ngSwitchCase="'paid'">
+          teste
+          <!-- <ion-list *ngFor="let comidas of prodComidas">
+              <pedido-bar [pedidosData]="bebidas">
+              </pedido-bar>
+          </ion-list> -->
+        </ion-list>
+      </div>
 </ion-content>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 /**
  * Generated class for the PedidoBarComponent component.
@@ -12,7 +12,40 @@ import { Component } from '@angular/core';
 })
 export class PedidoBarComponent {
 
+  showBar: boolean;
+  listShow: boolean; 
+  entregaStringPri: string;
+  entregaStringSec: string;
+
+  @Input()
+  entrega: boolean;
+
+  @Input()
+  pedidosData: any;
+
   constructor() { 
+    this.showBar = false;  
+    setTimeout(() => {
+      this.checkEntrega();  
+    }, 500);    
   }
+
+  showBarChange(){
+    this.showBar = !this.showBar;
+    if(this.showBar) this.listShow = true;
+    else this.listShow = false;
+   
+  }
+  
+  checkEntrega(){
+  if(this.pedidosData.entrega){
+    this.entrega = true;
+    this.entregaStringPri = this.pedidosData.entrega.nome + ', ' +this.pedidosData.entrega.telefone;
+    this.entregaStringSec = 'Obs: ' + this.pedidosData.entrega.obs;
+
+  } else {
+    this.entrega = false;
+  }  
+}
 
 }

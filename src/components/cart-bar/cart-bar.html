@@ -13,21 +13,23 @@
     <ion-col col-7>
       <div class="cartname-style">{{prodCart?.nome}}:
         <span class="cartdesc-style">{{prodCart?.desc}}</span>
-      </div>   
-      <div style="font-size: 17px;  font-weight: bold" text-wrap>Observações: <span class="cartdesc-style">{{prodCart?.obs}}</span></div>
+      </div>
+      <div style="font-size: 17px;  font-weight: bold" text-wrap>Observações:
+        <span class="cartdesc-style">{{prodCart?.obs}}</span>
+      </div>
     </ion-col>
     <ion-col col-3 style="text-align: center;">
       <span>
-        <button ion-button icon-only small round class="side-menu-buttom-add" (click)="addQuantityClick()">
-          <ion-icon name="add"></ion-icon>
-        </button>        
+        <button ion-button icon-only small class="side-menu-buttom-remove" (click)="removeQuantityClick()">
+          <ion-icon name="remove"></ion-icon>
+        </button>
       </span>
       <span style="padding: 2%;">
         <b style="font-size:20px; text-align: center;">{{prodCart?.quantidade}}</b>
       </span>
       <span>
-        <button ion-button icon-only small round class="side-menu-buttom-remove" (click)="removeQuantityClick()">
-          <ion-icon name="remove"></ion-icon>
+        <button ion-button icon-only small class="side-menu-buttom-add" (click)="addQuantityClick()">
+          <ion-icon name="add"></ion-icon>
         </button>
       </span>
       <div>

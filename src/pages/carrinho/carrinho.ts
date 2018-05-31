@@ -61,7 +61,11 @@ export class CarrinhoPage {
     var pathRead = 'users/' + this.userUid + '/pedidosCont';  
     this.databaseService.readDatabase(pathRead)
     .subscribe((res)=>{
-      pedidosCont =  res;      
+      if(res == null){
+        pedidosCont = 1;
+      } else {
+        pedidosCont =  res;
+      }
     }, error => {
       let toast = this.myServices.criarToast('Não foi possível ler o ID dos produtos.');
       toast.present();
@@ -110,7 +114,7 @@ export class CarrinhoPage {
       dataToSend = {consumo: this.userCartProd, dataCompra: dateNow.toUTCString()};    
     }
      this.myServices.showLoading();           
-     var pathWrite = 'users/' + this.userUid + '/cart/' + '/PedidosinDebt/' + pedidosCont + ' - ' + dateNow.toDateString();       
+     var pathWrite = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos em Debito/' + pedidosCont + ' - ' + dateNow.toDateString();       
      this.databaseService.writeDatabase(pathWrite, dataToSend)
      .then(()=>{       
       let alert = this.alertCtrl.create({

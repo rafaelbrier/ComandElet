@@ -1,3 +1,25 @@
-pedido-bar {
+.item-pedido-style{
+    text-align: start !important;
+    border-bottom: 2px solid;   
+}
 
+.item-pedido-style-border{
+    border: 2px solid #bb5501 !important;
+    //border: 2px solid #00BB84 !important;
+    margin: 0px auto !important;
+    border-radius: 10px !important;
+    text-align: start !important;
+  }
+
+  .side-menu-buttom-add{   
+    background-color: #216f17;
+   // height: 19px !important;
+    font-size: 11px !important;
+   // margin-bottom: -2px !important;
+}
+.side-menu-buttom-remove{   
+    background-color: #da0000; 
+ //   height: 19px !important;   
+    font-size: 11px !important;
+   // margin-bottom: -2px !important;
 }
