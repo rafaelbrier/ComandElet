@@ -246,7 +246,7 @@ export class CadastrarProdutoPage {
   AllFilledForm() {
     var name = this.form.value["nome"];
     var desc = this.form.value["descricao"];
-    var preco = this.form.value["preco"];
+    var preco = this.form.value["price"];
 
     if (name == null || name == "" || desc == null || desc == "" || preco == null || preco == "") {
       return false;
