@@ -34,6 +34,7 @@ import { CadastrarProdutoPage } from '../pages/cadastrar-produto/cadastrar-produ
 import { CarrinhoPage } from '../pages/carrinho/carrinho';
 import { MeusPedidosPage } from '../pages/meus-pedidos/meus-pedidos';
 import { PedidoBarComponent } from '../components/pedido-bar/pedido-bar';
+import { ComprasUsuariosPage } from '../pages/compras-usuarios/compras-usuarios';
 registerLocaleData(ptBr)
 
 
@@ -49,6 +50,7 @@ registerLocaleData(ptBr)
     CadastrarProdutoPage,
     CarrinhoPage,
     MeusPedidosPage,
+    ComprasUsuariosPage,
     ProductBarComponent,
     CartBarComponent,
     PedidoBarComponent   
@@ -75,7 +77,8 @@ registerLocaleData(ptBr)
     HomeAdminPage,
     CadastrarProdutoPage,
     CarrinhoPage,
-    MeusPedidosPage 
+    MeusPedidosPage,
+    ComprasUsuariosPage
   ],
   providers: [
     {provide: LOCALE_ID, useValue: 'pt-BR'},

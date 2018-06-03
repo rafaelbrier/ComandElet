@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 /**
  * Generated class for the PedidoBarComponent component.
@@ -23,22 +23,42 @@ export class PedidoBarComponent {
   @Input()
   pedidosData: any;
 
+  @Input()
+  userName: string;
+
+  @Input()
+  userEmail: string;
+
+  @Input()
+  userUid: string;
+
+  @Input()
+  isAdminView: boolean;
+
+  @Output()
+  paymentConfirmer = new EventEmitter;
+
   constructor() {
     this.showBar = false;
+    this.isAdminView = false;
     setTimeout(() => {
       this.checkEntrega();
-    }, 300);
+    }, 100);
   }
 
-  checkEntrega() {
-    if (this.pedidosData.entrega) {
+  checkEntrega() {   
+    if (this.pedidosData) {
+      if(this.pedidosData.entrega) {
       this.entrega = true;
       this.entregaStringPri = this.pedidosData.entrega.nome + ', ' + this.pedidosData.entrega.telefone;
       this.entregaStringSec = 'Obs: ' + this.pedidosData.entrega.obs;
-
+      }     
     } else {
       this.entrega = false;
     }
   }
 
+  confirmPayment(){
+    this.paymentConfirmer.emit({nomePedido: this.pedidosData.nome, email: this.userEmail, userUid: this.userUid});
+  }
 }

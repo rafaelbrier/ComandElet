@@ -3,6 +3,7 @@ import { NavController, NavParams, MenuController, AlertController, ActionSheetC
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { AuthService } from '../../providers/auth/auth-service';
 import { CadastrarProdutoPage } from '../cadastrar-produto/cadastrar-produto';
+import { ComprasUsuariosPage } from '../compras-usuarios/compras-usuarios';
 import { AlertaExcluirProduto } from '../../core/alerta/alerta-excluir-produto';
 import { DatabaseServiceProvider } from '../../providers/auth/database-service';
 
@@ -65,6 +66,12 @@ export class HomeAdminPage {
     this.navCtrl.push(CadastrarProdutoPage, {
       userUid: this.userUid               
     });       
+  }
+
+  comprasUsuariosDebitoAdmin(){
+    this.navCtrl.push(ComprasUsuariosPage, {
+      userUid: this.userUid               
+    });     
   }
 
 }
