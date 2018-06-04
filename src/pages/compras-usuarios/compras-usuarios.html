@@ -16,14 +16,16 @@
     <ion-segment-button value="Pagas" class="segment-style">
       Pago
     </ion-segment-button>
-  </ion-segment>
+  </ion-segment>  
 </ion-header>
 
 
 <ion-content padding>
+    <ion-searchbar (ionInput)="getItem($event, false)" animated = "true" placeholder="Procurar Email"></ion-searchbar>
+    <ion-searchbar *ngIf="isSearching" (ionInput)="getItem($event, true)" animated = "true" placeholder="Procurar Número"></ion-searchbar>
   <div [ngSwitch]="compras">
     <ion-list *ngSwitchCase="'EmDebito'">
-      <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowHojeDebt, 'side-menu-buttom-add': !listShowHoje}"
+      <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowHojeDebt, 'side-menu-buttom-add': !listShowHojeDebt}"
         (click)="listShowHojeDebt = !listShowHojeDebt">
         <ion-icon name="{{ listShowHojeDebt ? 'remove' : 'add'}}"></ion-icon>
         <div style="font-size: 20px"> Hoje </div>
@@ -35,7 +37,7 @@
         </ion-list>
       </ion-item>
       <br>
-      <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowVelhoDebt, 'side-menu-buttom-add': !listShowVelho}"
+      <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowVelhoDebt, 'side-menu-buttom-add': !listShowVelhoDebt}"
         (click)="listShowVelhoDebt = !listShowVelhoDebt">
         <ion-icon name="{{ listShowVelhoDebt ? 'remove' : 'add'}}"></ion-icon>
         <div style="font-size: 20px"> Velho </div>
@@ -49,7 +51,7 @@
     </ion-list>
 
     <ion-list *ngSwitchCase="'Pagas'">
-        <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowHojePaid, 'side-menu-buttom-add': !listShowHoje}"
+        <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowHojePaid, 'side-menu-buttom-add': !listShowHojePaid}"
         (click)="listShowHojePaid = !listShowHojePaid">
         <ion-icon name="{{ listShowHojePaid ? 'remove' : 'add'}}"></ion-icon>
         <div style="font-size: 20px"> Hoje </div>
@@ -61,12 +63,12 @@
         </ion-list>
       </ion-item>
       <br>
-      <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowVelhoDebt, 'side-menu-buttom-add': !listShowVelho}"
-        (click)="listShowVelhoDebt = !listShowVelhoDebt">
-        <ion-icon name="{{ listShowVelhoDebt ? 'remove' : 'add'}}"></ion-icon>
+      <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowVelhoPaid, 'side-menu-buttom-add': !listShowVelhoPaid}"
+        (click)="listShowVelhoPaid = !listShowVelhoPaid">
+        <ion-icon name="{{ listShowVelhoPaid ? 'remove' : 'add'}}"></ion-icon>
         <div style="font-size: 20px"> Velho </div>
       </button>
-      <ion-item *ngIf="listShowVelhoDebt">
+      <ion-item *ngIf="listShowVelhoPaid">
         <ion-list *ngFor="let comprasNaoHoje of notTodayListPaid">
           <pedido-bar [pedidosData]="comprasNaoHoje?.comprasHoje" [nameEmailEnable]="true" [userEmail]="comprasNaoHoje?.email" [userName]="comprasNaoHoje?.nome" (paymentConfirmer)="payConfirmed($event)" [isPaid]="true">
           </pedido-bar>
