@@ -3,12 +3,8 @@ import { NavController, NavParams } from 'ionic-angular';
 import { DatabaseServiceProvider } from '../../providers/auth/database-service';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
 
-/**
- * Generated class for the MeusPedidosPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+
+let searchNumber = '';
 
 @Component({
   selector: 'page-meus-pedidos',
@@ -19,7 +15,9 @@ export class MeusPedidosPage {
   pedidosEfetuados: string
   userUid: string
   registroComprasInDebt: any[];
-  registroComprasPaid: any[];  
+  registroComprasPaid: any[];
+  backupPaid: any[];
+  backupInDebt: any[];
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private databaseService: DatabaseServiceProvider,
@@ -33,37 +31,72 @@ export class MeusPedidosPage {
     this.loadPaid();
   }
 
-  loadPaid(){    
-    var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos Pagos/';
-    this.databaseService.readDatabase(path)
-    .subscribe((listCompras) => {       
-      let registroComprasKeys = Object.keys(listCompras);
-      this.registroComprasPaid =  registroComprasKeys.map(key => listCompras[key]); 
-      this.registroComprasPaid.reverse();       
-      registroComprasKeys.reverse();   
-
-      var i = 0;
-      this.registroComprasPaid.map(t => t["nome"] =  registroComprasKeys[i++]);    
-    }, error => {
-      let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
-      toast.present();
-    });     
+  backupItems() {
+    this.backupPaid = this.registroComprasPaid;
+    this.backupInDebt = this.registroComprasInDebt;
   }
 
-  loadInDebt(){   
+  restoreItems() {
+    this.registroComprasPaid = this.backupPaid;
+    this.registroComprasInDebt = this.backupInDebt;
+  }
+
+  getItem(ev: any) {
+    this.restoreItems();
+    console.log(this.registroComprasPaid)
+    if (ev)
+      searchNumber = ev.target.value;
+    else {
+      searchNumber = searchNumber;
+    }
+
+    if (searchNumber && searchNumber.trim() != '') {
+      if (this.registroComprasInDebt) {
+        this.registroComprasInDebt = this.registroComprasInDebt.filter((item) => {
+          return (item["nome"].match(/\d+/g)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1);
+        });
+      }
+      if (this.registroComprasPaid) {
+        this.registroComprasPaid = this.registroComprasPaid.filter((item) => {
+          return (item["nome"].match(/\d+/g)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1);
+        });
+      }
+    }
+  }
+
+  loadPaid() {
+    var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos Pagos/';
+    this.databaseService.readDatabase(path)
+      .subscribe((listCompras) => {
+        let registroComprasKeys = Object.keys(listCompras);
+        this.registroComprasPaid = registroComprasKeys.map(key => listCompras[key]);
+        this.registroComprasPaid.reverse();
+        registroComprasKeys.reverse();
+
+        var i = 0;
+        this.registroComprasPaid.map(t => t["nome"] = registroComprasKeys[i++]);
+        this.backupItems();
+      }, error => {
+        let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
+        toast.present();
+      });
+  }
+
+  loadInDebt() {
     var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos em Debito/';
     this.databaseService.readDatabase(path)
-    .subscribe((listCompras) => {       
-      let registroComprasKeys = Object.keys(listCompras);
-      this.registroComprasInDebt =  registroComprasKeys.map(key => listCompras[key]); 
-      this.registroComprasInDebt.reverse();       
-      registroComprasKeys.reverse();  
-      
-      var i = 0;
-      this.registroComprasInDebt.map(t => t["nome"] =  registroComprasKeys[i++]);    
-    }, error => {
-      let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
-      toast.present();
-    });     
+      .subscribe((listCompras) => {
+        let registroComprasKeys = Object.keys(listCompras);
+        this.registroComprasInDebt = registroComprasKeys.map(key => listCompras[key]);
+        this.registroComprasInDebt.reverse();
+        registroComprasKeys.reverse();
+
+        var i = 0;
+        this.registroComprasInDebt.map(t => t["nome"] = registroComprasKeys[i++]);
+        this.backupItems();
+      }, error => {
+        let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
+        toast.present();
+      });
   }
 }

@@ -10,7 +10,7 @@ import { MyServicesProvider } from '../../providers/my-services/my-services';
  * Ionic pages and navigation.
  */
 
- 
+
 let searchEmail = '';
 let searchNumber = '';
 
@@ -32,14 +32,14 @@ export class ComprasUsuariosPage {
   isDeleting: boolean;
   isSearching: boolean;
 
- backupTodayDebt: any[]; 
-  backupNotTodayDebt: any[]; 
-  backupTodayPaid:  any[];
-  backupNotTodayPaid: any[]; 
+  backupTodayDebt: any[];
+  backupNotTodayDebt: any[];
+  backupTodayPaid: any[];
+  backupNotTodayPaid: any[];
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private dataService: DatabaseServiceProvider,
-    private myServices: MyServicesProvider) {    
+    private myServices: MyServicesProvider) {
     this.isSearching = false;
     this.compras = 'EmDebito';
     this.userUid = navParams.get("userUid");
@@ -51,62 +51,62 @@ export class ComprasUsuariosPage {
     this.GetPaidList();
   }
 
-   backupItems(){
+  backupItems() {
     this.backupTodayDebt = this.todayListDebt;
     this.backupNotTodayDebt = this.notTodayListDebt;
     this.backupTodayPaid = this.todayListPaid;
     this.backupNotTodayPaid = this.notTodayListPaid;
   }
 
-  restoreItems(){
+  restoreItems() {
     this.todayListDebt = this.backupTodayDebt;
     this.notTodayListDebt = this.backupNotTodayDebt;
     this.todayListPaid = this.backupTodayPaid;
     this.notTodayListPaid = this.backupNotTodayPaid;
   }
 
-  getItem(ev: any, number: boolean) {   
-    this.restoreItems(); 
-    
-    if(ev && !number)
-    searchEmail = ev.target.value;     
+  getItem(ev: any, number: boolean) {
+    this.restoreItems();
+
+    if (ev && !number)
+      searchEmail = ev.target.value;
     else if (ev && number)
-    searchNumber = ev.target.value;
+      searchNumber = ev.target.value;
     else {
       searchNumber = searchNumber;
       searchEmail = searchEmail;
     }
-   
+
     if (searchEmail && searchEmail.trim() != '') {
-      this.isSearching=true;
-      if(this.todayListDebt){
-      this.todayListDebt = this.todayListDebt.filter((item) => {        
-        return ((item.email.toLowerCase().indexOf(searchEmail.toLowerCase()) > -1)
-                && (item["comprasHoje"]["nome"].match(this.findNumberRegex)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1))
-      });
-    } 
-    if(this.notTodayListDebt){
-      this.notTodayListDebt = this.notTodayListDebt.filter((item) => {        
-        return ((item.email.toLowerCase().indexOf(searchEmail.toLowerCase()) > -1)
-                && (item["comprasHoje"]["nome"].match(this.findNumberRegex)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1));
-      });
-    }
-    if(this.todayListPaid){
-      this.todayListPaid = this.todayListPaid.filter((item) => {        
-        return ((item.email.toLowerCase().indexOf(searchEmail.toLowerCase()) > -1)
-               && (item["comprasHoje"]["nome"].match(this.findNumberRegex)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1));
-      });
-    }
-    if(this.notTodayListPaid){
-      this.notTodayListPaid = this.notTodayListPaid.filter((item) => {   
-        return ((item.email.toLowerCase().indexOf(searchEmail.toLowerCase()) > -1)
-        && (item["comprasHoje"]["nome"].match(this.findNumberRegex)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1));       
-      });
-    }    
+      this.isSearching = true;
+      if (this.todayListDebt) {
+        this.todayListDebt = this.todayListDebt.filter((item) => {
+          return ((item.email.toLowerCase().indexOf(searchEmail.toLowerCase()) > -1)
+            && (item["comprasHoje"]["nome"].match(this.findNumberRegex)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1))
+        });
+      }
+      if (this.notTodayListDebt) {
+        this.notTodayListDebt = this.notTodayListDebt.filter((item) => {
+          return ((item.email.toLowerCase().indexOf(searchEmail.toLowerCase()) > -1)
+            && (item["comprasHoje"]["nome"].match(this.findNumberRegex)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1));
+        });
+      }
+      if (this.todayListPaid) {
+        this.todayListPaid = this.todayListPaid.filter((item) => {
+          return ((item.email.toLowerCase().indexOf(searchEmail.toLowerCase()) > -1)
+            && (item["comprasHoje"]["nome"].match(this.findNumberRegex)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1));
+        });
+      }
+      if (this.notTodayListPaid) {
+        this.notTodayListPaid = this.notTodayListPaid.filter((item) => {
+          return ((item.email.toLowerCase().indexOf(searchEmail.toLowerCase()) > -1)
+            && (item["comprasHoje"]["nome"].match(this.findNumberRegex)[0].toString().toLowerCase().indexOf(searchNumber.toLowerCase()) > -1));
+        });
+      }
     } else {
       this.isSearching = false;
     }
-  }  
+  }
 
   payConfirmed(confirmedUserInfo: any) {
     this.isDeleting = true;
@@ -208,7 +208,7 @@ export class ComprasUsuariosPage {
         toast.present();
       });
   }
-  
+
   GetPaidList() {
     this.myServices.showLoading()
     var dataConstruct = new Date;
@@ -240,8 +240,8 @@ export class ComprasUsuariosPage {
                   nome: usersListArray[listKeyValues[i]]["name"],
                   email: usersListArray[listKeyValues[i]]["email"],
                   comprasHoje: inPaidListElement[element]
-                }); 
-                this.todayListPaid[auxToday++]["comprasHoje"]["nome"] = element;              
+                });
+                this.todayListPaid[auxToday++]["comprasHoje"]["nome"] = element;
               }
               else {
                 if (!this.notTodayListPaid) {
