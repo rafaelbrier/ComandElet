@@ -35,7 +35,7 @@ export class ComprasUsuariosPage {
   }
 
   ionViewWillEnter() {
-   // this.GetDebtList();
+    this.GetDebtList();
     this.GetPaidList();
   }
 
