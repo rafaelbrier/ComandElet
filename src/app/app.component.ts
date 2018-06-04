@@ -73,6 +73,7 @@ export class MyApp {
       //statusBar.overlaysWebView(false);
       statusBar.backgroundColorByHexString("#d0a61c");
       splashScreen.hide();
+      this.myServices.showLoading();
     });
   }
 

@@ -72,6 +72,7 @@ export class HomePage {
   }
 
   ionViewWillEnter() {
+    this.myServices.dismissLoading();
 
     if (this.IDtoRemove && this.userCart) {
       this.IDtoRemove.forEach(element => {
@@ -82,6 +83,7 @@ export class HomePage {
       this.IDtoRemove = null;
     }
 
+    
     let pathComidas = '/produtos/' + 'comida/';
     let pathBebidas = '/produtos/' + 'bebida/';
     this.dataService.readDatabase(pathComidas)

@@ -28,8 +28,12 @@ export class LoginPage {
     private authService: AuthService,
     public app: App,
     public myServices: MyServicesProvider,
-    private firebaseSave: DatabaseServiceProvider ) {    
-      }
+    private firebaseSave: DatabaseServiceProvider) {
+  }
+
+  ionViewWillEnter() {
+    this.myServices.dismissLoading();
+  }
 
   notAllFilledForm() {
     var email = this.form.value["email"];
@@ -39,7 +43,7 @@ export class LoginPage {
       let toast = this.myServices.criarToast('Preencha todos os campos vazios.');
       toast.present();
       return false;
-    } 
+    }
     return true;
   }
 
@@ -63,7 +67,7 @@ export class LoginPage {
       this.authService.login(this.user)
         .then(() => {
           this.myServices.dismissLoading();
-          this.app.getRootNav().setRoot(HomePage);          
+          this.app.getRootNav().setRoot(HomePage);
         })
         .catch((error) => {
           let toast = this.toastCtrl.create({ duration: 3000, position: 'bottom' });
@@ -84,31 +88,31 @@ export class LoginPage {
 
   loginWithGoogle() {
 
-    this.myServices.showLoading();  
+    this.myServices.showLoading();
 
     this.authService.loginWithGoogle()
-      .then((res: any) => {         
+      .then((res: any) => {
         this.firebaseSave.regNewAuth(null, res);
         this.app.getRootNav().setRoot(HomePage);
         this.myServices.dismissLoading();
       })
-    .catch((error) => {
-      this.toastCtrl.create({ duration: 3000, position: 'bottom', message: 'Erro ao efetuar o login.' })
-        .present();
-      this.myServices.dismissLoading();
-    });
+      .catch((error) => {
+        this.toastCtrl.create({ duration: 3000, position: 'bottom', message: 'Erro ao efetuar o login.' })
+          .present();
+        this.myServices.dismissLoading();
+      });
   }
 
-  loginWithFacebook() {   
+  loginWithFacebook() {
     this.authService.loginWithFacebook()
       .then((res) => {
         this.firebaseSave.regNewAuth(null, res);
         this.app.getRootNav().setRoot(HomePage);
-        
+
       })
-    .catch((error) => {
-      this.toastCtrl.create({ duration: 3000, position: 'bottom', message: 'Erro ao efetuar o login.' })
-        .present();     
-    });
+      .catch((error) => {
+        this.toastCtrl.create({ duration: 3000, position: 'bottom', message: 'Erro ao efetuar o login.' })
+          .present();
+      });
   }
 }

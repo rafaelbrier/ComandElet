@@ -120,15 +120,26 @@ export class ComprasUsuariosPage {
             .then(() => {
               this.dataService.removeDatabase(pathRead)
                 .then(() => {
-                  if (this.todayListDebt)
+                  if (this.todayListDebt) {
+                    let varDebtToPushDebt = this.todayListDebt.filter(obj => obj["comprasHoje"]["nome"] == confirmedUserInfo.nomePedido);
                     this.todayListDebt = this.todayListDebt.filter(obj => obj["comprasHoje"]["nome"] != confirmedUserInfo.nomePedido);
-                  if (this.notTodayListDebt)
+                    this.backupTodayDebt = this.backupTodayDebt.filter(obj => obj["comprasHoje"]["nome"] != confirmedUserInfo.nomePedido);
+                    this.todayListPaid.push(varDebtToPushDebt[0]);
+                    this.backupTodayPaid.push(varDebtToPushDebt[0]);
+                  }
+                  if (this.notTodayListDebt) {
+                    let varDebtToPushPaid = this.notTodayListDebt.filter(obj => obj["comprasHoje"]["nome"] == confirmedUserInfo.nomePedido);
                     this.notTodayListDebt = this.notTodayListDebt.filter(obj => obj["comprasHoje"]["nome"] != confirmedUserInfo.nomePedido);
+                    this.backupNotTodayDebt = this.backupNotTodayDebt.filter(obj => obj["comprasHoje"]["nome"] != confirmedUserInfo.nomePedido);
+                    this.notTodayListPaid.push(varDebtToPushPaid[0]);
+                    this.backupNotTodayPaid.push(varDebtToPushPaid[0]);
+                  }
+
 
                   let toast = this.myServices.criarToast('Pedido #' + confirmedUserInfo.nomePedido + ' movido para a seção "Pago".');
                   toast.present();
-
                   this.isDeleting = false;
+
                 }).catch((error) => {
                   let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados para remoção.');
                   toast.present();
@@ -271,5 +282,4 @@ export class ComprasUsuariosPage {
         toast.present();
       });
   }
-
 }
