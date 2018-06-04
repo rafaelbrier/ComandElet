@@ -33,14 +33,22 @@ export class PedidoBarComponent {
   userUid: string;
 
   @Input()
-  isAdminView: boolean;
+  toPaidButtonEnab: boolean;
+
+  @Input()
+  nameEmailEnable: boolean;
+
+  @Input()
+  isPaid: boolean;
 
   @Output()
   paymentConfirmer = new EventEmitter;
 
   constructor() {
     this.showBar = false;
-    this.isAdminView = false;
+    this.isPaid = false;
+    this.toPaidButtonEnab = false;
+    this.nameEmailEnable = false;
     setTimeout(() => {
       this.checkEntrega();
     }, 100);

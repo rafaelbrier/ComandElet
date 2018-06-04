@@ -3,17 +3,17 @@
     <ion-row>
       <ion-col col-10>
         <div style="font-size: 20px; font-weight: bold; color: #bb5501" text-wrap>#{{pedidosData?.nome}}</div>
-        <div *ngIf="isAdminView" class="cartname-style" text-wrap>{{userName}}, {{userEmail}} </div>
+        <div *ngIf="nameEmailEnable" class="cartname-style" text-wrap>{{userName}}, {{userEmail}} </div>
         <div class="cartname-style" text-wrap>Hora:
           <span class="cartdesc-style">{{pedidosData?.horaCompra}}</span>
         </div>
         <div class="cartname-style" text-wrap *ngIf="entrega">Entrega:
           <span class="cartdesc-style">{{entregaStringPri}}</span>
-          <div class="cartdesc-style">{{this.pedidosData.entrega.endereco}}</div>
+          <div class="cartdesc-style">{{pedidosData?.entrega?.endereco}}</div>
           <div class="cartdesc-style">{{entregaStringSec}}</div>
         </div>
         <div class="cartname-style">Total:
-          <span style="font-weight: bold; font-size: 17px; color: blue">{{pedidosData?.precoTotal | currency:'BRL':symbol:'.2-2'}}</span>
+          <span style="font-weight: bold; font-size: 17px;" [ngStyle]="{'color': isPaid ? 'green' : 'blue'}">{{pedidosData?.precoTotal | currency:'BRL':symbol:'.2-2'}}</span>
         </div>
       </ion-col>
       <ion-col col-2>
@@ -24,7 +24,7 @@
             </button>
           </ion-buttons>
         </div>
-        <div *ngIf="isAdminView" style="position: absolute;  bottom: 0;">
+        <div *ngIf="toPaidButtonEnab" style="position: absolute;  bottom: 0;">
           <ion-buttons right>
             <button ion-button icon-only small (click) = "confirmPayment()" >
               <ion-icon name="checkmark"></ion-icon>

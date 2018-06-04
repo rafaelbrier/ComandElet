@@ -19,7 +19,7 @@ export class MeusPedidosPage {
   pedidosEfetuados: string
   userUid: string
   registroComprasInDebt: any[];
-  registroComprasKeys: any[];
+  registroComprasPaid: any[];  
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private databaseService: DatabaseServiceProvider,
@@ -29,20 +29,41 @@ export class MeusPedidosPage {
   }
 
   ionViewWillEnter() {
-    var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos em Debito/';
+    this.loadInDebt();
+    this.loadPaid();
+  }
+
+  loadPaid(){    
+    var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos Pagos/';
     this.databaseService.readDatabase(path)
     .subscribe((listCompras) => {       
-      this.registroComprasKeys = Object.keys(listCompras);
-      this.registroComprasInDebt =  this.registroComprasKeys.map(key => listCompras[key]); 
-      this.registroComprasInDebt.reverse();       
-      this.registroComprasKeys.reverse();  
-      
+      let registroComprasKeys = Object.keys(listCompras);
+      this.registroComprasPaid =  registroComprasKeys.map(key => listCompras[key]); 
+      this.registroComprasPaid.reverse();       
+      registroComprasKeys.reverse();   
+
       var i = 0;
-      this.registroComprasInDebt.map(t => t["nome"] =  this.registroComprasKeys[i++]);    
+      this.registroComprasPaid.map(t => t["nome"] =  registroComprasKeys[i++]);    
     }, error => {
       let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
       toast.present();
     });     
   }
 
+  loadInDebt(){   
+    var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos em Debito/';
+    this.databaseService.readDatabase(path)
+    .subscribe((listCompras) => {       
+      let registroComprasKeys = Object.keys(listCompras);
+      this.registroComprasInDebt =  registroComprasKeys.map(key => listCompras[key]); 
+      this.registroComprasInDebt.reverse();       
+      registroComprasKeys.reverse();  
+      
+      var i = 0;
+      this.registroComprasInDebt.map(t => t["nome"] =  registroComprasKeys[i++]);    
+    }, error => {
+      let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
+      toast.present();
+    });     
+  }
 }

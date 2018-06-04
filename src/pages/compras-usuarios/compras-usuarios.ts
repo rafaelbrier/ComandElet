@@ -20,8 +20,10 @@ export class ComprasUsuariosPage {
   findNumberRegex = /\d+/g;
   compras: string;
   nowDay: string
-  todayList: any[];
-  notTodayList: any[];
+  todayListDebt: any[];
+  notTodayListDebt: any[];
+  todayListPaid: any[];
+  notTodayListPaid: any[];
   isDeleting: boolean;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
@@ -33,7 +35,8 @@ export class ComprasUsuariosPage {
   }
 
   ionViewWillEnter() {
-    this.GetDebtList();
+   // this.GetDebtList();
+    this.GetPaidList();
   }
 
   payConfirmed(confirmedUserInfo: any) {
@@ -48,10 +51,10 @@ export class ComprasUsuariosPage {
             .then(() => {
               this.dataService.removeDatabase(pathRead)
                 .then(() => {
-                  if (this.todayList)
-                    this.todayList = this.todayList.filter(obj => obj["comprasHoje"]["nome"] != confirmedUserInfo.nomePedido);
-                  if (this.notTodayList)
-                    this.notTodayList = this.notTodayList.filter(obj => obj["comprasHoje"]["nome"] != confirmedUserInfo.nomePedido);
+                  if (this.todayListDebt)
+                    this.todayListDebt = this.todayListDebt.filter(obj => obj["comprasHoje"]["nome"] != confirmedUserInfo.nomePedido);
+                  if (this.notTodayListDebt)
+                    this.notTodayListDebt = this.notTodayListDebt.filter(obj => obj["comprasHoje"]["nome"] != confirmedUserInfo.nomePedido);
 
                   let toast = this.myServices.criarToast('Pedido #' + confirmedUserInfo.nomePedido + ' movido para a seção "Pago".');
                   toast.present();
@@ -82,46 +85,47 @@ export class ComprasUsuariosPage {
       .subscribe((usersList) => {
         if (!this.isDeleting) {
           var i = 0;
-          var aux = 0;
+          var auxToday = 0;
+          var auxNotToday = 0;
           let uidArray = Object.keys(usersList);
           let usersListArray = uidArray.map(key => usersList[key]);
-          let listaDeComprasKeys = Object.keys(usersListArray).filter(keys => usersListArray[keys]["Lista de Compras"] != undefined &&
+          let listKeyValues = Object.keys(usersListArray).filter(keys => usersListArray[keys]["Lista de Compras"] != undefined &&
             usersListArray[keys]["Lista de Compras"]["Pedidos em Debito"] != undefined);
-          let inDebtList = listaDeComprasKeys.map(keys => usersListArray[keys]["Lista de Compras"]["Pedidos em Debito"]);
+          let inDebtList = listKeyValues.map(keys => usersListArray[keys]["Lista de Compras"]["Pedidos em Debito"]);
           inDebtList.forEach(inDebtListElement => {
             let inDebtElementKeys = Object.keys(inDebtListElement);
             inDebtElementKeys.forEach(element => {
               if (element.match(this.findNumberRegex)[1].toString() == this.nowDay) {
-                if (!this.todayList) {
-                  this.todayList = [{
-                    userUid: uidArray[listaDeComprasKeys[i]],
-                    nome: usersListArray[listaDeComprasKeys[i]]["name"],
-                    email: usersListArray[listaDeComprasKeys[i]]["email"],
+                if (!this.todayListDebt) {
+                  this.todayListDebt = [{
+                    userUid: uidArray[listKeyValues[i]],
+                    nome: usersListArray[listKeyValues[i]]["name"],
+                    email: usersListArray[listKeyValues[i]]["email"],
                     comprasHoje: inDebtListElement[element]
                   }]
-                } else this.todayList.push({
-                  userUid: uidArray[listaDeComprasKeys[i]],
-                  nome: usersListArray[listaDeComprasKeys[i]]["name"],
-                  email: usersListArray[listaDeComprasKeys[i]]["email"],
+                } else this.todayListDebt.push({
+                  userUid: uidArray[listKeyValues[i]],
+                  nome: usersListArray[listKeyValues[i]]["name"],
+                  email: usersListArray[listKeyValues[i]]["email"],
                   comprasHoje: inDebtListElement[element]
                 });
-                this.todayList[aux++]["comprasHoje"]["nome"] = element;
+                this.todayListDebt[auxToday++]["comprasHoje"]["nome"] = element;
               }
               else {
-                if (!this.notTodayList) {
-                  this.notTodayList = [{
-                    userUid: uidArray[listaDeComprasKeys[i]],
-                    nome: usersListArray[listaDeComprasKeys[i]]["name"],
-                    email: usersListArray[listaDeComprasKeys[i]]["email"],
+                if (!this.notTodayListDebt) {
+                  this.notTodayListDebt = [{
+                    userUid: uidArray[listKeyValues[i]],
+                    nome: usersListArray[listKeyValues[i]]["name"],
+                    email: usersListArray[listKeyValues[i]]["email"],
                     comprasHoje: inDebtListElement[element]
                   }]
-                } else this.notTodayList.push({
-                  userUid: uidArray[listaDeComprasKeys[i]],
-                  nome: usersListArray[listaDeComprasKeys[i]]["name"],
-                  email: usersListArray[listaDeComprasKeys[i]]["email"],
+                } else this.notTodayListDebt.push({
+                  userUid: uidArray[listKeyValues[i]],
+                  nome: usersListArray[listKeyValues[i]]["name"],
+                  email: usersListArray[listKeyValues[i]]["email"],
                   comprasHoje: inDebtListElement[element]
                 });
-                this.notTodayList[aux++]["comprasHoje"]["nome"] = element;
+                this.notTodayListDebt[auxNotToday++]["comprasHoje"]["nome"] = element;
               }
             });
             i++;
@@ -134,6 +138,67 @@ export class ComprasUsuariosPage {
         toast.present();
       });
   }
-
+  
+  GetPaidList() {
+    this.myServices.showLoading()
+    var dataConstruct = new Date;
+    this.nowDay = dataConstruct.getDate().toString();
+    this.dataService.readDatabase('users/')
+      .subscribe((usersList) => {
+        if (!this.isDeleting) {
+          var i = 0;
+          var auxToday = 0;
+          var auxNotToday = 0;
+          let uidArray = Object.keys(usersList);
+          let usersListArray = uidArray.map(key => usersList[key]);
+          let listKeyValues = Object.keys(usersListArray).filter(keys => usersListArray[keys]["Lista de Compras"] != undefined &&
+            usersListArray[keys]["Lista de Compras"]["Pedidos Pagos"] != undefined);
+          let inPaidList = listKeyValues.map(keys => usersListArray[keys]["Lista de Compras"]["Pedidos Pagos"]);
+          inPaidList.forEach(inPaidListElement => {
+            let inPaidElementKeys = Object.keys(inPaidListElement);
+            inPaidElementKeys.forEach(element => {
+              if (element.match(this.findNumberRegex)[1].toString() == this.nowDay) {
+                if (!this.todayListPaid) {
+                  this.todayListPaid = [{
+                    userUid: uidArray[listKeyValues[i]],
+                    nome: usersListArray[listKeyValues[i]]["name"],
+                    email: usersListArray[listKeyValues[i]]["email"],
+                    comprasHoje: inPaidListElement[element]
+                  }]
+                } else this.todayListPaid.push({
+                  userUid: uidArray[listKeyValues[i]],
+                  nome: usersListArray[listKeyValues[i]]["name"],
+                  email: usersListArray[listKeyValues[i]]["email"],
+                  comprasHoje: inPaidListElement[element]
+                }); 
+                this.todayListPaid[auxToday++]["comprasHoje"]["nome"] = element;              
+              }
+              else {
+                if (!this.notTodayListPaid) {
+                  this.notTodayListPaid = [{
+                    userUid: uidArray[listKeyValues[i]],
+                    nome: usersListArray[listKeyValues[i]]["name"],
+                    email: usersListArray[listKeyValues[i]]["email"],
+                    comprasHoje: inPaidListElement[element]
+                  }]
+                } else this.notTodayListPaid.push({
+                  userUid: uidArray[listKeyValues[i]],
+                  nome: usersListArray[listKeyValues[i]]["name"],
+                  email: usersListArray[listKeyValues[i]]["email"],
+                  comprasHoje: inPaidListElement[element]
+                });
+                this.notTodayListPaid[auxNotToday++]["comprasHoje"]["nome"] = element;
+              }
+            });
+            i++;
+          });
+          this.myServices.dismissLoading();
+        }
+      }, error => {
+        this.myServices.dismissLoading();
+        let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
+        toast.present();
+      });
+  }
 
 }

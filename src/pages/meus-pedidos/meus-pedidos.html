@@ -21,12 +21,11 @@
             </pedido-bar>
           </ion-list>
         </ion-list>
-        <ion-list *ngSwitchCase="'paid'">
-          teste
-          <!-- <ion-list *ngFor="let comidas of prodComidas">
-              <pedido-bar [pedidosData]="bebidas">
+        <ion-list *ngSwitchCase="'paid'">          
+          <ion-list *ngFor="let comprasPaid of registroComprasPaid">
+              <pedido-bar [pedidosData]="comprasPaid" [isPaid]="true">
               </pedido-bar>
-          </ion-list> -->
+          </ion-list>
         </ion-list>
       </div>
 </ion-content>
