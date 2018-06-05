@@ -35,6 +35,8 @@ import { CarrinhoPage } from '../pages/carrinho/carrinho';
 import { MeusPedidosPage } from '../pages/meus-pedidos/meus-pedidos';
 import { PedidoBarComponent } from '../components/pedido-bar/pedido-bar';
 import { ComprasUsuariosPage } from '../pages/compras-usuarios/compras-usuarios';
+import { BluetoothPage } from '../pages/bluetooth/bluetooth';
+import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 registerLocaleData(ptBr)
 
 
@@ -51,6 +53,7 @@ registerLocaleData(ptBr)
     CarrinhoPage,
     MeusPedidosPage,
     ComprasUsuariosPage,
+    BluetoothPage,
     ProductBarComponent,
     CartBarComponent,
     PedidoBarComponent   
@@ -78,13 +81,16 @@ registerLocaleData(ptBr)
     CadastrarProdutoPage,
     CarrinhoPage,
     MeusPedidosPage,
-    ComprasUsuariosPage
+    ComprasUsuariosPage,
+    BluetoothPage
   ],
   providers: [
     {provide: LOCALE_ID, useValue: 'pt-BR'},
     StatusBar,
     SplashScreen,
     Camera,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    BluetoothSerial,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AngularFireAuth,
     AuthService,

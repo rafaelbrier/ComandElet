@@ -14,6 +14,9 @@ import { CarrinhoPage } from '../carrinho/carrinho';
 })
 export class HomePage {
 
+  gettingBebidas: boolean;
+  gettingComidas: boolean;
+
   isAdmin: boolean;
   userUid: string;
   prodComidas: any[];
@@ -83,20 +86,25 @@ export class HomePage {
       this.IDtoRemove = null;
     }
 
-    
+    this.gettingBebidas = true;
+    this.gettingComidas = true;
     let pathComidas = '/produtos/' + 'comida/';
     let pathBebidas = '/produtos/' + 'bebida/';
     this.dataService.readDatabase(pathComidas)
       .subscribe((listComidas) => {
         this.prodComidas = Object.keys(listComidas).map(key => listComidas[key]);
+        this.gettingBebidas = false;
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados das comidas.');
+        this.gettingBebidas = false;
         toast.present();
       });
     this.dataService.readDatabase(pathBebidas)
       .subscribe((listBebidas) => {
         this.prodBebidas = Object.keys(listBebidas).map(key => listBebidas[key]);
+        this.gettingComidas = false;
       }, error => {
+        this.gettingComidas = false;
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados das bebidas.');
         toast.present();
       });

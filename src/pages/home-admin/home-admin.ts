@@ -6,6 +6,7 @@ import { CadastrarProdutoPage } from '../cadastrar-produto/cadastrar-produto';
 import { ComprasUsuariosPage } from '../compras-usuarios/compras-usuarios';
 import { AlertaExcluirProduto } from '../../core/alerta/alerta-excluir-produto';
 import { DatabaseServiceProvider } from '../../providers/auth/database-service';
+import { BluetoothPage } from '../bluetooth/bluetooth';
 
 
 @Component({
@@ -29,6 +30,10 @@ export class HomeAdminPage {
     this.menuCtrl.enable(true, 'myMenu');
     this.productBarShow = false;
     this.userUid = navParams.get("userUid");   
+  }
+
+  bluetoothPage(){
+    this.navCtrl.push(BluetoothPage);
   }
 
   removeProduct(){

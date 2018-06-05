@@ -21,6 +21,9 @@ let searchNumber = '';
 
 export class ComprasUsuariosPage {
 
+  gettingInDebt: boolean;
+  gettingPaid: boolean;
+
   userUid: string;
   findNumberRegex = /\d+/g;
   compras: string;
@@ -157,6 +160,7 @@ export class ComprasUsuariosPage {
 
 
   GetDebtList() {
+    this.gettingInDebt = true;
     this.myServices.showLoading()
     var dataConstruct = new Date;
     this.nowDay = dataConstruct.getDate().toString();
@@ -212,15 +216,18 @@ export class ComprasUsuariosPage {
           });
           this.backupItems();
           this.myServices.dismissLoading();
+          this.gettingInDebt = false;
         }
       }, error => {
         this.myServices.dismissLoading();
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
         toast.present();
+        this.gettingInDebt = false;
       });
   }
 
   GetPaidList() {
+    this.gettingPaid = true;
     this.myServices.showLoading()
     var dataConstruct = new Date;
     this.nowDay = dataConstruct.getDate().toString();
@@ -275,11 +282,13 @@ export class ComprasUsuariosPage {
           });
           this.backupItems();
           this.myServices.dismissLoading();
+          this.gettingPaid = false;
         }
       }, error => {
         this.myServices.dismissLoading();
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
         toast.present();
+        this.gettingPaid = false;
       });
   }
 }

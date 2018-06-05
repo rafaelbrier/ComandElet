@@ -7,10 +7,18 @@
 <ion-content padding>
     <ion-list>
         <p class="subtitle fancy">
-            <span>Serviços de Compras</span>
+            <span>Bluetooth</span>
+        </p>
+        <button (click)="bluetoothPage()" ion-button icon-left full large="true">
+           <ion-icon name="bluetooth"></ion-icon>
+            <div> Bluetooth </div>
+        </button>
+        <br>
+        <p class="subtitle fancy">
+            <span>Compras</span>
         </p>
         <button (click)="comprasUsuariosDebitoAdmin()" ion-button full large="true" class="button-style">
-                <div> Compras Efetuadas </div>
+            <div> Compras Efetuadas </div>
         </button>
         <br>
         <p class="subtitle fancy">

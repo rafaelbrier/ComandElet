@@ -35,12 +35,14 @@
         <product-bar [produto]="bebidas" (listButton)="addToCart($event)">
         </product-bar>
       </ion-list>
+      <ion-spinner class="my-spinner" *ngIf="gettingBebidas"></ion-spinner>
     </ion-list>
     <ion-list *ngSwitchCase="'Comidas'">
       <ion-list *ngFor="let comidas of prodComidas">
         <product-bar [produto]="comidas" (listButton)="addToCart($event)">
         </product-bar>
       </ion-list>
+      <ion-spinner class="my-spinner" *ngIf="gettingComidas"></ion-spinner>
     </ion-list>
   </div>
 </ion-content>

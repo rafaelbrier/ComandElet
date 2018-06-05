@@ -23,6 +23,7 @@ import { MeusPedidosPage } from '../pages/meus-pedidos/meus-pedidos';
 export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
 
+  gettingImgName: boolean;
   //para alterar imgPerfil
   taskUpload: AngularFireUploadTask;
   progress: Observable<number>;
@@ -48,6 +49,8 @@ export class MyApp {
     private alertCtrl: AlertController,
     private camera: Camera,
     private fireStorage: AngularFireStorage) {
+
+    this.gettingImgName=true;
 
     this.events.subscribe('user:logged', (Uid) => {
       this.userUid = Uid;
@@ -77,12 +80,13 @@ export class MyApp {
     });
   }
 
-  menuOpened() {
-    if (this.userUid != null) {
+  menuOpened() {    
+      if (this.userUid != null) {
       const userDataObserver = this.databaseService.readDatabaseUser(this.userUid)
         .subscribe((resUser: any) => {
           this.displayName = resUser.name;
           this.imgUrl = resUser.imgUrl;
+          this.gettingImgName = false;
 
           userDataObserver.unsubscribe();
         }, error => {

@@ -1,32 +1,34 @@
 <ion-header>
-    <ion-navbar>  
-      <ion-title class="centralizado" style="padding-right: 15%">Meus Pedidos</ion-title>  
-    </ion-navbar>
-    <ion-segment [(ngModel)]="pedidosEfetuados" style="border-top: 2px solid;">
-        <ion-segment-button value="inDebt" class="segment-style">
-          Em Débito
-        </ion-segment-button>
-        <ion-segment-button value="paid" class="segment-style">
-          Pagos
-        </ion-segment-button>
-      </ion-segment>
-  </ion-header>
+  <ion-navbar>
+    <ion-title class="centralizado" style="padding-right: 15%">Meus Pedidos</ion-title>
+  </ion-navbar>
+  <ion-segment [(ngModel)]="pedidosEfetuados" style="border-top: 2px solid;">
+    <ion-segment-button value="inDebt" class="segment-style">
+      Em Débito
+    </ion-segment-button>
+    <ion-segment-button value="paid" class="segment-style">
+      Pagos
+    </ion-segment-button>
+  </ion-segment>
+</ion-header>
 
 
 <ion-content padding>
-    <ion-searchbar (ionInput)="getItem($event)" animated = "true" placeholder="Procurar Número"></ion-searchbar>
-    <div [ngSwitch]="pedidosEfetuados">
-        <ion-list *ngSwitchCase="'inDebt'">
-          <ion-list *ngFor="let comprasInDebt of registroComprasInDebt">
-            <pedido-bar [pedidosData]="comprasInDebt" >
-            </pedido-bar>
-          </ion-list>
-        </ion-list>
-        <ion-list *ngSwitchCase="'paid'">          
-          <ion-list *ngFor="let comprasPaid of registroComprasPaid">
-              <pedido-bar [pedidosData]="comprasPaid" [isPaid]="true">
-              </pedido-bar>
-          </ion-list>
-        </ion-list>
-      </div>
+  <ion-searchbar (ionInput)="getItem($event)" animated="true" placeholder="Procurar Número"></ion-searchbar>
+  <div [ngSwitch]="pedidosEfetuados">
+    <ion-list *ngSwitchCase="'inDebt'">
+      <ion-spinner class="my-spinner" *ngIf="gettingInDebt"></ion-spinner>
+      <ion-list *ngFor="let comprasInDebt of registroComprasInDebt">
+        <pedido-bar [pedidosData]="comprasInDebt">
+        </pedido-bar>
+      </ion-list>
+    </ion-list>
+    <ion-list *ngSwitchCase="'paid'">
+      <ion-spinner  class="my-spinner" *ngIf="gettingPaid"></ion-spinner>
+      <ion-list *ngFor="let comprasPaid of registroComprasPaid">
+        <pedido-bar [pedidosData]="comprasPaid" [isPaid]="true">
+        </pedido-bar>
+      </ion-list>
+    </ion-list>
+  </div>
 </ion-content>

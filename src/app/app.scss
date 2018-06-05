@@ -24,6 +24,21 @@
     justify-content: center;
 }
 
+.my-spinner-svg-white svg circle{
+    stroke: white;
+}
+
+.my-spinner{   
+    position: absolute;
+    height: 100px;
+    width: 100px;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px;
+    margin-top: -50px;   
+    background-size: 100%;
+}
+
 
 .toolbar-background {
     background-color: #eebd19 !important;    

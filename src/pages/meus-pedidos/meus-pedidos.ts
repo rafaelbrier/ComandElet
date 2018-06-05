@@ -12,6 +12,9 @@ let searchNumber = '';
 })
 export class MeusPedidosPage {
 
+  gettingPaid: boolean;
+  gettingInDebt: boolean;
+
   pedidosEfetuados: string
   userUid: string
   registroComprasInDebt: any[];
@@ -65,6 +68,7 @@ export class MeusPedidosPage {
   }
 
   loadPaid() {
+    this.gettingPaid = true;
     var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos Pagos/';
     this.databaseService.readDatabase(path)
       .subscribe((listCompras) => {
@@ -76,13 +80,16 @@ export class MeusPedidosPage {
         var i = 0;
         this.registroComprasPaid.map(t => t["nome"] = registroComprasKeys[i++]);
         this.backupItems();
+        this.gettingPaid = false;
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
         toast.present();
+        this.gettingPaid = false;
       });
   }
 
   loadInDebt() {
+    this.gettingInDebt = true;
     var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos em Debito/';
     this.databaseService.readDatabase(path)
       .subscribe((listCompras) => {
@@ -94,9 +101,11 @@ export class MeusPedidosPage {
         var i = 0;
         this.registroComprasInDebt.map(t => t["nome"] = registroComprasKeys[i++]);
         this.backupItems();
+        this.gettingInDebt = false;
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
         toast.present();
+        this.gettingInDebt = false;
       });
   }
 }

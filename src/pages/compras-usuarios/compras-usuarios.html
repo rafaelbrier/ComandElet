@@ -25,6 +25,7 @@
     <ion-searchbar *ngIf="isSearching" (ionInput)="getItem($event, true)" animated = "true" placeholder="Procurar Número"></ion-searchbar>
   <div [ngSwitch]="compras">
     <ion-list *ngSwitchCase="'EmDebito'">
+        <ion-spinner class="my-spinner" *ngIf="gettingInDebt"></ion-spinner>
       <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowHojeDebt, 'side-menu-buttom-add': !listShowHojeDebt}"
         (click)="listShowHojeDebt = !listShowHojeDebt">
         <ion-icon name="{{ listShowHojeDebt ? 'remove' : 'add'}}"></ion-icon>
@@ -51,6 +52,7 @@
     </ion-list>
 
     <ion-list *ngSwitchCase="'Pagas'">
+        <ion-spinner class="my-spinner" *ngIf="gettingPaid"></ion-spinner>
         <button ion-button round full icon-left style="font-size: 15px" large [ngClass]="{'side-menu-buttom-remove': listShowHojePaid, 'side-menu-buttom-add': !listShowHojePaid}"
         (click)="listShowHojePaid = !listShowHojePaid">
         <ion-icon name="{{ listShowHojePaid ? 'remove' : 'add'}}"></ion-icon>
