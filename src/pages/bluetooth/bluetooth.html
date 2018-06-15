@@ -9,26 +9,41 @@
   <ion-navbar>
     <ion-title class="centralizado" style="padding-right: 15%">Bluetooth</ion-title>
   </ion-navbar>
-
 </ion-header>
-<ion-content padding>
-    <ion-list padding>
-        <button ion-button block (click)="startScanning()">Procurar Dispositivos</button>
-        <ion-list-header>
-          Dispositivos Pareados
-        </ion-list-header>
-        <ion-item *ngFor="let device of pairedDevices">
-          {{device.name}}
-        </ion-item>
-        <button ion-button block (click)="disconnect()">Desconectar</button>
-        <ion-list-header>
-          Dispositivos Disponíveis
-        </ion-list-header>
-        <ion-item *ngFor='let device of unpairedDevices'>
-          <span (click)="selectDevice(device.address)">
-            {{device.name}}
-          </span>
-        </ion-item>
-        <ion-spinner name="crescent" *ngIf="gettingDevices"></ion-spinner>
-      </ion-list>
+
+<ion-content no-padding>
+  <ion-list no-padding>
+    <div class="centralizado">
+      <ion-item  [ngStyle]="{'color': connectStatus ? 'green' : 'blue'}">        
+        <ion-icon name="bluetooth">
+            <span  *ngIf="!connectStatus">Desconectado</span>    
+            <span  *ngIf="connectStatus">Conectado.</span>         
+        </ion-icon>
+      </ion-item>      
+    </div>
+
+    <div class="cartname-style" text-wrap>Último Dado Recebido:
+        <span class="cartdesc-style">{{rxData}}</span>
+      </div>
+
+    <button ion-button block (click)="startScanning()">Procurar Dispositivos</button>    
+    <ion-list-header no-padding>
+      Dispositivos Pareados
+    </ion-list-header>
+    <ion-item *ngFor="let device of pairedDevices" style="border-bottom: 2px solid;">
+     <span (click)="selectDevice(device.address, device.name)">
+       {{device.name}}
+     </span>
+    </ion-item>     
+    <button ion-button block (click)="disconnect()">Desconectar</button>
+    <ion-list-header>
+      Dispositivos Disponíveis
+    </ion-list-header>
+    <ion-item *ngFor='let device of unpairedDevices' style="border-bottom: 2px solid;">
+      <span (click)="selectDevice(device.address, device.name)">
+        {{device.name}}
+      </span >
+    </ion-item>
+    <ion-spinner name="crescent" *ngIf="gettingDevices"></ion-spinner>
+  </ion-list>
 </ion-content>
