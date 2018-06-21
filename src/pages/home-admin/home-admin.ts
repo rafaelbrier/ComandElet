@@ -79,4 +79,8 @@ export class HomeAdminPage {
     });     
   }
 
+  cardRegist(){
+    alert("Em Construção.")
+  }
+
 }

@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { AlertController, Events } from 'ionic-angular';
 import { MyServicesProvider } from '../../providers/my-services/my-services';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Subject } from 'rxjs/Subject';
+import { switchMap } from 'rxjs/operators';
 
 /**
  * Generated class for the BluetoothPage page.
@@ -10,7 +13,7 @@ import { MyServicesProvider } from '../../providers/my-services/my-services';
  * Ionic pages and navigation.
  */
 
-let connectedBTName: string; 
+let connectedBTName: string;
 let lastData: string;
 
 @Component({
@@ -19,31 +22,47 @@ let lastData: string;
 })
 export class BluetoothPage {
 
+  cardId$: Subject<string>;
+  queriedName: string;
   unpairedDevices: any;
   pairedDevices: any;
-  gettingDevices: Boolean; 
+  gettingDevices: Boolean;
   connectStatus: Boolean;
   rxData: string;
-  
-  constructor(private bluetoothSerial: BluetoothSerial,
-              private alertCtrl: AlertController,
-              private myServices: MyServicesProvider,
-              private events: Events) {
-    bluetoothSerial.enable();  
-    this.events.subscribe('BT:BluetoothData', rxData => {
-      this.rxData = rxData;
-    });   
+
+  dataReceived: {
+    productID: any,
+    cardID: any
   }
 
-  ionViewWillEnter(){
+  constructor(private bluetoothSerial: BluetoothSerial,
+    private alertCtrl: AlertController,
+    private myServices: MyServicesProvider,
+    private events: Events,
+    private afDatabase: AngularFireDatabase) {
+    bluetoothSerial.enable();
+    this.events.subscribe('BT:BluetoothData', rxData => {
+      this.rxData = rxData;
+    });
+
+    this.dataReceived = {
+      productID: '',
+      cardID: ''
+    }
+
+    this.cardId$ = new Subject<string>();
+  }
+
+  ionViewWillEnter() {
     this.bluetoothSerial.isConnected().then(res => {
-      this.connectStatus = true;     
+      this.connectStatus = true;
       this.rxData = lastData;
-      connectedBTName = connectedBTName;      
+      connectedBTName = connectedBTName;
     }).catch(error => {
       this.connectStatus = false;
       connectedBTName = '';
-    })    
+    });
+    this.locateUser();
   }
 
   startScanning() {
@@ -53,10 +72,10 @@ export class BluetoothPage {
     this.bluetoothSerial.discoverUnpaired().then((success) => {
       this.unpairedDevices = success;
       this.gettingDevices = false;
-      success.forEach(element => {                
+      success.forEach(element => {
       });
     },
-      (err) => {        
+      (err) => {
       })
 
     this.bluetoothSerial.list().then((success) => {
@@ -68,88 +87,131 @@ export class BluetoothPage {
   }
 
   selectDevice(address: any, name: any) {
-    if(this.bluetoothSerial.isEnabled()){
-    let alert = this.alertCtrl.create({
-      title: 'Conectar',
-      message: 'Você deseja se Conectar com (' + name + ')?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          handler: () => {       
+    if (this.bluetoothSerial.isEnabled()) {
+      let alert = this.alertCtrl.create({
+        title: 'Conectar',
+        message: 'Você deseja se Conectar com (' + name + ')?',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            handler: () => {
+            }
+          },
+          {
+            text: 'Conectar',
+            handler: () => {
+              this.myServices.showLoading();
+              this.bluetoothSerial.connect(address).subscribe(res => {
+                let toast = this.myServices.criarToast('Conectado com ' + name + '.');
+                toast.present();
+                connectedBTName = name;
+                this.connectStatus = true;
+                this.readBluetoothData();
+                this.myServices.dismissLoading();
+              }, error => {
+                let toast = this.myServices.criarToast('Erro ao se conectar com ' + name + '.');
+                toast.present();
+                this.myServices.dismissLoading();
+              })
+            }
           }
-        },
-        {
-          text: 'Conectar',
-          handler: () => {
-            this.myServices.showLoading();
-            this.bluetoothSerial.connect(address).subscribe(res => {
-              let toast = this.myServices.criarToast('Conectado com ' + name + '.');
-              toast.present();  
-              connectedBTName = name;
-              this.connectStatus = true;    
-              this.readBluetoothData();         
-              this.myServices.dismissLoading();             
-            }, error => {
-              let toast = this.myServices.criarToast('Erro ao se conectar com ' + name + '.');
-              toast.present();  
-              this.myServices.dismissLoading();
-            })
-          }
-        }
-      ]
-    });
-    alert.present();
-  } else {
-    let toast = this.myServices.criarToast('Ative o Bluetooth.');
-    toast.present();  
-  }
+        ]
+      });
+      alert.present();
+    } else {
+      let toast = this.myServices.criarToast('Ative o Bluetooth.');
+      toast.present();
+    }
   }
 
   disconnect() {
-    if(this.connectStatus) {
-    let alert = this.alertCtrl.create({
-      title: 'Desconectar?',
-      message: 'Você deseja Desconectar do dispositivo (' +connectedBTName+  ')?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          handler: () => {          
+    if (this.connectStatus) {
+      let alert = this.alertCtrl.create({
+        title: 'Desconectar?',
+        message: 'Você deseja Desconectar do dispositivo (' + connectedBTName + ')?',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+            handler: () => {
+            }
+          },
+          {
+            text: 'Desconectar',
+            handler: () => {
+              this.bluetoothSerial.disconnect();
+              this.connectStatus = false;
+            }
           }
-        },
-        {
-          text: 'Desconectar',
-          handler: () => {
-            this.bluetoothSerial.disconnect();
-            this.connectStatus = false;
-          }
-        }
-      ]
-    });
-    alert.present();
-  } else {
-    let toast = this.myServices.criarToast('Nenhum dispositivo Bluetooth conectado.');
-      toast.present(); 
-  }
+        ]
+      });
+      alert.present();
+    } else {
+      let toast = this.myServices.criarToast('Nenhum dispositivo Bluetooth conectado.');
+      toast.present();
+    }
   }
 
-  readBluetoothData(){  
+  readBluetoothData() {
     this.bluetoothSerial.subscribeRawData().subscribe(res => {
-      this.bluetoothSerial.read().then(data => {         
-        if(data != "") {
-        this.rxData = data;    
-        lastData = this.rxData;   
-        this.events.publish('BT:BluetoothData', this.rxData);           
-        console.log(this.rxData)     
-        }           
-      }).catch(error => { 
-        let toast = this.myServices.criarToast('Error ao receber dados do dispositivo Bluetooth (' +connectedBTName+  ').');
-        toast.present();      
-      });     
+      this.bluetoothSerial.readUntil('\n').then(data => {
+        if (data != "" && data.length > 2) {
+          this.rxData = data;
+          lastData = this.rxData;
+
+          this.dataReceived["productID"] = this.rxData.split(', ')[0];
+          let cardIdStr = this.rxData.split(', ')[1];;
+          this.dataReceived["cardID"] = cardIdStr.replace(/(\r\n|\n|)/gm, '\r');
+
+          if (this.dataReceived)
+            this.cardId$.next(this.dataReceived.cardID);
+
+        } else if (data != "" && data == "Ok\n") {
+          this.registerBuy();
+        }
+      }).catch(error => {
+        let toast = this.myServices.criarToast('Error ao receber dados do dispositivo Bluetooth (' + connectedBTName + ').');
+        toast.present();
+      });
     }, error => {
-      let toast = this.myServices.criarToast('Conexão perdida com dispositivo Bluetooth (' +connectedBTName+  ').');
-      toast.present();     
-    })  
+      let toast = this.myServices.criarToast('Conexão perdida com dispositivo Bluetooth (' + connectedBTName + ').');
+      toast.present();
+    })
+  }
+
+  registerBuy() {
+    console.log("registerbuy")
+  }
+
+  locateUser() {
+    const queryObservable = this.cardId$.pipe(
+      switchMap(ID =>
+        this.afDatabase.list('/users', ref => ref.orderByChild('cardID').equalTo(this.dataReceived.cardID)).valueChanges()
+      )
+    );
+    // subscribe to changes
+    queryObservable.subscribe(queriedItems => {
+      if (queriedItems && queriedItems[0])
+        this.queriedName = queriedItems[0]["name"];
+      else
+        this.queriedName = "Null\r";
+
+      // this.bluetoothSerial.write(this.queriedName).then(sucess => {
+      //   console.log(sucess)
+      // }, ).catch(error => {
+      //   console.log(error)
+      // });
+
+    });
+  }
+ 
+
+  escrever() {     
+    this.bluetoothSerial.write(this.queriedName).then(sucess => {
+      console.log(sucess)
+    }, ).catch(error => {
+      console.log(error)
+    });
   }
 }
