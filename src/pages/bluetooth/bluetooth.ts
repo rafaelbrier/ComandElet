@@ -24,14 +24,18 @@ export class BluetoothPage {
 
   cardId$: Subject<string>;
   userUid$: Subject<string>;
+  itemID$: Subject<string>;
+  UidFromId$: Subject<string>;
   queriedName: string;
   unpairedDevices: any;
   pairedDevices: any;
   gettingDevices: Boolean;
   connectStatus: Boolean;
   rxData: string;
-  typedEmail: string;  
+  typedEmail: string;
   retriviedUid: string;
+  userUid: string;
+  produtoId: any;
 
   dataReceived: {
     productID: any,
@@ -55,7 +59,8 @@ export class BluetoothPage {
 
     this.cardId$ = new Subject<string>();
     this.userUid$ = new Subject<string>();
-    this.dataReceived.cardID = "55aa44bb33aa"
+    this.itemID$ = new Subject<string>();
+    this.UidFromId$ = new Subject<string>();
   }
 
   ionViewWillEnter() {
@@ -69,6 +74,8 @@ export class BluetoothPage {
     });
     this.locateUserCardID();
     this.getUserUidByEmail();
+    this.getItemById();
+    this.getUidFromCardId();   
   }
 
   startScanning() {
@@ -172,10 +179,11 @@ export class BluetoothPage {
 
           if (this.dataReceived) {
             this.cardId$.next(this.dataReceived.cardID);
+            this.UidFromId$.next(this.dataReceived.cardID);
           }
 
         } else if (data != "" && data == "Ok\n") {
-          this.registerBuy();
+          this.registerBuy(this.dataReceived.productID);
         }
       }).catch(error => {
         let toast = this.myServices.criarToast('Error ao receber dados do dispositivo Bluetooth (' + connectedBTName + ').');
@@ -185,10 +193,6 @@ export class BluetoothPage {
       let toast = this.myServices.criarToast('Conexão perdida com dispositivo Bluetooth (' + connectedBTName + ').');
       toast.present();
     })
-  }
-
-  registerBuy() {
-    console.log("registerbuy")
   }
 
   cardRegister() {
@@ -217,8 +221,8 @@ export class BluetoothPage {
           title: 'Confirmar registro de cartão.',
           message: `<p>Deseja confirmar?</p>
             <ul>           
-            <li>ID do cartão: `+this.dataReceived.cardID+`</li>
-            <li>UID do usuário: `+this.retriviedUid+`</li>
+            <li>ID do cartão: `+ this.dataReceived.cardID + `</li>
+            <li>UID do usuário: `+ this.retriviedUid + `</li>
           </ul>`,
           buttons: [
             {
@@ -231,7 +235,7 @@ export class BluetoothPage {
               }
             }]
         });
-        confirm.present();        
+        confirm.present();
       } else {
         let toast = this.myServices.criarToast('Usuário não encontrado.');
         toast.present();
@@ -239,14 +243,14 @@ export class BluetoothPage {
     });
   }
 
-  registerCardIDinUser() {   
-    this.afDatabase.object('/users/'+ this.retriviedUid).update({cardID: this.dataReceived.cardID}).then(success => {
+  registerCardIDinUser() {
+    this.afDatabase.object('/users/' + this.retriviedUid).update({ cardID: this.dataReceived.cardID }).then(success => {
       let toast = this.myServices.criarToast('Cartão registrado.');
-     toast.present();
+      toast.present();
     })
-    .catch(error =>{
-      console.log(error)
-    });
+      .catch(error => {
+        console.log(error)
+      });
   }
 
   locateUserCardID() {
@@ -269,6 +273,90 @@ export class BluetoothPage {
         }, 2000);
       }
     });
+  }
+
+  getUidFromCardId() {
+    const queryObservableUidFromCard = this.UidFromId$.pipe(
+      switchMap(Id => {
+        return this.afDatabase.list('/users', ref => ref.orderByChild('cardID').equalTo(Id).limitToFirst(1)).snapshotChanges();
+      })
+    );
+    //subscribe to changes
+    queryObservableUidFromCard.subscribe(queriedItems => {
+      if (queriedItems && queriedItems[0]) {
+        this.userUid = queriedItems[0].key;
+      } else {
+        let toast = this.myServices.criarToast('Usuário não encontrado.');
+        toast.present();
+      }
+    });
+  }
+
+  getItemById() {
+    const queryObservableId = this.itemID$.pipe(
+      switchMap(itemID => {
+        return this.afDatabase.list('/produtos/bebida', ref => ref.orderByChild('id').equalTo(itemID).limitToFirst(1)).valueChanges()
+      })
+    );
+
+    queryObservableId.subscribe(queriedItems => {
+      if (queriedItems && queriedItems[0]) {
+        let dataHoje = new Date();
+        let qtd = 1;
+        let precoTotal;
+
+        this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
+          { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + queriedItems[0]["nome"] + ' - ' + queriedItems[0]["id"]).valueChanges().subscribe(res => {
+
+            if (res && res["Qtd"]) {
+              qtd = Number.parseInt(res["Qtd"]) + 1;
+              precoTotal = queriedItems[0]["preco"] * qtd;
+            } else {
+              qtd = 1;
+              precoTotal = queriedItems[0]["preco"];
+            }
+
+          }, error => { console.log(error) });
+
+        setTimeout(() => {
+          if (precoTotal) {
+            this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
+              { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + queriedItems[0]["nome"] + ' - ' + queriedItems[0]["id"])
+              .update({ Qtd: qtd, precoTotal: precoTotal })
+              .then(success => {
+                let toast = this.myServices.criarToast('Compra em máquina pelo cliente (' + this.userUid + ') registrada.');
+                toast.present();
+              })
+              .catch(error => {
+                console.log(error)
+              });
+          }
+        }, 3000);
+
+      } else {
+        let toast = this.myServices.criarToast('Produto não encontrado.');
+        toast.present();
+      }
+    });
+  }
+
+  registerBuy(itemId: string) {
+    switch (itemId) {
+      case "1":
+        this.produtoId = 12;
+        break;
+      case "2":
+        this.produtoId = 13;
+        break;
+      case "3":
+        this.produtoId = 14;
+        break;
+      default:
+        this.produtoId = 0;
+    }
+    if (this.produtoId != 0) {
+      this.itemID$.next(this.produtoId);
+    }
   }
 
   escreverBT(data: string) {
