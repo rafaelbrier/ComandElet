@@ -23,12 +23,15 @@ let lastData: string;
 export class BluetoothPage {
 
   cardId$: Subject<string>;
+  userUid$: Subject<string>;
   queriedName: string;
   unpairedDevices: any;
   pairedDevices: any;
   gettingDevices: Boolean;
   connectStatus: Boolean;
   rxData: string;
+  typedEmail: string;  
+  retriviedUid: string;
 
   dataReceived: {
     productID: any,
@@ -51,6 +54,8 @@ export class BluetoothPage {
     }
 
     this.cardId$ = new Subject<string>();
+    this.userUid$ = new Subject<string>();
+    this.dataReceived.cardID = "55aa44bb33aa"
   }
 
   ionViewWillEnter() {
@@ -62,7 +67,8 @@ export class BluetoothPage {
       this.connectStatus = false;
       connectedBTName = '';
     });
-    this.locateUser();
+    this.locateUserCardID();
+    this.getUserUidByEmail();
   }
 
   startScanning() {
@@ -156,7 +162,7 @@ export class BluetoothPage {
   readBluetoothData() {
     this.bluetoothSerial.subscribeRawData().subscribe(res => {
       this.bluetoothSerial.readUntil('\n').then(data => {
-        if (data != "" && data.length > 2) {
+        if (data != "" && data.length > 4) {
           this.rxData = data;
           lastData = this.rxData;
 
@@ -165,7 +171,7 @@ export class BluetoothPage {
           this.dataReceived["cardID"] = cardIdStr.replace(/(\r\n|\n|)/gm, '');
 
           if (this.dataReceived) {
-            this.cardId$.next(this.dataReceived.cardID);          
+            this.cardId$.next(this.dataReceived.cardID);
           }
 
         } else if (data != "" && data == "Ok\n") {
@@ -185,25 +191,83 @@ export class BluetoothPage {
     console.log("registerbuy")
   }
 
-  locateUser() {
+  cardRegister() {
+    if (this.typedEmail && this.dataReceived) {
+      this.userUid$.next(this.typedEmail);
+    } else if (!this.typedEmail) {
+      let toast = this.myServices.criarToast('Campo email vazio.');
+      toast.present();
+    } else if (!this.dataReceived) {
+      let toast = this.myServices.criarToast('Nenhum ID lido.');
+      toast.present();
+    }
+  }
+
+  getUserUidByEmail() {
+    const queryObservableEmail = this.userUid$.pipe(
+      switchMap(email => {
+        return this.afDatabase.list('/users', ref => ref.orderByChild('email').equalTo(email).limitToFirst(1)).snapshotChanges();
+      })
+    );
+    //subscribe to changes
+    queryObservableEmail.subscribe(queriedItems => {
+      if (queriedItems && queriedItems[0]) {
+        this.retriviedUid = queriedItems[0].key;
+        let confirm = this.alertCtrl.create({
+          title: 'Confirmar registro de cartão.',
+          message: `<p>Deseja confirmar?</p>
+            <ul>           
+            <li>ID do cartão: `+this.dataReceived.cardID+`</li>
+            <li>UID do usuário: `+this.retriviedUid+`</li>
+          </ul>`,
+          buttons: [
+            {
+              text: 'Cancelar',
+              role: 'cancel'
+            }, {
+              text: 'Confirmar',
+              handler: () => {
+                this.registerCardIDinUser();
+              }
+            }]
+        });
+        confirm.present();        
+      } else {
+        let toast = this.myServices.criarToast('Usuário não encontrado.');
+        toast.present();
+      }
+    });
+  }
+
+  registerCardIDinUser() {   
+    this.afDatabase.object('/users/'+ this.retriviedUid).update({cardID: this.dataReceived.cardID}).then(success => {
+      let toast = this.myServices.criarToast('Cartão registrado.');
+     toast.present();
+    })
+    .catch(error =>{
+      console.log(error)
+    });
+  }
+
+  locateUserCardID() {
     const queryObservable = this.cardId$.pipe(
-      switchMap(cardId => {       
-        return this.afDatabase.list('/users', ref => ref.orderByChild('cardID').equalTo(cardId)).valueChanges()
+      switchMap(cardId => {
+        return this.afDatabase.list('/users', ref => ref.orderByChild('cardID').equalTo(cardId).limitToFirst(1)).valueChanges()
       })
     );
     // subscribe to changes
     queryObservable.subscribe(queriedItems => {
       if (queriedItems && queriedItems[0]) {
-        this.queriedName = queriedItems[0]["name"];        
+        this.queriedName = queriedItems[0]["name"];
         setTimeout(() => {
           this.escreverBT(this.queriedName);
         }, 2000);
       } else {
-        this.queriedName = "Null";        
+        this.queriedName = "Null";
         setTimeout(() => {
           this.escreverBT(this.queriedName);
         }, 2000);
-      }     
+      }
     });
   }
 

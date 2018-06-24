@@ -14,28 +14,35 @@
 <ion-content no-padding>
   <ion-list no-padding>
     <div class="centralizado">
-      <ion-item  [ngStyle]="{'color': connectStatus ? 'green' : 'blue'}">        
+      <ion-item [ngStyle]="{'color': connectStatus ? 'green' : 'blue'}">
         <ion-icon name="bluetooth">
-            <span  *ngIf="!connectStatus">Desconectado</span>    
-            <span  *ngIf="connectStatus">Conectado.</span>         
+          <span *ngIf="!connectStatus">Desconectado</span>
+          <span *ngIf="connectStatus">Conectado.</span>
         </ion-icon>
-      </ion-item>      
+      </ion-item>
     </div>
 
     <div class="cartname-style" text-wrap>Último Dado Recebido:
-        <span class="cartdesc-style">{{rxData}}</span>
-      </div>
+      <span class="cartdesc-style">{{rxData}}</span>
+    </div>
 
-    <button ion-button block (click)="escrever()">teste</button>    
-    <button ion-button block (click)="startScanning()">Procurar Dispositivos</button>    
+    ID atual: {{dataReceived.cardID}}
+    <ion-item class=" input-border">     
+      <ion-label class="input-label-style">Email:</ion-label>
+      <ion-input name="email" [(ngModel)]="typedEmail" type="text" #email="ngModel" required></ion-input> 
+      <button (click)="cardRegister()" ion-button icon-only item-end>
+        <ion-icon name="card"></ion-icon>
+      </button>     
+    </ion-item>    
+    <button ion-button block (click)="startScanning()">Procurar Dispositivos</button>
     <ion-list-header no-padding>
       Dispositivos Pareados
     </ion-list-header>
     <ion-item *ngFor="let device of pairedDevices" style="border-bottom: 2px solid;">
-     <span (click)="selectDevice(device.address, device.name)">
-       {{device.name}}
-     </span>
-    </ion-item>     
+      <span (click)="selectDevice(device.address, device.name)">
+        {{device.name}}
+      </span>
+    </ion-item>
     <button ion-button block (click)="disconnect()">Desconectar</button>
     <ion-list-header>
       Dispositivos Disponíveis
@@ -43,7 +50,7 @@
     <ion-item *ngFor='let device of unpairedDevices' style="border-bottom: 2px solid;">
       <span (click)="selectDevice(device.address, device.name)">
         {{device.name}}
-      </span >
+      </span>
     </ion-item>
     <ion-spinner name="crescent" *ngIf="gettingDevices"></ion-spinner>
   </ion-list>

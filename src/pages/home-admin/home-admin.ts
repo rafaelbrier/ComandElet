@@ -78,9 +78,4 @@ export class HomeAdminPage {
       userUid: this.userUid               
     });     
   }
-
-  cardRegist(){
-    alert("Em Construção.")
-  }
-
 }
