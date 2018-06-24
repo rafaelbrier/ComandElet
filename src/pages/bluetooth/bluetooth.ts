@@ -15,6 +15,7 @@ import { switchMap } from 'rxjs/operators';
 
 let connectedBTName: string;
 let lastData: string;
+let initialList = [12, 13, 14, 0, 0, 0, 0, 0, 0 ];
 
 @Component({
   selector: 'page-bluetooth',
@@ -36,6 +37,8 @@ export class BluetoothPage {
   retriviedUid: string;
   userUid: string;
   produtoId: any;
+  prodList: any[]; 
+  index: number;
 
   dataReceived: {
     productID: any,
@@ -57,6 +60,11 @@ export class BluetoothPage {
       cardID: ''
     }
 
+    this.index = 0; 
+
+    if(!this.prodList)
+    this.prodList = initialList;
+
     this.cardId$ = new Subject<string>();
     this.userUid$ = new Subject<string>();
     this.itemID$ = new Subject<string>();
@@ -75,10 +83,17 @@ export class BluetoothPage {
     this.locateUserCardID();
     this.getUserUidByEmail();
     this.getItemById();
-    this.getUidFromCardId();   
+    this.getUidFromCardId();    
+    
+    console.log(this.prodList)
+  }
+
+  onChange(){
+    console.log(this.prodList)
   }
 
   startScanning() {
+    console.log(this.prodList)
     this.pairedDevices = null;
     this.unpairedDevices = null;
     this.gettingDevices = true;
@@ -343,13 +358,31 @@ export class BluetoothPage {
   registerBuy(itemId: string) {
     switch (itemId) {
       case "1":
-        this.produtoId = 12;
+        this.produtoId = this.prodList[0];
         break;
       case "2":
-        this.produtoId = 13;
+        this.produtoId = this.prodList[1];
         break;
       case "3":
-        this.produtoId = 14;
+        this.produtoId = this.prodList[2];
+        break;
+      case "4":
+        this.produtoId = this.prodList[3];
+        break;
+      case "5":
+        this.produtoId = this.prodList[4];
+        break;
+      case "6":
+        this.produtoId = this.prodList[5];
+        break;
+      case "7":
+        this.produtoId = this.prodList[6];
+        break;
+      case "8":
+        this.produtoId = this.prodList[7];
+        break;
+      case "9":
+        this.produtoId = this.prodList[8];
         break;
       default:
         this.produtoId = 0;

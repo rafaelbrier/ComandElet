@@ -27,13 +27,41 @@
     </div>
 
     ID atual: {{dataReceived.cardID}}
-    <ion-item class=" input-border">     
+    <ion-item class=" input-border">
       <ion-label class="input-label-style">Email:</ion-label>
-      <ion-input name="email" [(ngModel)]="typedEmail" type="text" #email="ngModel" required></ion-input> 
+      <ion-input name="email" [(ngModel)]="typedEmail" type="text" #email="ngModel" required></ion-input>
       <button (click)="cardRegister()" ion-button icon-only item-end>
         <ion-icon name="card"></ion-icon>
-      </button>     
-    </ion-item>    
+      </button>
+    </ion-item>
+
+    <ion-item>     
+      <ion-label>Botões[Nº] = ID</ion-label>
+      <ion-select [(ngModel)]="index">
+        <ion-option [value]="0">1</ion-option>
+        <ion-option [value]="1">2</ion-option>
+        <ion-option [value]="2">3</ion-option>
+        <ion-option [value]="3">4</ion-option>
+        <ion-option [value]="4">5</ion-option>
+        <ion-option [value]="5">6</ion-option>
+        <ion-option [value]="6">7</ion-option>
+        <ion-option [value]="7">8</ion-option>
+        <ion-option [value]="8">9</ion-option>
+      </ion-select>
+      <ion-select [(ngModel)]="prodList[index]" (change)="onChange()">
+        <ion-option [value]="12">12</ion-option>
+        <ion-option [value]="13">13</ion-option>
+        <ion-option [value]="14">14</ion-option>
+        <ion-option [value]="0">0</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item class="centralizado">
+      -
+      <span *ngFor="let id of prodList">
+        {{id}} -
+      </span>
+    </ion-item>
+
     <button ion-button block (click)="startScanning()">Procurar Dispositivos</button>
     <ion-list-header no-padding>
       Dispositivos Pareados
