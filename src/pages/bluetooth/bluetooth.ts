@@ -162,10 +162,11 @@ export class BluetoothPage {
 
           this.dataReceived["productID"] = this.rxData.split(', ')[0];
           let cardIdStr = this.rxData.split(', ')[1];;
-          this.dataReceived["cardID"] = cardIdStr.replace(/(\r\n|\n|)/gm, '\r');
+          this.dataReceived["cardID"] = cardIdStr.replace(/(\r\n|\n|)/gm, '');
 
-          if (this.dataReceived)
-            this.cardId$.next(this.dataReceived.cardID);
+          if (this.dataReceived) {
+            this.cardId$.next(this.dataReceived.cardID);          
+          }
 
         } else if (data != "" && data == "Ok\n") {
           this.registerBuy();
@@ -186,32 +187,30 @@ export class BluetoothPage {
 
   locateUser() {
     const queryObservable = this.cardId$.pipe(
-      switchMap(ID =>
-        this.afDatabase.list('/users', ref => ref.orderByChild('cardID').equalTo(this.dataReceived.cardID)).valueChanges()
-      )
+      switchMap(cardId => {       
+        return this.afDatabase.list('/users', ref => ref.orderByChild('cardID').equalTo(cardId)).valueChanges()
+      })
     );
     // subscribe to changes
     queryObservable.subscribe(queriedItems => {
-      if (queriedItems && queriedItems[0])
-        this.queriedName = queriedItems[0]["name"];
-      else
-        this.queriedName = "Null\r";
-
-      // this.bluetoothSerial.write(this.queriedName).then(sucess => {
-      //   console.log(sucess)
-      // }, ).catch(error => {
-      //   console.log(error)
-      // });
-
+      if (queriedItems && queriedItems[0]) {
+        this.queriedName = queriedItems[0]["name"];        
+        setTimeout(() => {
+          this.escreverBT(this.queriedName);
+        }, 2000);
+      } else {
+        this.queriedName = "Null";        
+        setTimeout(() => {
+          this.escreverBT(this.queriedName);
+        }, 2000);
+      }     
     });
   }
- 
 
-  escrever() {     
-    this.bluetoothSerial.write(this.queriedName).then(sucess => {
-      console.log(sucess)
-    }, ).catch(error => {
-      console.log(error)
-    });
+  escreverBT(data: string) {
+    this.bluetoothSerial.clear().then(sucess => {
+      this.bluetoothSerial.write(data + '\r').then(sucess => {
+      }).catch(error => console.log(error));
+    }).catch(error => console.log(error));
   }
 }
