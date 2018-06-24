@@ -45,8 +45,7 @@ export class MeusPedidosPage {
   }
 
   getItem(ev: any) {
-    this.restoreItems();
-    console.log(this.registroComprasPaid)
+    this.restoreItems();   
     if (ev)
       searchNumber = ev.target.value;
     else {

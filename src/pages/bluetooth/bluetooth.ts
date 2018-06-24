@@ -84,16 +84,9 @@ export class BluetoothPage {
     this.getUserUidByEmail();
     this.getItemById();
     this.getUidFromCardId();    
-    
-    console.log(this.prodList)
   }
 
-  onChange(){
-    console.log(this.prodList)
-  }
-
-  startScanning() {
-    console.log(this.prodList)
+  startScanning() {  
     this.pairedDevices = null;
     this.unpairedDevices = null;
     this.gettingDevices = true;
