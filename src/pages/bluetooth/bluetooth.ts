@@ -5,6 +5,7 @@ import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Subject } from 'rxjs/Subject';
 import { switchMap } from 'rxjs/operators';
+import { filter } from 'rxjs/operator/filter';
 
 /**
  * Generated class for the BluetoothPage page.
@@ -45,6 +46,7 @@ export class BluetoothPage {
   itemNome: string;
   responseReady: Boolean;
   isCardReg: Boolean;
+  usersWithSameCard: any;
 
   dataReceived: {
     productID: any,
@@ -66,11 +68,12 @@ export class BluetoothPage {
       cardID: ''
     }
 
-    this.dataReceived.cardID = "aa55bb44cc33ff"
+    this.dataReceived.cardID = "e0fb17a4a8";
 
     this.index = 0;
     this.responseReady = false;
     this.isCardReg = true;
+    this.usersWithSameCard = null;
 
     if (!this.prodList)
       this.prodList = initialList;
@@ -227,6 +230,7 @@ export class BluetoothPage {
           text: 'Cartão',
           handler: () => {
             this.isCardReg = true;
+            this.cardId$.next(this.dataReceived.cardID);
             this.getUserUidByEmail();
             this.cardRegister();
           }
@@ -290,7 +294,8 @@ export class BluetoothPage {
                 text: 'Confirmar',
                 handler: () => {
                   Obsv.unsubscribe();
-                  this.registerCardIDinUser();                  
+                  this.isCardReg = false;
+                  this.registerCardIDinUser();
                 }
               }]
           });
@@ -323,16 +328,24 @@ export class BluetoothPage {
           });
           confirm.present();
           Obsv.unsubscribe();
+          this.isCardReg = false;
         }
       } else {
         Obsv.unsubscribe();
         let toast = this.myServices.criarToast('Usuário não encontrado.');
         toast.present();
+        this.isCardReg = false;
       }
     }, error => { console.log(error) });
   }
 
   registerCardIDinUser() {
+    if (this.usersWithSameCard) {
+      let filterObj = this.usersWithSameCard.filter(obj => obj.email != this.typedEmail);
+      filterObj.forEach(element => {
+        alert("AVISO! O usuário '" + element.email + "' também está com este cartão cadastrado!");        
+      });
+    }
     this.afDatabase.object('/users/' + this.retriviedUid).update({ cardID: this.dataReceived.cardID }).then(success => {
       let toast = this.myServices.criarToast('Cartão registrado.');
       toast.present();
@@ -356,9 +369,9 @@ export class BluetoothPage {
         total = saldoAtual + Number.parseFloat(saldoAdd);
         Obs.unsubscribe();
 
-        this.afDatabase.object('/users/' + userUid).update({ cardSaldo: total }).then(sucess => {         
+        this.afDatabase.object('/users/' + userUid).update({ cardSaldo: total }).then(sucess => {
           let toast = this.myServices.criarToast('Saldo de ' + saldoAdd.toString() + ' adicionado com sucesso! Novo saldo: ' + total);
-          toast.present();          
+          toast.present();
         }
         ).catch(err => { Obs.unsubscribe(); console.log(err) })
       }, error => { console.log(error) }
@@ -373,18 +386,22 @@ export class BluetoothPage {
     );
     // subscribe to changes
     queryObservable.subscribe(queriedItems => {
-      if (queriedItems && queriedItems[0]) {
-        this.queriedName = queriedItems[0]["name"];
-
-        if (queriedItems[0]["cardSaldo"])
-          this.userSaldo = queriedItems[0]["cardSaldo"];
-        else
-          this.userSaldo = 0;
-
-        this.responseReady = true;
-
+      if (this.isCardReg && queriedItems.length > 1) {
+        this.usersWithSameCard = queriedItems;
       } else {
-        this.responseReady = false;
+        if (queriedItems && queriedItems[0]) {
+          this.queriedName = queriedItems[0]["name"];
+
+          if (queriedItems[0]["cardSaldo"])
+            this.userSaldo = queriedItems[0]["cardSaldo"];
+          else
+            this.userSaldo = 0;
+
+          this.responseReady = true;
+
+        } else {
+          this.responseReady = false;
+        }
       }
     }, error => { console.log(error) });
   }
@@ -486,9 +503,9 @@ export class BluetoothPage {
           .then(success => {
             this.afDatabase.object('/users/' + this.userUid).update({ cardSaldo: (this.userSaldo - this.itemPreco) }).then().catch(err => { console.log(err) })
             let toast = this.myServices.criarToast('Compra em máquina pelo cliente (' + this.userUid + ') registrada.');
-            toast.present();         
+            toast.present();
           })
-          .catch(error => {           
+          .catch(error => {
             console.log(error)
           });
       }, error => { console.log(error) });
