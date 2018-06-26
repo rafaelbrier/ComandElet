@@ -15,7 +15,7 @@ import { switchMap } from 'rxjs/operators';
 
 let connectedBTName: string;
 let lastData: string;
-let initialList = [12, 13, 14, 0, 0, 0, 0, 0, 0 ];
+let initialList = [12, 13, 14, 0, 0, 0, 0, 0, 0];
 
 @Component({
   selector: 'page-bluetooth',
@@ -37,10 +37,13 @@ export class BluetoothPage {
   retriviedUid: string;
   userUid: string;
   produtoId: any;
-  prodList: any[]; 
+  prodList: any[];
   index: number;
   userSaldo: number;
   itemPreco: number;
+  itemId: number;
+  itemNome: string;
+  responseReady: Boolean;
 
   dataReceived: {
     productID: any,
@@ -62,10 +65,11 @@ export class BluetoothPage {
       cardID: ''
     }
 
-    this.index = 0; 
+    this.index = 0;
+    this.responseReady = false;
 
-    if(!this.prodList)
-    this.prodList = initialList;
+    if (!this.prodList)
+      this.prodList = initialList;
 
     this.cardId$ = new Subject<string>();
     this.userUid$ = new Subject<string>();
@@ -85,10 +89,10 @@ export class BluetoothPage {
     this.locateUserCardID();
     this.getUserUidByEmail();
     this.getItemById();
-    this.getUidFromCardId();    
+    this.getUidFromCardId();
   }
 
-  startScanning() {  
+  startScanning() {
     this.pairedDevices = null;
     this.unpairedDevices = null;
     this.gettingDevices = true;
@@ -187,12 +191,16 @@ export class BluetoothPage {
           this.dataReceived["cardID"] = cardIdStr.replace(/(\r\n|\n|)/gm, '');
 
           if (this.dataReceived) {
+            this.checkProduct(this.dataReceived.productID);
             this.cardId$.next(this.dataReceived.cardID);
             this.UidFromId$.next(this.dataReceived.cardID);
+            setTimeout(() => {
+              this.sendResponse();
+            }, 1000);
           }
-
-        } else if (data != "" && data == "Ok\n") {
-          this.registerBuy(this.dataReceived.productID);
+        }
+        else if (data != "" && data == "Ok\n") {
+          this.registerBuy(this.itemNome, this.itemId, this.itemPreco);
         }
       }).catch(error => {
         let toast = this.myServices.criarToast('Error ao receber dados do dispositivo Bluetooth (' + connectedBTName + ').');
@@ -249,7 +257,7 @@ export class BluetoothPage {
         let toast = this.myServices.criarToast('Usuário não encontrado.');
         toast.present();
       }
-    }, error => {console.log(error)});
+    }, error => { console.log(error) });
   }
 
   registerCardIDinUser() {
@@ -272,32 +280,18 @@ export class BluetoothPage {
     queryObservable.subscribe(queriedItems => {
       if (queriedItems && queriedItems[0]) {
         this.queriedName = queriedItems[0]["name"];
-        
-        if(queriedItems[0]["cardSaldo"])
-        this.userSaldo = queriedItems[0]["cardSaldo"];
-        else
-        this.userSaldo = 0;        
 
-        if((this.userSaldo - this.itemPreco) >= 0 )
-        {
-        setTimeout(() => {
-          this.escreverBT(this.queriedName + "\nSaldo: " + this.userSaldo.toString());
-        }, 2000);
-        } else {
-          console.log("error")
-          this.queriedName = "Error";
-          setTimeout(() => {
-            this.escreverBT(this.queriedName);
-          }, 2000);
-        }
+        if (queriedItems[0]["cardSaldo"])
+          this.userSaldo = queriedItems[0]["cardSaldo"];
+        else
+          this.userSaldo = 0;
+
+        this.responseReady = true;
 
       } else {
-        this.queriedName = "Null";
-        setTimeout(() => {
-          this.escreverBT(this.queriedName);
-        }, 2000);
+        this.responseReady = false;
       }
-    }, error => {console.log(error)});
+    }, error => { console.log(error) });
   }
 
   getUidFromCardId() {
@@ -314,7 +308,7 @@ export class BluetoothPage {
         let toast = this.myServices.criarToast('Usuário não encontrado.');
         toast.present();
       }
-    }, error => {console.log(error)});
+    }, error => { console.log(error) });
   }
 
   getItemById() {
@@ -326,48 +320,17 @@ export class BluetoothPage {
 
     queryObservableId.subscribe(queriedItems => {
       if (queriedItems && queriedItems[0]) {
-        let dataHoje = new Date();
-        let qtd = 1;
-        let precoTotal;
-
-        this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
-          { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + queriedItems[0]["nome"] + ' - ' + queriedItems[0]["id"]).valueChanges().subscribe(res => {
-
-            if (res && res["Qtd"]) {
-              qtd = Number.parseInt(res["Qtd"]) + 1;
-              precoTotal = queriedItems[0]["preco"] * qtd;
-              this.itemPreco = queriedItems[0]["preco"];
-            } else {
-              qtd = 1;
-              precoTotal = queriedItems[0]["preco"];
-              this.itemPreco = queriedItems[0]["preco"];
-            }
-
-          }, error => { console.log(error) });
-
-        setTimeout(() => {
-          if (precoTotal) {
-            this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
-              { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + queriedItems[0]["nome"] + ' - ' + queriedItems[0]["id"])
-              .update({ Qtd: qtd, precoTotal: precoTotal })
-              .then(success => {
-                let toast = this.myServices.criarToast('Compra em máquina pelo cliente (' + this.userUid + ') registrada.');
-                toast.present();
-              })
-              .catch(error => {
-                console.log(error)
-              });
-          }
-        }, 3000);
-
+        this.itemPreco = queriedItems[0]["preco"];
+        this.itemId = queriedItems[0]["id"];
+        this.itemNome = queriedItems[0]["nome"];
       } else {
         let toast = this.myServices.criarToast('Produto não encontrado.');
         toast.present();
       }
-    }, error => {console.log(error)});
+    }, error => { console.log(error) });
   }
 
-  registerBuy(itemId: string) {
+  checkProduct(itemId: string) {
     switch (itemId) {
       case "1":
         this.produtoId = this.prodList[0];
@@ -401,6 +364,55 @@ export class BluetoothPage {
     }
     if (this.produtoId != 0) {
       this.itemID$.next(this.produtoId);
+    }
+  }
+
+  registerBuy(itemNome: string, itemId: number, itemPreco: number) {
+    let dataHoje = new Date();
+    let qtd = 1;
+    let precoTotal;
+
+    this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
+      { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + itemNome + ' - ' + itemId).valueChanges().subscribe(res => {
+
+        if (res && res["Qtd"]) {
+          qtd = Number.parseInt(res["Qtd"]) + 1;
+          precoTotal = itemPreco * qtd;
+        } else {
+          qtd = 1;
+          precoTotal = itemPreco;
+        }
+      }, error => { console.log(error) });
+
+    setTimeout(() => {
+      if (precoTotal) {
+        this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
+          { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + itemNome + ' - ' + itemId)
+          .update({ Qtd: qtd, precoTotal: precoTotal })
+          .then(success => {
+            this.afDatabase.object('/users/' + this.userUid).update({ cardSaldo: (this.userSaldo - this.itemPreco) }).then().catch(err => { console.log(err) })
+            let toast = this.myServices.criarToast('Compra em máquina pelo cliente (' + this.userUid + ') registrada.');
+            toast.present();
+          })
+          .catch(error => {
+            console.log(error)
+          });
+      }
+    }, 2000);
+  }
+
+  sendResponse() {
+    if (this.responseReady) {
+      if ((this.userSaldo - this.itemPreco) >= 0) {
+        console.log("datasended")
+        this.escreverBT(this.queriedName + "\nSaldo: " + this.userSaldo.toString());
+      } else {
+        this.queriedName = "Error";
+        this.escreverBT(this.queriedName);
+      }
+    } else {
+      this.queriedName = "Null";
+      this.escreverBT(this.queriedName);
     }
   }
 
