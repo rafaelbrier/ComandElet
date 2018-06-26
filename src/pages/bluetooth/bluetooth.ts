@@ -39,6 +39,8 @@ export class BluetoothPage {
   produtoId: any;
   prodList: any[]; 
   index: number;
+  userSaldo: number;
+  itemPreco: number;
 
   dataReceived: {
     productID: any,
@@ -103,7 +105,6 @@ export class BluetoothPage {
       this.pairedDevices = success;
     },
       (err) => {
-
       })
   }
 
@@ -248,7 +249,7 @@ export class BluetoothPage {
         let toast = this.myServices.criarToast('Usuário não encontrado.');
         toast.present();
       }
-    });
+    }, error => {console.log(error)});
   }
 
   registerCardIDinUser() {
@@ -271,16 +272,32 @@ export class BluetoothPage {
     queryObservable.subscribe(queriedItems => {
       if (queriedItems && queriedItems[0]) {
         this.queriedName = queriedItems[0]["name"];
+        
+        if(queriedItems[0]["cardSaldo"])
+        this.userSaldo = queriedItems[0]["cardSaldo"];
+        else
+        this.userSaldo = 0;        
+
+        if((this.userSaldo - this.itemPreco) >= 0 )
+        {
         setTimeout(() => {
-          this.escreverBT(this.queriedName);
+          this.escreverBT(this.queriedName + "\nSaldo: " + this.userSaldo.toString());
         }, 2000);
+        } else {
+          console.log("error")
+          this.queriedName = "Error";
+          setTimeout(() => {
+            this.escreverBT(this.queriedName);
+          }, 2000);
+        }
+
       } else {
         this.queriedName = "Null";
         setTimeout(() => {
           this.escreverBT(this.queriedName);
         }, 2000);
       }
-    });
+    }, error => {console.log(error)});
   }
 
   getUidFromCardId() {
@@ -297,7 +314,7 @@ export class BluetoothPage {
         let toast = this.myServices.criarToast('Usuário não encontrado.');
         toast.present();
       }
-    });
+    }, error => {console.log(error)});
   }
 
   getItemById() {
@@ -319,9 +336,11 @@ export class BluetoothPage {
             if (res && res["Qtd"]) {
               qtd = Number.parseInt(res["Qtd"]) + 1;
               precoTotal = queriedItems[0]["preco"] * qtd;
+              this.itemPreco = queriedItems[0]["preco"];
             } else {
               qtd = 1;
               precoTotal = queriedItems[0]["preco"];
+              this.itemPreco = queriedItems[0]["preco"];
             }
 
           }, error => { console.log(error) });
@@ -345,7 +364,7 @@ export class BluetoothPage {
         let toast = this.myServices.criarToast('Produto não encontrado.');
         toast.present();
       }
-    });
+    }, error => {console.log(error)});
   }
 
   registerBuy(itemId: string) {
