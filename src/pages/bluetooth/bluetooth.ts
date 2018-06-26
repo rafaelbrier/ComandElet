@@ -44,6 +44,7 @@ export class BluetoothPage {
   itemId: number;
   itemNome: string;
   responseReady: Boolean;
+  isCardReg: Boolean;
 
   dataReceived: {
     productID: any,
@@ -65,8 +66,11 @@ export class BluetoothPage {
       cardID: ''
     }
 
+    this.dataReceived.cardID = "aa55bb44cc33ff"
+
     this.index = 0;
     this.responseReady = false;
+    this.isCardReg = true;
 
     if (!this.prodList)
       this.prodList = initialList;
@@ -212,6 +216,32 @@ export class BluetoothPage {
     })
   }
 
+  cardOrSaldoRegister() {
+    let select = this.alertCtrl.create({
+      title: 'Opções de cartão.',
+      message: `"Cadastrar Cartão" ou "Adicionar Saldo"?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        }, {
+          text: 'Cartão',
+          handler: () => {
+            this.isCardReg = true;
+            this.cardRegister();
+          }
+        }, {
+          text: 'Saldo',
+          handler: () => {
+            this.isCardReg = false;
+            this.IDRegister();
+          }
+        }]
+    });
+    select.present();
+
+  }
+
   cardRegister() {
     if (this.typedEmail && this.dataReceived) {
       this.userUid$.next(this.typedEmail);
@@ -220,6 +250,15 @@ export class BluetoothPage {
       toast.present();
     } else if (!this.dataReceived) {
       let toast = this.myServices.criarToast('Nenhum ID lido.');
+      toast.present();
+    }
+  }
+
+  IDRegister() {
+    if (this.typedEmail && this.dataReceived) {
+      this.userUid$.next(this.typedEmail);
+    } else if (!this.typedEmail) {
+      let toast = this.myServices.criarToast('Campo email vazio.');
       toast.present();
     }
   }
@@ -234,25 +273,53 @@ export class BluetoothPage {
     queryObservableEmail.subscribe(queriedItems => {
       if (queriedItems && queriedItems[0]) {
         this.retriviedUid = queriedItems[0].key;
-        let confirm = this.alertCtrl.create({
-          title: 'Confirmar registro de cartão.',
-          message: `<p>Deseja confirmar?</p>
+        if (this.isCardReg) {
+          let confirm = this.alertCtrl.create({
+            title: 'Confirmar registro de cartão.',
+            message: `<p>Deseja confirmar?</p>
             <ul>           
             <li>ID do cartão: `+ this.dataReceived.cardID + `</li>
             <li>UID do usuário: `+ this.retriviedUid + `</li>
           </ul>`,
-          buttons: [
-            {
-              text: 'Cancelar',
-              role: 'cancel'
-            }, {
-              text: 'Confirmar',
-              handler: () => {
-                this.registerCardIDinUser();
+            buttons: [
+              {
+                text: 'Cancelar',
+                role: 'cancel'
+              }, {
+                text: 'Confirmar',
+                handler: () => {
+                  this.registerCardIDinUser();
+                }
+              }]
+          });
+          confirm.present();
+        } else {
+          let confirm = this.alertCtrl.create({
+            title: 'Adicionar saldo em cartão de usuário.',
+            inputs: [
+              {
+                name: 'saldo',
+                placeholder: 'Saldo a adicionar',
+                type: 'number'
               }
-            }]
-        });
-        confirm.present();
+            ],
+            message: `<p>Deseja confirmar?</p>
+            <ul>            
+            <li>UID do usuário: `+ this.retriviedUid + `</li>
+          </ul>`,
+            buttons: [
+              {
+                text: 'Cancelar',
+                role: 'cancel'
+              }, {
+                text: 'Confirmar',
+                handler: (data) => {
+                  this.registerCardSaldoinUser(data.saldo, this.retriviedUid);
+                }
+              }]
+          });
+          confirm.present();
+        }
       } else {
         let toast = this.myServices.criarToast('Usuário não encontrado.');
         toast.present();
@@ -270,10 +337,33 @@ export class BluetoothPage {
       });
   }
 
+  registerCardSaldoinUser(saldoAdd: string, userUid: string) {
+    var saldoAtual;
+    var total;
+    // var canWrite = false;
+    let Obs = this.afDatabase.object('/users/' + userUid + '/cardSaldo').valueChanges()
+      .subscribe(res => {
+        if (res) {
+          saldoAtual = res;
+        } else {
+          saldoAtual = 0;
+        }
+        total = saldoAtual + Number.parseFloat(saldoAdd);
+
+        this.afDatabase.object('/users/' + userUid).update({ cardSaldo: total }).then(sucess => {
+          let toast = this.myServices.criarToast('Saldo de ' + saldoAdd.toString() + ' adicionado com sucesso! Novo saldo: ' + total);
+          toast.present();
+          Obs.unsubscribe();
+        }
+        ).catch(err => { Obs.unsubscribe(); console.log(err) })
+      }, error => { console.log(error) }
+      )
+  }
+
   locateUserCardID() {
     const queryObservable = this.cardId$.pipe(
       switchMap(cardId => {
-        return this.afDatabase.list('/users', ref => ref.orderByChild('cardID').equalTo(cardId).limitToFirst(1)).valueChanges()
+        return this.afDatabase.list('/users', ref => ref.orderByChild('cardID').equalTo(cardId)).valueChanges()
       })
     );
     // subscribe to changes
@@ -372,7 +462,7 @@ export class BluetoothPage {
     let qtd = 1;
     let precoTotal;
 
-    this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
+    let Obs = this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
       { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + itemNome + ' - ' + itemId).valueChanges().subscribe(res => {
 
         if (res && res["Qtd"]) {
@@ -382,10 +472,7 @@ export class BluetoothPage {
           qtd = 1;
           precoTotal = itemPreco;
         }
-      }, error => { console.log(error) });
 
-    setTimeout(() => {
-      if (precoTotal) {
         this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
           { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + itemNome + ' - ' + itemId)
           .update({ Qtd: qtd, precoTotal: precoTotal })
@@ -393,11 +480,16 @@ export class BluetoothPage {
             this.afDatabase.object('/users/' + this.userUid).update({ cardSaldo: (this.userSaldo - this.itemPreco) }).then().catch(err => { console.log(err) })
             let toast = this.myServices.criarToast('Compra em máquina pelo cliente (' + this.userUid + ') registrada.');
             toast.present();
+            Obs.unsubscribe();
           })
           .catch(error => {
+            Obs.unsubscribe();
             console.log(error)
           });
-      }
+      }, error => { console.log(error) });
+
+    setTimeout(() => {
+
     }, 2000);
   }
 
