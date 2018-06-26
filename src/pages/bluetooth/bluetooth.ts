@@ -91,7 +91,6 @@ export class BluetoothPage {
       connectedBTName = '';
     });
     this.locateUserCardID();
-    this.getUserUidByEmail();
     this.getItemById();
     this.getUidFromCardId();
   }
@@ -228,12 +227,14 @@ export class BluetoothPage {
           text: 'Cartão',
           handler: () => {
             this.isCardReg = true;
+            this.getUserUidByEmail();
             this.cardRegister();
           }
         }, {
           text: 'Saldo',
           handler: () => {
             this.isCardReg = false;
+            this.getUserUidByEmail();
             this.IDRegister();
           }
         }]
@@ -270,7 +271,7 @@ export class BluetoothPage {
       })
     );
     //subscribe to changes
-    queryObservableEmail.subscribe(queriedItems => {
+    let Obsv = queryObservableEmail.subscribe(queriedItems => {
       if (queriedItems && queriedItems[0]) {
         this.retriviedUid = queriedItems[0].key;
         if (this.isCardReg) {
@@ -288,7 +289,8 @@ export class BluetoothPage {
               }, {
                 text: 'Confirmar',
                 handler: () => {
-                  this.registerCardIDinUser();
+                  Obsv.unsubscribe();
+                  this.registerCardIDinUser();                  
                 }
               }]
           });
@@ -314,13 +316,16 @@ export class BluetoothPage {
               }, {
                 text: 'Confirmar',
                 handler: (data) => {
+                  Obsv.unsubscribe();
                   this.registerCardSaldoinUser(data.saldo, this.retriviedUid);
                 }
               }]
           });
           confirm.present();
+          Obsv.unsubscribe();
         }
       } else {
+        Obsv.unsubscribe();
         let toast = this.myServices.criarToast('Usuário não encontrado.');
         toast.present();
       }
@@ -349,11 +354,11 @@ export class BluetoothPage {
           saldoAtual = 0;
         }
         total = saldoAtual + Number.parseFloat(saldoAdd);
+        Obs.unsubscribe();
 
-        this.afDatabase.object('/users/' + userUid).update({ cardSaldo: total }).then(sucess => {
+        this.afDatabase.object('/users/' + userUid).update({ cardSaldo: total }).then(sucess => {         
           let toast = this.myServices.criarToast('Saldo de ' + saldoAdd.toString() + ' adicionado com sucesso! Novo saldo: ' + total);
-          toast.present();
-          Obs.unsubscribe();
+          toast.present();          
         }
         ).catch(err => { Obs.unsubscribe(); console.log(err) })
       }, error => { console.log(error) }
@@ -473,17 +478,17 @@ export class BluetoothPage {
           precoTotal = itemPreco;
         }
 
+        Obs.unsubscribe();
+
         this.afDatabase.object('/users/' + this.userUid + '/Lista de Compras/' + '/Compras Maquina/' + dataHoje.toLocaleDateString('pt-BR',
           { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + itemNome + ' - ' + itemId)
           .update({ Qtd: qtd, precoTotal: precoTotal })
           .then(success => {
             this.afDatabase.object('/users/' + this.userUid).update({ cardSaldo: (this.userSaldo - this.itemPreco) }).then().catch(err => { console.log(err) })
             let toast = this.myServices.criarToast('Compra em máquina pelo cliente (' + this.userUid + ') registrada.');
-            toast.present();
-            Obs.unsubscribe();
+            toast.present();         
           })
-          .catch(error => {
-            Obs.unsubscribe();
+          .catch(error => {           
             console.log(error)
           });
       }, error => { console.log(error) });
