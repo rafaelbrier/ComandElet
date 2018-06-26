@@ -47,6 +47,7 @@ export class BluetoothPage {
   responseReady: Boolean;
   isCardReg: Boolean;
   usersWithSameCard: any;
+  forDeletingCards: Boolean;
 
   dataReceived: {
     productID: any,
@@ -74,6 +75,7 @@ export class BluetoothPage {
     this.responseReady = false;
     this.isCardReg = true;
     this.usersWithSameCard = null;
+    this.forDeletingCards = false;
 
     if (!this.prodList)
       this.prodList = initialList;
@@ -276,65 +278,75 @@ export class BluetoothPage {
     );
     //subscribe to changes
     let Obsv = queryObservableEmail.subscribe(queriedItems => {
-      if (queriedItems && queriedItems[0]) {
-        this.retriviedUid = queriedItems[0].key;
-        if (this.isCardReg) {
-          let confirm = this.alertCtrl.create({
-            title: 'Confirmar registro de cartão.',
-            message: `<p>Deseja confirmar?</p>
+      if (this.forDeletingCards) {
+        this.forDeletingCards = false;
+        this.afDatabase.object('/users/' + queriedItems[0].key).update({ cardID: '' })
+          .then(sucess => Obsv.unsubscribe())
+          .catch(error => { Obsv.unsubscribe(); console.log(error); });
+        Obsv.unsubscribe();
+      } else {
+        if (queriedItems && queriedItems[0]) {
+          this.retriviedUid = queriedItems[0].key;
+          if (this.isCardReg) {
+            let confirm = this.alertCtrl.create({
+              title: 'Confirmar registro de cartão.',
+              message: `<p>Deseja confirmar?</p>
             <ul>           
             <li>ID do cartão: `+ this.dataReceived.cardID + `</li>
             <li>UID do usuário: `+ this.retriviedUid + `</li>
           </ul>`,
-            buttons: [
-              {
-                text: 'Cancelar',
-                role: 'cancel'
-              }, {
-                text: 'Confirmar',
-                handler: () => {
-                  Obsv.unsubscribe();
-                  this.isCardReg = false;
-                  this.registerCardIDinUser();
+              buttons: [
+                {
+                  text: 'Cancelar',
+                  role: 'cancel',
+                  handler: () => { Obsv.unsubscribe() }
+                }, {
+                  text: 'Confirmar',
+                  handler: () => {
+                    Obsv.unsubscribe();
+                    this.isCardReg = false;
+                    this.registerCardIDinUser();
+                  }
+                }]
+            });
+            confirm.present();
+          } else {
+            let confirm = this.alertCtrl.create({
+              title: 'Adicionar saldo em cartão de usuário.',
+              inputs: [
+                {
+                  name: 'saldo',
+                  placeholder: 'Saldo a adicionar',
+                  type: 'number'
                 }
-              }]
-          });
-          confirm.present();
-        } else {
-          let confirm = this.alertCtrl.create({
-            title: 'Adicionar saldo em cartão de usuário.',
-            inputs: [
-              {
-                name: 'saldo',
-                placeholder: 'Saldo a adicionar',
-                type: 'number'
-              }
-            ],
-            message: `<p>Deseja confirmar?</p>
+              ],
+              message: `<p>Deseja confirmar?</p>
             <ul>            
             <li>UID do usuário: `+ this.retriviedUid + `</li>
           </ul>`,
-            buttons: [
-              {
-                text: 'Cancelar',
-                role: 'cancel'
-              }, {
-                text: 'Confirmar',
-                handler: (data) => {
-                  Obsv.unsubscribe();
-                  this.registerCardSaldoinUser(data.saldo, this.retriviedUid);
-                }
-              }]
-          });
-          confirm.present();
+              buttons: [
+                {
+                  text: 'Cancelar',
+                  role: 'cancel',
+                  handler: () => { Obsv.unsubscribe(); }
+                }, {
+                  text: 'Confirmar',
+                  handler: (data) => {
+                    Obsv.unsubscribe();
+                    this.registerCardSaldoinUser(data.saldo, this.retriviedUid);
+                  }
+                }]
+            });
+            confirm.present();
+            Obsv.unsubscribe();
+            this.isCardReg = false;
+          }
+        } else {
           Obsv.unsubscribe();
+          let toast = this.myServices.criarToast('Usuário não encontrado.');
+          toast.present();
           this.isCardReg = false;
         }
-      } else {
-        Obsv.unsubscribe();
-        let toast = this.myServices.criarToast('Usuário não encontrado.');
-        toast.present();
-        this.isCardReg = false;
       }
     }, error => { console.log(error) });
   }
@@ -343,8 +355,13 @@ export class BluetoothPage {
     if (this.usersWithSameCard) {
       let filterObj = this.usersWithSameCard.filter(obj => obj.email != this.typedEmail);
       filterObj.forEach(element => {
-        alert("AVISO! O usuário '" + element.email + "' também está com este cartão cadastrado!");        
+        alert("AVISO! O usuário '" + element.email + "' também está com este cartão cadastrado!\nEste terá o cartão de número '" +
+          this.dataReceived.cardID + "' desvinculado!");
+        this.forDeletingCards = true;
+        this.getUserUidByEmail();
+        this.userUid$.next(element.email);
       });
+      this.usersWithSameCard = null;
     }
     this.afDatabase.object('/users/' + this.retriviedUid).update({ cardID: this.dataReceived.cardID }).then(success => {
       let toast = this.myServices.criarToast('Cartão registrado.');
@@ -386,7 +403,7 @@ export class BluetoothPage {
     );
     // subscribe to changes
     queryObservable.subscribe(queriedItems => {
-      if (this.isCardReg && queriedItems.length > 1) {
+      if (this.isCardReg && queriedItems.length > 0) {
         this.usersWithSameCard = queriedItems;
       } else {
         if (queriedItems && queriedItems[0]) {
