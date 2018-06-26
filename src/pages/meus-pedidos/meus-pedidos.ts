@@ -45,7 +45,7 @@ export class MeusPedidosPage {
   }
 
   getItem(ev: any) {
-    this.restoreItems();   
+    this.restoreItems();
     if (ev)
       searchNumber = ev.target.value;
     else {
@@ -71,15 +71,21 @@ export class MeusPedidosPage {
     var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos Pagos/';
     this.databaseService.readDatabase(path)
       .subscribe((listCompras) => {
-        let registroComprasKeys = Object.keys(listCompras);
-        this.registroComprasPaid = registroComprasKeys.map(key => listCompras[key]);
-        this.registroComprasPaid.reverse();
-        registroComprasKeys.reverse();
+        if (listCompras) {
+          let registroComprasKeys = Object.keys(listCompras);
+          this.registroComprasPaid = registroComprasKeys.map(key => listCompras[key]);
+          this.registroComprasPaid.reverse();
+          registroComprasKeys.reverse();
 
-        var i = 0;
-        this.registroComprasPaid.map(t => t["nome"] = registroComprasKeys[i++]);
-        this.backupItems();
-        this.gettingPaid = false;
+          var i = 0;
+          this.registroComprasPaid.map(t => t["nome"] = registroComprasKeys[i++]);
+          this.backupItems();
+          this.gettingPaid = false;
+        } else {
+          this.gettingPaid = false;
+          let toast = this.myServices.criarToast('Nenhum registro encontrado em Débito!');
+          toast.present();
+        }
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
         toast.present();
@@ -92,15 +98,21 @@ export class MeusPedidosPage {
     var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos em Debito/';
     this.databaseService.readDatabase(path)
       .subscribe((listCompras) => {
-        let registroComprasKeys = Object.keys(listCompras);
-        this.registroComprasInDebt = registroComprasKeys.map(key => listCompras[key]);
-        this.registroComprasInDebt.reverse();
-        registroComprasKeys.reverse();
+        if (listCompras) {
+          let registroComprasKeys = Object.keys(listCompras);
+          this.registroComprasInDebt = registroComprasKeys.map(key => listCompras[key]);
+          this.registroComprasInDebt.reverse();
+          registroComprasKeys.reverse();
 
-        var i = 0;
-        this.registroComprasInDebt.map(t => t["nome"] = registroComprasKeys[i++]);
-        this.backupItems();
-        this.gettingInDebt = false;
+          var i = 0;
+          this.registroComprasInDebt.map(t => t["nome"] = registroComprasKeys[i++]);
+          this.backupItems();
+          this.gettingInDebt = false;
+        } else {
+          this.gettingInDebt = false;
+          let toast = this.myServices.criarToast('Nenhum registro encontrado Pago!');
+          toast.present();
+        }
       }, error => {
         let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
         toast.present();

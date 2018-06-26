@@ -6,6 +6,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { Subject } from 'rxjs/Subject';
 import { switchMap } from 'rxjs/operators';
 import { filter } from 'rxjs/operator/filter';
+import { AuthService } from '../../providers/auth/auth-service';
 
 /**
  * Generated class for the BluetoothPage page.
@@ -58,7 +59,8 @@ export class BluetoothPage {
     private alertCtrl: AlertController,
     private myServices: MyServicesProvider,
     private events: Events,
-    private afDatabase: AngularFireDatabase) {
+    private afDatabase: AngularFireDatabase,
+    private authService: AuthService) {
     bluetoothSerial.enable();
     this.events.subscribe('BT:BluetoothData', rxData => {
       this.rxData = rxData;
@@ -70,6 +72,13 @@ export class BluetoothPage {
     }
 
     this.dataReceived.cardID = "e0fb17a4a8";
+
+    var authObserver = this.authService.loggedUserInfo().subscribe(user => {
+      if(user == null) {
+        bluetoothSerial.disconnect();
+        authObserver.unsubscribe();
+      }
+    })
 
     this.index = 0;
     this.responseReady = false;
@@ -534,8 +543,7 @@ export class BluetoothPage {
 
   sendResponse() {
     if (this.responseReady) {
-      if ((this.userSaldo - this.itemPreco) >= 0) {
-        console.log("datasended")
+      if ((this.userSaldo - this.itemPreco) >= 0) {      
         this.escreverBT(this.queriedName + "\nSaldo: " + this.userSaldo.toString());
       } else {
         this.queriedName = "Error";
