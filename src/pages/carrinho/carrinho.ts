@@ -19,6 +19,7 @@ export class CarrinhoPage {
   entregar: boolean;
   IDtoRemove: number[];
   precoTotal: number;
+  prodObs: any;
 
   entregarInfo: {
     nome: string,
@@ -62,9 +63,10 @@ export class CarrinhoPage {
     } else { this.precoTotal = 0; }
   }
 
+
   ionViewWillEnter() {
     var pathRead = 'users/' + this.userUid + '/pedidosCont';
-    this.databaseService.readDatabase(pathRead)
+    this.prodObs = this.databaseService.readDatabase(pathRead)
       .subscribe((res) => {
         if (res == null) {
           pedidosCont = 1;
@@ -75,6 +77,10 @@ export class CarrinhoPage {
         let toast = this.myServices.criarToast('Não foi possível ler o ID dos produtos.');
         toast.present();
       })
+  }
+
+  ionViewDidLeave(){
+    this.prodObs.unsubscribe();
   }
 
   finalizarCompra() {

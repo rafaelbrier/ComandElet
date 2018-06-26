@@ -69,7 +69,7 @@ export class MeusPedidosPage {
   loadPaid() {
     this.gettingPaid = true;
     var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos Pagos/';
-    this.databaseService.readDatabase(path)
+    var Obs = this.databaseService.readDatabase(path)
       .subscribe((listCompras) => {
         if (listCompras) {
           let registroComprasKeys = Object.keys(listCompras);
@@ -86,17 +86,20 @@ export class MeusPedidosPage {
           let toast = this.myServices.criarToast('Nenhum registro encontrado em Débito!');
           toast.present();
         }
+
+        Obs.unsubscribe();
       }, error => {
+        Obs.unsubscribe();
         let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
         toast.present();
-        this.gettingPaid = false;
+        this.gettingPaid = false;        
       });
   }
 
   loadInDebt() {
     this.gettingInDebt = true;
     var path = 'users/' + this.userUid + '/Lista de Compras/' + '/Pedidos em Debito/';
-    this.databaseService.readDatabase(path)
+    var Obs = this.databaseService.readDatabase(path)
       .subscribe((listCompras) => {
         if (listCompras) {
           let registroComprasKeys = Object.keys(listCompras);
@@ -113,7 +116,9 @@ export class MeusPedidosPage {
           let toast = this.myServices.criarToast('Nenhum registro encontrado Pago!');
           toast.present();
         }
+        Obs.unsubscribe();
       }, error => {
+        Obs.unsubscribe();
         let toast = this.myServices.criarToast('Não foi possível acessar o registro de compras.');
         toast.present();
         this.gettingInDebt = false;

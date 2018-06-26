@@ -5,7 +5,6 @@ import { MyServicesProvider } from '../../providers/my-services/my-services';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Subject } from 'rxjs/Subject';
 import { switchMap } from 'rxjs/operators';
-import { filter } from 'rxjs/operator/filter';
 import { AuthService } from '../../providers/auth/auth-service';
 
 /**

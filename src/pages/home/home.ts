@@ -24,6 +24,9 @@ export class HomePage {
   productId: number;
   produtos: string;
 
+  comdObs: any;
+  bbdObs: any;
+
   userCart: [{
     id: Number,
     nome: string,
@@ -90,7 +93,7 @@ export class HomePage {
     this.gettingComidas = true;
     let pathComidas = '/produtos/' + 'comida/';
     let pathBebidas = '/produtos/' + 'bebida/';
-    this.dataService.readDatabase(pathComidas)
+    this.comdObs = this.dataService.readDatabase(pathComidas)
       .subscribe((listComidas) => {
         this.prodComidas = Object.keys(listComidas).map(key => listComidas[key]);
         this.gettingBebidas = false;
@@ -99,7 +102,7 @@ export class HomePage {
         this.gettingBebidas = false;
         toast.present();
       });
-    this.dataService.readDatabase(pathBebidas)
+    this.bbdObs = this.dataService.readDatabase(pathBebidas)
       .subscribe((listBebidas) => {
         this.prodBebidas = Object.keys(listBebidas).map(key => listBebidas[key]);
         this.gettingComidas = false;
@@ -108,6 +111,11 @@ export class HomePage {
         let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados das bebidas.');
         toast.present();
       });
+  }
+
+  ionViewDidLeave(){
+    this.bbdObs.unsubscribe();
+    this.comdObs.unsubscribe();
   }
 
   adminPage() {
