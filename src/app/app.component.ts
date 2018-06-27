@@ -96,12 +96,14 @@ export class MyApp {
         .subscribe((resUser: any) => {
           this.displayName = resUser.name;
           this.imgUrl = resUser.imgUrl;
-          this.gettingImgName = false;
 
           if(resUser.cardSaldo)
           this.cardSaldo = resUser.cardSaldo;
           else
-          this.cardSaldo = 0;             
+          this.cardSaldo = 0;      
+
+          this.gettingImgName = false;
+               
         }, error => {      
           console.log("aaaaa")   
           let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');

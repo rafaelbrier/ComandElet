@@ -15,7 +15,8 @@
         <ion-list no-lines>           
             <ion-item style="background: none">
                     <ion-item class="saldo-style">
-                            Saldo Cartão: {{cardSaldo | currency:'BRL':symbol:'.2-2'}}
+                            Saldo Cartão: <ion-spinner class="my-spinner-svg-white" *ngIf="gettingImgName"></ion-spinner>
+                            {{cardSaldo | currency:'BRL':symbol:'.2-2'}}
                     </ion-item>
                 <button (click)="meusPedidosPage()" ion-button full outline icon-left large="true">
                     <ion-icon name="clipboard"></ion-icon>
