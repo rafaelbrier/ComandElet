@@ -70,6 +70,7 @@ export class HomePage {
             authObserver.unsubscribe();
             userDataObserver.unsubscribe();
           }, error => {
+            userDataObserver.unsubscribe();
             let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
             toast.present();
           });

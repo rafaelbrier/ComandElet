@@ -37,6 +37,8 @@ export class MyApp {
   imgUrl: string;
   displayName: string;
   userUid: string;
+  cardSaldo: number;
+  userDataObserver: any;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen,
     private afAuth: AngularFireAuth, keyboard: Keyboard,
@@ -80,19 +82,30 @@ export class MyApp {
     });
   }
 
+  ionViewWillLeave(){   
+    this.userDataObserver.unsubscribe();
+  }
+
+  menuClosed(){
+    this.userDataObserver.unsubscribe();
+  }
+
   menuOpened() {    
       if (this.userUid != null) {
-      const userDataObserver = this.databaseService.readDatabaseUser(this.userUid)
+         this.userDataObserver = this.databaseService.readDatabaseUser(this.userUid)
         .subscribe((resUser: any) => {
           this.displayName = resUser.name;
           this.imgUrl = resUser.imgUrl;
           this.gettingImgName = false;
 
-          userDataObserver.unsubscribe();
-        }, error => {
+          if(resUser.cardSaldo)
+          this.cardSaldo = resUser.cardSaldo;
+          else
+          this.cardSaldo = 0;             
+        }, error => {      
+          console.log("aaaaa")   
           let toast = this.myServices.criarToast('Não foi possível acessar o banco de dados.');
           toast.present();
-          userDataObserver.unsubscribe();
         });
     }
   }
@@ -216,11 +229,13 @@ export class MyApp {
     this.myServices.showLoading();
     this.authService.signOut()
       .then(() => {
+        this.userDataObserver.unsubscribe();
         this.navCtrl.setRoot(LoginTabPage);
         this.myServices.dismissLoading();
         this.menuCtrl.close();
       })
       .catch((error) => {
+        this.userDataObserver.unsubscribe();
         this.myServices.dismissLoading();
       });
   }

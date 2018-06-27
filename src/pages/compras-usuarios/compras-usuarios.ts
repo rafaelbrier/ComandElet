@@ -40,6 +40,10 @@ export class ComprasUsuariosPage {
   backupTodayPaid: any[];
   backupNotTodayPaid: any[];
 
+  debtObs: any;
+  payConfObs: any;
+  paidObs: any;
+
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private dataService: DatabaseServiceProvider,
     private myServices: MyServicesProvider) {
@@ -52,6 +56,13 @@ export class ComprasUsuariosPage {
   ionViewWillEnter() {
     this.GetDebtList();
     this.GetPaidList();
+  }
+
+  ionViewWillLeave(){
+  this.debtObs.unsubscribe();
+  if(this.payConfObs)
+  this.payConfObs.unsubscribe();
+  this.paidObs.unsubscribe();  
   }
 
   backupItems() {
@@ -116,7 +127,7 @@ export class ComprasUsuariosPage {
     let pathRead = 'users/' + confirmedUserInfo.userUid + '/Lista de Compras/' + 'Pedidos em Debito/' + confirmedUserInfo.nomePedido;
     let pathWrite = 'users/' + confirmedUserInfo.userUid + '/Lista de Compras/' + 'Pedidos Pagos/' + confirmedUserInfo.nomePedido;
 
-    this.dataService.readDatabase(pathRead)
+    this.payConfObs = this.dataService.readDatabase(pathRead)
       .subscribe((res) => {
         if (res) {
           this.dataService.writeDatabase(pathWrite, res)
@@ -159,13 +170,13 @@ export class ComprasUsuariosPage {
   }
 
 
-  GetDebtList() {
+  GetDebtList() {    
     this.gettingInDebt = true;
     this.myServices.showLoading()
     var dataConstruct = new Date;
     this.nowDay = dataConstruct.getDate().toString();
 
-    this.dataService.readDatabase('users/')
+     this.debtObs = this.dataService.readDatabase('users/')
       .subscribe((usersList) => {
         if (!this.isDeleting) {
           var i = 0;
@@ -231,7 +242,8 @@ export class ComprasUsuariosPage {
     this.myServices.showLoading()
     var dataConstruct = new Date;
     this.nowDay = dataConstruct.getDate().toString();
-    this.dataService.readDatabase('users/')
+    
+    this.paidObs = this.dataService.readDatabase('users/')
       .subscribe((usersList) => {
         if (!this.isDeleting) {
           var i = 0;
