@@ -69,9 +69,7 @@ export class BluetoothPage {
       productID: '',
       cardID: ''
     }
-
-    this.dataReceived.cardID = "e0fb17a4a8";
-
+        
     var authObserver = this.authService.loggedUserInfo().subscribe(user => {
       if(user == null) {
         bluetoothSerial.disconnect();
@@ -81,7 +79,7 @@ export class BluetoothPage {
 
     this.index = 0;
     this.responseReady = false;
-    this.isCardReg = true;
+    this.isCardReg = false;
     this.usersWithSameCard = null;
     this.forDeletingCards = false;
 
