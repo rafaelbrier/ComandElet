@@ -24,7 +24,7 @@ export class DatabaseServiceProvider {
     } else {
       userInfo = {
         name: user ? user.name : res.displayName,
-        email: user ? user.email : res.email,
+        email: user ? user.email.toLowerCase() : res.email,
         imgUrl: user ? "https://firebasestorage.googleapis.com/v0/b/comanda-eletroni-1525119433359.appspot.com/o/ProfileImages%2FdefaultImg%2Fdefault-avatar.png?alt=media&token=3a02ff5a-0a07-4a16-99e8-be90c8542cf5"
           : res.photoURL,
         cardID: "",
