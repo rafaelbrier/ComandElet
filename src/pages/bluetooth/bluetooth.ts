@@ -48,6 +48,7 @@ export class BluetoothPage {
   isCardReg: Boolean;
   usersWithSameCard: any;
   forDeletingCards: Boolean;
+  produtoIsFound: Boolean;
 
   dataReceived: {
     productID: any,
@@ -82,6 +83,7 @@ export class BluetoothPage {
     this.isCardReg = false;
     this.usersWithSameCard = null;
     this.forDeletingCards = false;
+    this.produtoIsFound = false;
 
     if (!this.prodList)
       this.prodList = initialList;
@@ -200,7 +202,8 @@ export class BluetoothPage {
           this.rxData = data;
           lastData = this.rxData;
 
-          this.dataReceived["productID"] = this.rxData.split(', ')[0];
+          let prodIdAux = this.rxData.split(', ')[0];
+          this.dataReceived["productID"] = prodIdAux.match(/\d+/g)[0];
           let cardIdStr = this.rxData.split(', ')[1];;
           this.dataReceived["cardID"] = cardIdStr.replace(/(\r\n|\n|)/gm, '');
 
@@ -423,6 +426,7 @@ export class BluetoothPage {
           this.responseReady = true;
 
         } else {
+          this.queriedName = 'Null';                 
           this.responseReady = false;
         }
       }
@@ -458,7 +462,10 @@ export class BluetoothPage {
         this.itemPreco = queriedItems[0]["preco"];
         this.itemId = queriedItems[0]["id"];
         this.itemNome = queriedItems[0]["nome"];
-      } else {
+
+        this.produtoIsFound = true;
+      } else {      
+        this.produtoIsFound = false;
         let toast = this.myServices.criarToast('Produto não encontrado.');
         toast.present();
       }
@@ -524,7 +531,12 @@ export class BluetoothPage {
           { year: 'numeric', month: 'long', day: 'numeric' }) + '/' + itemNome + ' - ' + itemId)
           .update({ Qtd: qtd, precoTotal: precoTotal })
           .then(success => {
-            this.afDatabase.object('/users/' + this.userUid).update({ cardSaldo: (this.userSaldo - this.itemPreco) }).then().catch(err => { console.log(err) })
+            this.afDatabase.object('/users/' + this.userUid).update({ cardSaldo: ((this.userSaldo - this.itemPreco)>= 0) ? (this.userSaldo - this.itemPreco): 0 })
+            .then(res => {
+              this.resetVars();
+              this.responseReady = false;
+              this.produtoIsFound = false;
+            }).catch(err => { console.log(err) })
             let toast = this.myServices.criarToast('Compra em máquina pelo cliente (' + this.userUid + ') registrada.');
             toast.present();
           })
@@ -538,14 +550,26 @@ export class BluetoothPage {
     }, 2000);
   }
 
+  resetVars(){
+    this.queriedName = '';
+    this.userUid = '';
+    this.itemPreco = 0;
+    this.itemId = 0;
+    this.itemNome = '';
+    this.userSaldo = 0;
+  }
+
   sendResponse() {
-    if (this.responseReady) {
+    if (this.responseReady && this.produtoIsFound) {
       if ((this.userSaldo - this.itemPreco) >= 0) {      
         this.escreverBT(this.queriedName + "\nSaldo: " + this.userSaldo.toString());
       } else {
         this.queriedName = "Error";
         this.escreverBT(this.queriedName);
       }
+    } else if (!this.responseReady){
+      this.queriedName = "ProdN";
+      this.escreverBT(this.queriedName);
     } else {
       this.queriedName = "Null";
       this.escreverBT(this.queriedName);
