@@ -568,10 +568,10 @@ export class BluetoothPage {
         this.escreverBT(this.queriedName);
       }
     } else if (!this.responseReady){
-      this.queriedName = "ProdN";
+      this.queriedName = "Null";
       this.escreverBT(this.queriedName);
     } else {
-      this.queriedName = "Null";
+      this.queriedName = "ProdN";
       this.escreverBT(this.queriedName);
     }
   }

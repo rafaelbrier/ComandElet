@@ -177,7 +177,8 @@ export class CarrinhoPage {
     let prodToChange = this.userCartProd.find((o) => o.id == prodQtChange.id);
     this.precoTotal = this.precoTotal - Number.parseInt(prodToChange.preco) + prodQtChange.newPrice;
     prodToChange.preco = prodQtChange.newPrice;
-    prodToChange.quantidade = prodQtChange.qtMultiplier;
+    prodToChange.quantidade = prodQtChange.qtMultiplier;    
+    console.log(this.userCartProd)
   }
 
   removeItem(ID: any) {
